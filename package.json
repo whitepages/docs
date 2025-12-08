@@ -1,6 +1,6 @@
 {
-  "name": "docs",
-  "version": "0.0.0",
+  "name": "@whitepages/docs",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "next build",
@@ -10,9 +10,12 @@
     "postinstall": "fumadocs-mdx",
     "lint": "eslint",
     "prepare": "husky",
-    "style:format": "bunx prettier . --write"
+    "style:format": "bunx prettier . --write",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.14.4",
     "fumadocs-core": "16.2.3",
     "fumadocs-mdx": "14.1.0",
     "fumadocs-ui": "16.2.3",
@@ -40,6 +43,7 @@
     "postcss": "^8.5.6",
     "prettier": "3.7.4",
     "tailwindcss": "^4.1.16",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.53.0"
   }
 }
