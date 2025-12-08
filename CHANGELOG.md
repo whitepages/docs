@@ -6,4 +6,10 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- Set up Fumadocs documentation site with Next.js
+- Set up Fumadocs documentation site with Next.js by @KevinEdry
+- Add Cloudflare Pages deployment with OpenNext by @KevinEdry
+
+### Miscellaneous
+
+- Add git-cliff changelog and renovate dependency updates by @KevinEdry
+
