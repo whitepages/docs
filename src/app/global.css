@@ -1,3 +1,66 @@
 @import "tailwindcss";
-@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/dusk.css";
 @import "fumadocs-ui/css/preset.css";
+
+/*
+ * Whitepages Design System
+ * Primary: Lapis Blue | Accent: Mulberry Purple | Neutrals: Raven
+ */
+
+@theme {
+  /* Light Mode */
+  --color-fd-background: #ffffff;
+  --color-fd-foreground: #282a2a;
+  --color-fd-primary: #2247cc; /* lapis.500 - slightly darker for better contrast */
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-border: #d6dadb; /* raven.300 (fog) */
+  --color-fd-ring: #2b58ff; /* lapis.400 */
+
+  --color-fd-muted: #f9f9f9; /* raven.100 (pearl) */
+  --color-fd-muted-foreground: #5e6672; /* raven.600 */
+
+  --color-fd-accent: #e3e9fc; /* lapis.100 */
+  --color-fd-accent-foreground: #152c7f; /* lapis.700 */
+
+  --color-fd-secondary: #f9f9f9; /* raven.100 */
+  --color-fd-secondary-foreground: #4f5763; /* raven.700 (graphite) */
+
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #282a2a;
+
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #282a2a;
+}
+
+.dark {
+  /* Dark Mode */
+  --color-fd-background: #18191a; /* darker than raven.900 for depth */
+  --color-fd-foreground: #e8eaea; /* raven.200 */
+  --color-fd-primary: #7f9bff; /* lapis.300 - brighter for dark mode */
+  --color-fd-primary-foreground: #0d1529;
+  --color-fd-border: #3c4147; /* raven.800 */
+  --color-fd-ring: #7f9bff; /* lapis.300 */
+
+  --color-fd-muted: #282a2a; /* raven.900 */
+  --color-fd-muted-foreground: #a5abb1; /* raven.400 (louie) */
+
+  --color-fd-accent: #1c2a4d; /* darker lapis tint */
+  --color-fd-accent-foreground: #beccff; /* lapis.200 */
+
+  --color-fd-secondary: #242628;
+  --color-fd-secondary-foreground: #d6dadb; /* raven.300 */
+
+  --color-fd-card: #1e1f21;
+  --color-fd-card-foreground: #e8eaea;
+
+  --color-fd-popover: #1e1f21;
+  --color-fd-popover-foreground: #e8eaea;
+}
+
+#nd-sidebar {
+  background-color: #f9f9f9;
+}
+
+.dark #nd-sidebar {
+  background-color: #1e1f21;
+}
