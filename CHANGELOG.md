@@ -11,6 +11,9 @@ All notable changes to this project will be documented in this file.
 - Switch to notebook layout with top navigation by @KevinEdry
 - Add UI components and utility helpers by @KevinEdry
 - Add LLM text helper and docs content by @KevinEdry
+- Add OpenAPI documentation generation by @KevinEdry
+- Add documentation structure with tabs and sections by @KevinEdry
+- Add navigation title component with theme-aware logo by @KevinEdry
 
 ### Miscellaneous
 
@@ -18,6 +21,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Add UI dependencies for enhanced components by @KevinEdry
 - Add CLI configuration for component paths by @KevinEdry
+- Update changelog by @github-actions[bot]
+- Update code style guidelines and cleanup by @KevinEdry
 
 ### Styling
 
