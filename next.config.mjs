@@ -5,6 +5,12 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  transpilePackages: [
+    "shiki",
+    "@shikijs/core",
+    "@shikijs/rehype",
+    "@shikijs/transformers",
+  ],
   async rewrites() {
     return [
       {
