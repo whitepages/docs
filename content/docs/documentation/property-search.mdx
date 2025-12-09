@@ -1,0 +1,96 @@
+---
+title: Property Search
+description: Get ownership and resident data for any address
+---
+
+The Property Search API returns ownership and resident information for a given address. Use it to identify property owners, find current residents, or verify address details.
+
+## Make Your First Request
+
+<Steps>
+<Step>
+### Send a Request
+
+Search for property details by address:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/property?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Replace `YOUR_API_KEY` with your actual API key.
+
+</Step>
+
+<Step>
+### Review the Response
+
+A successful request returns property details with owner and resident information:
+
+```json title="Response"
+{
+  "id": "PR5432109876",
+  "property_address": {
+    "id": "A9876543210",
+    "full_address": "1600 Pennsylvania Ave NW, Washington, DC"
+  },
+  "owners": [
+    {
+      "id": "P1234567890",
+      "name": "John Smith",
+      "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
+      "emails": ["john.smith@example.com"]
+    }
+  ],
+  "residents": [
+    {
+      "id": "P9876543210",
+      "name": "Jane Smith",
+      "phones": [
+        { "number": "(212) 555-0123", "type": "landline", "score": 85 }
+      ],
+      "emails": ["jane.smith@example.com"]
+    }
+  ]
+}
+```
+
+The response includes the verified address, property owners with contact details, and current residents.
+
+</Step>
+</Steps>
+
+## Request Parameters
+
+| Parameter    | Required | Description           | Example                    |
+| ------------ | -------- | --------------------- | -------------------------- |
+| `street`     | Yes      | Street address        | `1600 Pennsylvania Ave NW` |
+| `city`       | No       | City name             | `Washington`               |
+| `state_code` | No       | Two-letter state code | `DC`                       |
+| `zip`        | No       | ZIP code              | `20500`                    |
+
+<Callout>
+  The `street` parameter is required. Include `city` and `state_code` or `zip`
+  for more accurate results.
+</Callout>
+
+**Example with ZIP code:**
+
+```
+https://api.whitepages.com/v1/property?street=1600%20Pennsylvania%20Ave%20NW&zip=20500
+```
+
+## Response Codes
+
+| Status                  | Description                   | Billable |
+| ----------------------- | ----------------------------- | -------- |
+| `200 OK`                | Property found                | Yes      |
+| `400 Bad Request`       | Missing or invalid parameters | No       |
+| `403 Forbidden`         | Invalid API key               | No       |
+| `404 Not Found`         | No property found             | Yes      |
+| `429 Too Many Requests` | Rate limit exceeded           | No       |
+| `5xx`                   | Server error                  | No       |
+
+## What's Next
+
+You've completed the getting started tutorials. Explore the [References](/docs/references) section for complete API documentation.

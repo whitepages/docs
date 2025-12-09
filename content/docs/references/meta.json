@@ -1,0 +1,18 @@
+{
+  "title": "References",
+  "icon": "FileCode",
+  "root": true,
+  "pages": [
+    "---API Reference---",
+    "index",
+    "authentication",
+    "rate-limits",
+    "billing",
+    "...person",
+    "...property",
+    "...account",
+    "---SDK Reference---",
+    "typescript-sdk",
+    "python-sdk"
+  ]
+}

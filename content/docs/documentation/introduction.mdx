@@ -1,0 +1,52 @@
+---
+title: Introduction
+description: Get started with the Whitepages API
+---
+
+The Whitepages API provides access to comprehensive person and property data. Whether you're verifying identities, enriching customer records, or researching properties, our API delivers the data you need.
+
+<Callout title="Video Tutorial">
+  Watch our complete integration tutorial series: [API Integration
+  Tutorial](https://youtu.be/60Aa-N-cbmY?si=nA31he_DE5UWtUq6)
+</Callout>
+
+## Get Your API Key
+
+To access the API, you'll need an API key. Sign up for a **free trial** at [whitepages.com/pro-api](https://www.whitepages.com/pro-api).
+
+<Callout type="warn" title="Keep Your API Key Secret">
+  Your API key authenticates all requests and tracks usage for billing. Never
+  expose it in client-side code or public repositories. If your key is
+  compromised, contact [support@whitepages.com](mailto:support@whitepages.com)
+  for a replacement.
+</Callout>
+
+## Available APIs
+
+<Cards>
+  <Card
+    title="Person Search"
+    href="/docs/documentation/person-search"
+    description="Look up individuals by name, phone, or address"
+  />
+  <Card
+    title="Property Search"
+    href="/docs/documentation/property-search"
+    description="Get ownership and resident data for any address"
+  />
+</Cards>
+
+## Making Requests
+
+All API requests require your API key in the `X-Api-Key` header:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Responses are returned in JSON format. Each successful request that returns data consumes one billable query.
+
+## Next Steps
+
+Ready to make your first API call? Start with the [Person Search](/docs/documentation/person-search) tutorial.

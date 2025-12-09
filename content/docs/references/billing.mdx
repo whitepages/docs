@@ -1,0 +1,50 @@
+---
+title: Billing
+description: Understand how API usage is tracked and billed.
+icon: CreditCard
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+API usage is tracked and billed based on successful requests.
+
+## Billing Rules
+
+| Response Type      | Billable |
+| ------------------ | -------- |
+| 2xx (Success)      | Yes      |
+| 4xx (Client Error) | Yes      |
+| 5xx (Server Error) | No       |
+| 429 (Rate Limit)   | No       |
+
+<Callout type="info">
+  Only requests to Person and Property endpoints are charged. Account endpoints
+  are not billable.
+</Callout>
+
+## Billable Requests
+
+All `2xx` (success) and `4xx` (client error) responses from Person and Property endpoints are charged to your account.
+
+## Non-Billable Requests
+
+The following responses are **not** charged:
+
+- `5xx` (server error) responses - issues on our end
+- `429` (rate limit) responses - when you've exceeded rate limits
+
+## Billing Period
+
+Usage is calculated from the start of the month in UTC time. Your billing cycle resets on the 1st of each month at 00:00 UTC.
+
+## Usage Reports
+
+Detailed usage reports are available through the [Account Usage](/docs/references/account/get_account_usage_data) endpoint. You can query:
+
+- Daily request counts
+- Usage over custom date ranges (up to 90 days)
+- Total requests for a time period
+
+## Support
+
+For billing inquiries, quota adjustments, or plan changes, please contact our team at support@whitepages.com.

@@ -1,0 +1,52 @@
+---
+title: Routes
+description: Complete overview of all available Whitepages API endpoints organized by category.
+icon: Route
+---
+
+import { Cards, Card } from "fumadocs-ui/components/card";
+
+The Whitepages API provides comprehensive access to person and property data with enterprise-grade authentication and usage tracking.
+
+Before using the API, review the [Authentication](/docs/references/authentication), [Rate Limits](/docs/references/rate-limits), and [Billing](/docs/references/billing) documentation.
+
+## Account API
+
+Account management endpoints for retrieving usage statistics.
+
+<Cards>
+  <Card
+    title="Retrieve usage data for a specific time range"
+    description="Retrieve API usage data for a specified date range."
+    href="/docs/references/account/get_account_usage_data"
+  />
+</Cards>
+
+## Person API
+
+Search for individuals by name, phone number, and address.
+
+<Cards>
+  <Card
+    title="Search for a person by name, phone number, and address"
+    description="Retrieve person information based on the provided query parameters."
+    href="/docs/references/person/search_person_by_name_phone_or_address"
+  />
+  <Card
+    title="Gets person details by id"
+    description="Retrieve detailed person information by Whitepages person ID."
+    href="/docs/references/person/get_person_by_id"
+  />
+</Cards>
+
+## Property API
+
+Search for property information and ownership details by address.
+
+<Cards>
+  <Card
+    title="Get property details by address"
+    description="Retrieve property information based on the provided query parameters."
+    href="/docs/references/property/get_property_by_address"
+  />
+</Cards>

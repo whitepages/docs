@@ -1,0 +1,13 @@
+{
+  "title": "Documentation",
+  "icon": "Book",
+  "root": true,
+  "pages": [
+    "---[Rocket]Getting Started---",
+    "introduction",
+    "person-search",
+    "property-search",
+    "---[BookOpen]Guides---",
+    "guides"
+  ]
+}

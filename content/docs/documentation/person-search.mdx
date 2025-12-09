@@ -1,0 +1,84 @@
+---
+title: Person Search
+description: Look up individuals by name, phone, or address
+---
+
+The Person Search API finds matching records in the Whitepages dataset based on name, location, phone number, or address. Use it to verify identities, find contact information, or enrich customer data.
+
+## Make Your First Request
+
+<Steps>
+<Step>
+### Send a Request
+
+Search for a person by name and location:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&city=New%20York&state_code=NY' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Replace `YOUR_API_KEY` with your actual API key.
+
+</Step>
+
+<Step>
+### Review the Response
+
+A successful request returns matching person records:
+
+```json title="Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "current_addresses": [
+      { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
+    ],
+    "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
+    "emails": ["john.smith@example.com"],
+    "owned_properties": [
+      { "id": "R5432109876", "address": "123 Main St, New York, NY 10001" }
+    ]
+  }
+]
+```
+
+Each record includes identifiers, addresses, phone numbers, emails, and linked property records when available.
+
+</Step>
+</Steps>
+
+## Request Parameters
+
+Combine any of these parameters to refine your search:
+
+| Parameter    | Description           | Example       |
+| ------------ | --------------------- | ------------- |
+| `name`       | Full or partial name  | `John Smith`  |
+| `phone`      | Phone number          | `2125550198`  |
+| `street`     | Street address        | `123 Main St` |
+| `city`       | City name             | `New York`    |
+| `state_code` | Two-letter state code | `NY`          |
+| `zipcode`    | ZIP code              | `10001`       |
+
+**Example with multiple parameters:**
+
+```
+https://api.whitepages.com/v1/person?name=John%20Smith&zipcode=10001
+```
+
+## Response Codes
+
+| Status                  | Description                   | Billable |
+| ----------------------- | ----------------------------- | -------- |
+| `200 OK`                | Records found                 | Yes      |
+| `400 Bad Request`       | Missing or invalid parameters | No       |
+| `403 Forbidden`         | Invalid API key               | No       |
+| `404 Not Found`         | No matching records           | Yes      |
+| `429 Too Many Requests` | Rate limit exceeded           | No       |
+| `5xx`                   | Server error                  | No       |
+
+## Next Steps
+
+Learn how to look up property ownership and resident data in the [Property Search](/docs/documentation/property-search) tutorial.

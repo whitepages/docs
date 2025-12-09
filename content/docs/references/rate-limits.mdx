@@ -1,0 +1,50 @@
+---
+title: Rate Limits
+description: Understand the rate limiting policies for the Whitepages API.
+icon: Gauge
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+API usage is rate-limited to ensure system stability and fair usage across all customers.
+
+## Rate Limit Behavior
+
+When you exceed the rate limit, the API returns a `429 Too Many Requests` status code with retry information.
+
+```json
+{
+  "message": "Too Many Requests"
+}
+```
+
+<Callout type="info">
+  When you receive a 429 response, wait before retrying your request. Implement
+  exponential backoff in your application for best results.
+</Callout>
+
+## Monthly Query Limits
+
+Your API plan includes a monthly query limit. When exceeded, you will receive:
+
+```json
+{
+  "message": "Limit Exceeded"
+}
+```
+
+This indicates you have hit your monthly query limit. You can either:
+
+- Wait until the next month when your limit resets
+- Contact support for additional queries or a plan upgrade
+
+## Best Practices
+
+- **Implement retry logic** with exponential backoff for 429 responses
+- **Cache responses** when appropriate to reduce API calls
+- **Monitor usage** via the [Account Usage](/docs/references/account/get_account_usage_data) endpoint
+- **Batch requests** where possible to optimize your quota
+
+## Rate Limit Increases
+
+For rate limit increases or quota adjustments, please contact our team at support@whitepages.com.

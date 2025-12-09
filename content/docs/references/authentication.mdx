@@ -1,0 +1,43 @@
+---
+title: Authentication
+description: Learn how to authenticate your requests to the Whitepages API.
+icon: KeyRound
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+All API requests require a valid API key provided in the `X-Api-Key` header.
+
+## API Key
+
+Include your API key in every request using the `X-Api-Key` header:
+
+```bash
+curl -X GET "https://api.whitepages.com/v1/person/" \
+  -H "X-Api-Key: your-api-key-here"
+```
+
+<Callout type="warn">
+  Keep your API key secure. Do not expose it in client-side code or public
+  repositories.
+</Callout>
+
+## Obtaining an API Key
+
+Contact our support team at support@whitepages.com for API key provisioning and management.
+
+## Error Responses
+
+If authentication fails, you will receive a `403 Forbidden` response:
+
+```json
+{
+  "message": "Forbidden"
+}
+```
+
+Common causes for authentication errors:
+
+- Missing `X-Api-Key` header
+- Invalid or revoked API key
+- API key not authorized for the requested endpoint
