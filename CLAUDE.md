@@ -103,3 +103,8 @@ bun --hot ./index.ts
 ```
 
 For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+
+## Code Style
+
+- Don't abbreviate names in code (e.g., use 'navigation' instead of 'nav')
+- Avoid comments in code. If code needs a comment to be understood, refactor it to be more readable instead.
