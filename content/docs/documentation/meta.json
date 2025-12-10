@@ -3,11 +3,9 @@
   "icon": "Book",
   "root": true,
   "pages": [
-    "---[Rocket]Getting Started---",
-    "introduction",
-    "person-search",
-    "property-search",
+    "getting-started",
     "---[BookOpen]Guides---",
-    "guides"
+    "person-search",
+    "property-search"
   ]
 }
