@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Documentation
 
 - Add contributing guide and update README by @KevinEdry
+- Rename introduction to getting-started and reorganize sidebar by @KevinEdry
 
 ### Features
 
@@ -18,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Add OpenAPI documentation generation by @KevinEdry
 - Add documentation structure with tabs and sections by @KevinEdry
 - Add navigation title component with theme-aware logo by @KevinEdry
+- Add basePath config and restructure routing for proxy support by @KevinEdry
 
 ### Miscellaneous
 
@@ -30,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Add observability config and openapi script by @KevinEdry
 - Add CI environment config and OpenAPI generation step by @KevinEdry
+- Update changelog by @github-actions[bot]
 
 ### Styling
 
