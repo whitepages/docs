@@ -5,6 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  basePath: "/docs",
   transpilePackages: [
     "shiki",
     "@shikijs/core",
@@ -14,7 +15,7 @@ const config = {
   async rewrites() {
     return [
       {
-        source: "/docs/:path*.mdx",
+        source: "/:path*.mdx",
         destination: "/llms.mdx/:path*",
       },
     ];

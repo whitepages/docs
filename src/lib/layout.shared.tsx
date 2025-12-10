@@ -6,6 +6,8 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       transparentMode: "top",
       title: <NavigationTitle />,
+      url: "/",
     },
+    githubUrl: "https://github.com/whitepages/docs",
   };
 }
