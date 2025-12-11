@@ -1,0 +1,101 @@
+---
+title: Filter by Age Range
+description: Narrow person search results using minimum and maximum age filters
+---
+
+Use the `min_age` and `max_age` parameters to filter person search results by age range. This is useful when you need to find individuals within a specific age bracket.
+
+## Basic Usage
+
+Add `min_age` and/or `max_age` to your request to filter results:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&min_age=25&max_age=45' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This returns only records for individuals between 25 and 45 years old.
+
+## Parameters
+
+| Parameter | Type    | Description                            |
+| --------- | ------- | -------------------------------------- |
+| `min_age` | integer | Minimum age (inclusive). Must be 18-65 |
+| `max_age` | integer | Maximum age (inclusive). Must be 18-65 |
+
+<Callout type="warn" title="Age Range Limits">
+  Age filters are restricted to individuals between 18 and 65 years old. Values
+  outside this range will return an error.
+</Callout>
+
+## Examples
+
+### Filter by Minimum Age
+
+Filter for individuals 21 years or older:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=Jane%20Doe&city=Chicago&state_code=IL&min_age=21' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Filter by Maximum Age
+
+Filter for individuals 40 or younger:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?last_name=Johnson&state_code=FL&max_age=40' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Filter by Age Range
+
+Filter for individuals between 25 and 55:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=Michael%20Williams&zipcode=90210&min_age=25&max_age=55' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Combining with Other Filters
+
+Age filters work alongside all other person search parameters:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?first_name=Sarah&last_name=Miller&city=Seattle&state_code=WA&min_age=30&max_age=50' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="info" title="Age Data Availability">
+  Age filtering relies on available data. Some records may not have age
+  information and will be excluded from filtered results.
+</Callout>
+
+## Response
+
+The response format remains the same as a standard person search. Age filters only affect which records are returned, not the structure of the response.
+
+```json title="Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "aliases": ["Johnny Smith"],
+    "is_dead": false,
+    "current_addresses": [
+      { "id": "A9876543210", "address": "456 Oak Ave, Chicago, IL 60601" }
+    ],
+    "historic_addresses": [
+      { "id": "A1234567890", "address": "789 Pine St, Chicago, IL 60602" }
+    ],
+    "owned_properties": [],
+    "phones": [{ "number": "(312) 555-0123", "type": "mobile", "score": 88 }],
+    "emails": ["jsmith@example.com"],
+    "date_of_birth": "1992-07-22",
+    "linkedin_url": "https://linkedin.com/in/jsmith",
+    "company_name": "Tech Solutions Inc",
+    "job_title": "Product Manager",
+    "relatives": [{ "id": "P0987654321", "name": "Mary Smith" }]
+  }
+]
+```

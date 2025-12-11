@@ -32,19 +32,29 @@ A successful request returns matching person records:
   {
     "id": "P1234567890",
     "name": "John Smith",
+    "aliases": ["Johnny Smith", "J. Smith"],
+    "is_dead": false,
     "current_addresses": [
       { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
     ],
-    "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
-    "emails": ["john.smith@example.com"],
+    "historic_addresses": [
+      { "id": "A1234567890", "address": "456 Oak Ave, Brooklyn, NY 11201" }
+    ],
     "owned_properties": [
       { "id": "R5432109876", "address": "123 Main St, New York, NY 10001" }
-    ]
+    ],
+    "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
+    "emails": ["john.smith@example.com"],
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
   }
 ]
 ```
 
-Each record includes identifiers, addresses, phone numbers, emails, and linked property records when available.
+Each record includes identifiers, addresses, phone numbers, emails, employment information, and linked property and relative records when available.
 
 </Step>
 </Steps>
@@ -53,17 +63,20 @@ Each record includes identifiers, addresses, phone numbers, emails, and linked p
 
 Combine any of these parameters to refine your search:
 
-| Parameter     | Description           | Example       |
-| ------------- | --------------------- | ------------- |
-| `name`        | Full or partial name  | `John Smith`  |
-| `first_name`  | First name            | `John`        |
-| `middle_name` | Middle name           | `Robert`      |
-| `last_name`   | Last name             | `Smith`       |
-| `phone`       | Phone number          | `2125550198`  |
-| `street`      | Street address        | `123 Main St` |
-| `city`        | City name             | `New York`    |
-| `state_code`  | Two-letter state code | `NY`          |
-| `zipcode`     | ZIP code              | `10001`       |
+| Parameter                      | Description                                               | Example       |
+| ------------------------------ | --------------------------------------------------------- | ------------- |
+| `name`                         | Full or partial name                                      | `John Smith`  |
+| `first_name`                   | First name                                                | `John`        |
+| `middle_name`                  | Middle name                                               | `Robert`      |
+| `last_name`                    | Last name                                                 | `Smith`       |
+| `phone`                        | Phone number                                              | `2125550198`  |
+| `street`                       | Street address                                            | `123 Main St` |
+| `city`                         | City name                                                 | `New York`    |
+| `state_code`                   | Two-letter state code                                     | `NY`          |
+| `zipcode`                      | ZIP code                                                  | `10001`       |
+| `min_age`                      | Minimum age filter (18-65)                                | `25`          |
+| `max_age`                      | Maximum age filter (18-65)                                | `55`          |
+| `include_historical_locations` | Include historical addresses in search (default: `false`) | `true`        |
 
 **Example with multiple parameters:**
 

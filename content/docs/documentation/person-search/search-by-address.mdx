@@ -1,0 +1,120 @@
+---
+title: Search by Address
+description: Find people by current or historical addresses
+---
+
+Use address parameters to find people associated with a specific location. By default, searches match only current addresses. Enable `include_historical_locations` to also search historical addresses.
+
+## Basic Usage
+
+Search for people at a specific address:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This returns people whose **current address** matches the search criteria.
+
+## Include Historical Addresses
+
+To search both current and historical addresses, set `include_historical_locations=true`:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA&include_historical_locations=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This returns people who currently live at the address **or** have previously lived there.
+
+## Parameters
+
+| Parameter                      | Type    | Default | Description                            |
+| ------------------------------ | ------- | ------- | -------------------------------------- |
+| `street`                       | string  | —       | Street address                         |
+| `city`                         | string  | —       | City name                              |
+| `state_code`                   | string  | —       | Two-letter state code                  |
+| `zipcode`                      | string  | —       | ZIP code                               |
+| `include_historical_locations` | boolean | `false` | Include historical addresses in search |
+
+## Examples
+
+### Search by ZIP Code Only
+
+Find people in a specific ZIP code:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?zipcode=98101' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Search by City and State
+
+Find people in a specific city:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Find Previous Residents
+
+Find anyone who has ever lived at an address:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Denver&state_code=CO&zipcode=80202&include_historical_locations=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Combine with Name Search
+
+Find a specific person at an address:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&street=789%20Pine%20St&city=Austin&state_code=TX&include_historical_locations=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="info" title="Historical Address Coverage">
+  Historical address data varies by record. Some individuals may have extensive
+  address history while others may only have current address information
+  available.
+</Callout>
+
+## Response
+
+The response includes both current and historical addresses for each person found:
+
+```json title="Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "aliases": ["Johnny Smith"],
+    "is_dead": false,
+    "current_addresses": [
+      { "id": "A9876543210", "address": "123 Main St, Seattle, WA 98101" }
+    ],
+    "historic_addresses": [
+      { "id": "A1234567890", "address": "456 Oak Ave, Portland, OR 97201" },
+      { "id": "A2345678901", "address": "789 Pine St, San Francisco, CA 94102" }
+    ],
+    "owned_properties": [
+      { "id": "R5432109876", "address": "123 Main St, Seattle, WA 98101" }
+    ],
+    "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
+    "emails": ["john.smith@example.com"],
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+  }
+]
+```
+
+<Callout type="info" title="Current vs Historical">
+  When `include_historical_locations=true`, the search matches against both
+  `current_addresses` and `historic_addresses`. The response always includes
+  both fields regardless of the search setting.
+</Callout>

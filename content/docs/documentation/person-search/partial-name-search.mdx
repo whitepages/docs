@@ -1,0 +1,60 @@
+---
+title: Search for Person by Partial Name
+description: Search for people using partial or incomplete name information
+---
+
+When you only have partial name information, use the individual name parameters (`first_name`, `middle_name`, `last_name`) to search more precisely than using the combined `name` parameter.
+
+## When to Use Partial Name Search
+
+Use individual name parameters when:
+
+- You only know a person's first or last name
+- You need to search across variations of a name
+- You want more control over which parts of a name to match
+
+## Search by Last Name Only
+
+Find all people with a specific last name in a location:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?last_name=Smith&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Search by First and Last Name
+
+When you know both first and last name but want to match regardless of middle name:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?first_name=John&last_name=Smith&state_code=NY' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Include Middle Name for Precision
+
+For more precise matching when you have complete name information:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?first_name=John&middle_name=Robert&last_name=Smith&zipcode=10001' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Combining with Location Parameters
+
+For best results, always include at least one location parameter:
+
+| Combination                            | Use Case                    |
+| -------------------------------------- | --------------------------- |
+| `last_name` + `state_code`             | Broad search within a state |
+| `last_name` + `city` + `state_code`    | City-level search           |
+| `first_name` + `last_name` + `zipcode` | Precise local search        |
+
+## Name Parameter vs Individual Parameters
+
+| Parameter                  | Behavior                                               |
+| -------------------------- | ------------------------------------------------------ |
+| `name`                     | Matches against the full name field, flexible ordering |
+| `first_name` + `last_name` | Matches each field specifically, more precise          |
+
+Use `name` for convenience when you have a full name string. Use individual parameters when you need precise control or only have partial information.
