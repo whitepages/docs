@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Bug Fixes
+
+- Correct route path in og image handler by @KevinEdry
+
 ### Documentation
 
 - Add contributing guide and update README by @KevinEdry
@@ -35,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Add observability config and openapi script by @KevinEdry
 - Add CI environment config and OpenAPI generation step by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
