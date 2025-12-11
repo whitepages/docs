@@ -20,6 +20,15 @@ const config = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/documentation/getting-started",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withMDX(config);

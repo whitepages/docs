@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       "Official documentation for the Whitepages API. Access comprehensive person and property data.",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/docs/favicon.ico",
   },
   robots: {
     index: true,
