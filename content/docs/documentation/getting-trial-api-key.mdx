@@ -1,0 +1,104 @@
+---
+title: Getting a Trial API Key
+description: Step-by-step guide to signing up for a free Whitepages API trial
+icon: Key
+---
+
+This guide walks you through the process of signing up for a free trial API key. The trial gives you access to all API endpoints so you can evaluate the service before committing to a paid plan.
+
+## Step 1: Visit the API Page
+
+Go to [whitepages.com/pro-api](https://www.whitepages.com/pro-api) to access the API signup page.
+
+![API Landing Page](/images/trial-api-key/01-api-landing-page.png)
+
+You'll see the "Get API Access" form on the right side of the page.
+
+## Step 2: Enter Your Contact Information
+
+The first form requires three pieces of information:
+
+- **Full Name** - Your full name
+- **Business Email Address** - A valid business email address (required for trial approval)
+- **Phone Number** - Your phone number in the format (555) 555-5555
+
+![Signup Form](/images/trial-api-key/02-signup-form.png)
+
+Fill in your details and click the **Start for Free** button.
+
+![Form Filled](/images/trial-api-key/03-form-filled.png)
+
+<Callout type="info" title="Use a Business Email">
+  Using a business email address (e.g., yourname@company.com) rather than a
+  personal email increases your chances of trial approval and faster processing.
+</Callout>
+
+## Step 3: Provide API Usage Details
+
+After submitting your contact information, you'll be asked to provide more details about your API needs:
+
+![Second Form Stage](/images/trial-api-key/04-second-form-stage.png)
+
+Fill out the following fields:
+
+- **Anticipated Monthly API Calls** - Select your expected usage volume
+- **Do you have a technical resource for implementation?** - Indicate if you have development resources
+- **Who is the end user for the data?** - Select who will be using the data (Internal Staff, Businesses you serve, Consumers, or Other)
+- **Briefly describe how you plan to use the API** - Provide a short description of your use case
+
+![Second Form Filled](/images/trial-api-key/05-second-form-filled.png)
+
+Click **Access API Trial** to submit your request.
+
+<Callout type="info" title="No Credit Card Required">
+  The trial signup does not require a credit card. You can evaluate the API
+  completely free during the trial period.
+</Callout>
+
+## Step 4: Check Your Email
+
+After submitting the form, you'll see a confirmation message:
+
+![Confirmation](/images/trial-api-key/06-confirmation.png)
+
+Check your email for instructions on how to activate your trial key.
+
+## Step 5: Start Using Your API Key
+
+Once you receive your API key, you can start making requests immediately. Include your key in the `X-Api-Key` header:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="warn" title="Keep Your API Key Secure">
+  Never share your API key publicly or commit it to version control. If your key
+  is compromised, contact
+  [support@whitepages.com](mailto:support@whitepages.com) immediately.
+</Callout>
+
+## Trial Limitations
+
+The trial API key includes:
+
+- Access to all API endpoints
+- Limited number of queries for evaluation purposes
+- Full response data (no field restrictions)
+
+For production use or higher query volumes, visit the [API Pricing](https://www.whitepages.com/pro-api/pricing) page.
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Person Search"
+    href="/documentation/person-search"
+    description="Learn how to search for individuals"
+  />
+  <Card
+    title="Property Search"
+    href="/documentation/property-search"
+    description="Look up property ownership data"
+  />
+</Cards>

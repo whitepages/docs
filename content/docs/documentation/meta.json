@@ -4,6 +4,7 @@
   "root": true,
   "pages": [
     "getting-started",
+    "getting-trial-api-key",
     "---[BookOpen]Guides---",
     "person-search",
     "property-search"
