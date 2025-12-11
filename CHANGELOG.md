@@ -8,6 +8,8 @@ All notable changes to this project will be documented in this file.
 
 - Add contributing guide and update README by @KevinEdry
 - Rename introduction to getting-started and reorganize sidebar by @KevinEdry
+- Add trial API key signup guide with screenshots by @KevinEdry
+- Add person search guides for age filtering and address search by @KevinEdry
 
 ### Features
 
@@ -20,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - Add documentation structure with tabs and sections by @KevinEdry
 - Add navigation title component with theme-aware logo by @KevinEdry
 - Add basePath config and restructure routing for proxy support by @KevinEdry
+- Improve docs site with video embed, redirects, and API schema display by @KevinEdry
 
 ### Miscellaneous
 
@@ -33,8 +36,10 @@ All notable changes to this project will be documented in this file.
 - Add observability config and openapi script by @KevinEdry
 - Add CI environment config and OpenAPI generation step by @KevinEdry
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
 
 ### Styling
 
 - Apply Whitepages design system theme colors by @KevinEdry
+- Update sidebar icons for guides section by @KevinEdry
 
