@@ -5,8 +5,12 @@
   "pages": [
     "getting-started",
     "getting-trial-api-key",
+    "purchasing-api",
     "---Guides---",
     "person-search",
-    "property-search"
+    "property-search",
+    "---LLMs---",
+    "[Docs List](/llms.txt)",
+    "[Full Docs](/llms-full.txt)"
   ]
 }
