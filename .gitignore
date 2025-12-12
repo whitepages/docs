@@ -4,6 +4,9 @@
 # generated content
 .source
 
+# playwright
+.playwright-mcp
+
 # test & build
 /coverage
 /.next/
