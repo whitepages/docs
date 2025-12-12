@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - **security:** Upgrade Next.js and React for CVE patches by @KevinEdry
 - Update ESLint config for Next.js 16 flat config by @KevinEdry
 - Update ESLint config for Next.js 16 flat config by @KevinEdry
+- Use relative links in routes page to prevent double /docs prefix by @KevinEdry
 
 ## Documentation
 
@@ -53,6 +54,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
