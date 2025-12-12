@@ -2,21 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
 
-### Bug Fixes
+## Bug Fixes
 
 - Correct route path in og image handler by @KevinEdry
 - **security:** Upgrade Next.js and React for CVE patches by @KevinEdry
 
-### Documentation
+## Documentation
 
 - Add contributing guide and update README by @KevinEdry
 - Rename introduction to getting-started and reorganize sidebar by @KevinEdry
 - Add trial API key signup guide with screenshots by @KevinEdry
 - Add person search guides for age filtering and address search by @KevinEdry
+- Add purchasing API and LLM docs links to sidebar by @KevinEdry
 
-### Features
+## Features
 
 - Set up Fumadocs documentation site with Next.js by @KevinEdry
 - Add Cloudflare Pages deployment with OpenNext by @KevinEdry
@@ -29,7 +29,7 @@ All notable changes to this project will be documented in this file.
 - Add basePath config and restructure routing for proxy support by @KevinEdry
 - Improve docs site with video embed, redirects, and API schema display by @KevinEdry
 
-### Miscellaneous
+## Miscellaneous
 
 - Add git-cliff changelog and renovate dependency updates by @KevinEdry
 - Update changelog by @github-actions[bot]
@@ -44,9 +44,15 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- Remove release-based grouping from changelog by @KevinEdry
 
-### Styling
+## Styling
 
 - Apply Whitepages design system theme colors by @KevinEdry
 - Update sidebar icons for guides section by @KevinEdry
+
+## Ci
+
+- Add linting and formatting checks to deploy workflow by @KevinEdry
 
