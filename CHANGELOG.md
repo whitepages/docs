@@ -46,6 +46,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Remove release-based grouping from changelog by @KevinEdry
+- Update changelog by @github-actions[bot]
+- Ignore generated CHANGELOG.md in prettier by @KevinEdry
 
 ## Styling
 
