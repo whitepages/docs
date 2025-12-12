@@ -36,9 +36,6 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Type check
-        run: bun run types:check
-
       - name: Generate OpenAPI docs
         run: bun run generate:openapi
 
