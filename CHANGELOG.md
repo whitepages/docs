@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Add navigation title component with theme-aware logo by @KevinEdry
 - Add basePath config and restructure routing for proxy support by @KevinEdry
 - Improve docs site with video embed, redirects, and API schema display by @KevinEdry
+- Add robots.txt, sitemap, and validation command by @KevinEdry
 
 ## Miscellaneous
 
@@ -51,6 +52,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
