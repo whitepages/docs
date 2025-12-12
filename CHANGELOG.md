@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 
 - Correct route path in og image handler by @KevinEdry
 - **security:** Upgrade Next.js and React for CVE patches by @KevinEdry
+- Update ESLint config for Next.js 16 flat config by @KevinEdry
 
 ## Documentation
 
@@ -48,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 
 ## Styling
 
