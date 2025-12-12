@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Add trial API key signup guide with screenshots by @KevinEdry
 - Add person search guides for age filtering and address search by @KevinEdry
 - Add purchasing API and LLM docs links to sidebar by @KevinEdry
+- Add purchasing API documentation by @KevinEdry
 
 ## Features
 
@@ -50,6 +51,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
