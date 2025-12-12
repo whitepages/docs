@@ -1,0 +1,144 @@
+---
+title: Purchasing the API
+description: Step-by-step guide to purchasing a Whitepages Pro API subscription
+icon: CreditCard
+---
+
+This guide walks you through the process of purchasing a paid Whitepages Pro API subscription. Paid plans offer higher query limits and are suitable for production use.
+
+## Step 1: Visit the Pricing Page
+
+Go to [whitepages.com/pro-api/pricing](https://www.whitepages.com/pro-api/pricing) to view available plans.
+
+![Pricing Page](/images/purchasing-api/01-pricing-page.png)
+
+You'll see three options:
+
+- **14-Day Trial** - Free access with 50 queries to evaluate the API
+- **Pro API Plan** - Paid plans with 1,000 to 30,000 queries per month
+- **Higher-Volume Plans** - Enterprise plans for 50,000+ queries per month
+
+## Step 2: Select Your Plan
+
+### Monthly vs Annual Billing
+
+Use the toggle at the top to switch between **Monthly** and **Annual** billing. Annual plans offer a 15% discount.
+
+### Choose Your Query Volume
+
+For the Pro API Plan, select your monthly query volume from the dropdown. Options range from 1,000 to 30,000 queries per month.
+
+Click **Get Pro Access** to proceed to checkout.
+
+<Callout type="info" title="Need More Queries?">
+  For volumes above 30,000 queries per month, select "Higher-Volume Plans" and
+  [schedule a
+  meeting](https://www.getclockwise.com/c/ewang-whitepages-com/quick-meeting)
+  with our sales team.
+</Callout>
+
+## Step 3: Complete the Checkout Form
+
+After clicking "Get Pro Access", you'll be taken to the secure checkout page.
+
+![Checkout Page](/images/purchasing-api/02-checkout-page.png)
+
+### Account Details
+
+Fill in the following information:
+
+- **Email Address** - Your business email where the API key will be sent
+- **Company Name** - Your company or organization name
+
+<Callout type="warn" title="Existing Whitepages Customers">
+  If you already have a Whitepages consumer account, you must use a different
+  email address for your API account. You can either use a separate business
+  email or add `+api` to your existing email (e.g., `yourname+api@company.com`)
+  to create a new API account.
+</Callout>
+- **Company Address** - Your business address - **Use Case** - Select how you
+plan to use the API: - Contact Enrichment - Identity Verification - Reverse
+Phone Lookup - Property & Owner Research - Other - **Phone** - Your contact
+phone number
+
+<Callout type="info" title="Double-Check Your Email">
+  Your account confirmation and billing receipts will be sent to this email
+  address. Make sure it's correct before submitting.
+</Callout>
+
+### Payment Information
+
+Enter your payment details:
+
+- **Cardholder Name** - Name as it appears on your card
+- **Card Number** - Your credit card number (Visa, Mastercard, American Express, or Discover accepted)
+- **Expiration Date** - Card expiration month and year
+- **CVV** - The 3 or 4 digit security code on your card
+- **Billing ZIP Code** - The ZIP code associated with your billing address
+
+![Checkout Form Filled](/images/purchasing-api/03-checkout-filled.png)
+
+## Step 4: Review and Submit
+
+Before submitting, review your order summary on the right side of the page:
+
+- Verify the plan name and query volume
+- Check the monthly price
+- Note that sales tax may be added based on your location
+
+Check the box to agree to the recurring charges, then click **Submit Order**.
+
+<Callout type="info" title="Cancel Anytime">
+  You can cancel your subscription at any time by contacting Whitepages customer
+  support. There are no long-term contracts for monthly plans.
+</Callout>
+
+## Step 5: Copy Your API Key
+
+After successful payment, your API key will be displayed on the confirmation screen.
+
+<Callout type="warn" title="Save Your API Key Immediately">
+  Your API key is only shown once after purchase. Copy it immediately and store
+  it in a secure location such as a password manager or secrets vault. You will
+  not receive your API key via email.
+</Callout>
+
+## Using Your API Key
+
+Include your API key in the `X-Api-Key` header with every request:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="warn" title="Keep Your API Key Secure">
+  Never share your API key publicly or commit it to version control. If your key
+  is compromised, contact
+  [support@whitepages.com](mailto:support@whitepages.com) immediately.
+</Callout>
+
+## Managing Your Subscription
+
+To manage your subscription, upgrade your plan, or view usage statistics:
+
+1. Log in at [whitepages.com/auth/login](https://www.whitepages.com/auth/login)
+2. Navigate to your account dashboard
+3. View billing history and current usage
+
+For billing questions or to cancel your subscription, contact customer support at (800) 916-7806 or visit [support.whitepages.com](https://support.whitepages.com/hc/en-us).
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Getting Started"
+    href="/documentation/getting-started"
+    description="Learn how to make your first API request"
+  />
+  <Card
+    title="Person Search"
+    href="/documentation/person-search"
+    description="Search for individuals by name, phone, or address"
+  />
+</Cards>
