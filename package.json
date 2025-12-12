@@ -10,7 +10,8 @@
     "postinstall": "fumadocs-mdx",
     "lint": "eslint",
     "prepare": "husky",
-    "style:format": "bunx prettier . --write",
+    "format:check": "bunx prettier . --check",
+    "format:write": "bunx prettier . --write",
     "generate:openapi": "bun run scripts/generators/openapi/openapi.generator.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
