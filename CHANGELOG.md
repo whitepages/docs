@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Add basePath config and restructure routing for proxy support by @KevinEdry
 - Improve docs site with video embed, redirects, and API schema display by @KevinEdry
 - Add robots.txt, sitemap, and validation command by @KevinEdry
+- Add llms.txt route and update gitignore by @KevinEdry
 
 ## Miscellaneous
 
@@ -52,6 +53,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
