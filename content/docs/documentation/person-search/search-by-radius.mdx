@@ -1,0 +1,226 @@
+---
+title: Search by Radius
+description: Find people within a specified distance of a location
+---
+
+Use the `radius` parameter to find people within a specific distance of a location. This enables proximity-based searches, such as finding all people within 10 miles of a given address or city.
+
+## Basic Usage
+
+Search for people within a radius of a location:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?city=Seattle&state_code=WA&radius=10' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This returns people whose **current address** is within 10 miles of Seattle, WA.
+
+## How It Works
+
+When you provide a `radius` parameter along with location information, the API:
+
+1. **Geocodes the location** - Converts your address, city, or ZIP code into geographic coordinates (latitude/longitude)
+2. **Searches by distance** - Finds people whose addresses fall within the specified radius
+3. **Returns results** - Ordered by relevance and distance
+
+<Callout type="info" title="Geocoding">
+  The API automatically geocodes your location. If geocoding fails (e.g.,
+  invalid address), the search gracefully falls back to standard address
+  matching without distance filtering.
+</Callout>
+
+## Parameters
+
+| Parameter                      | Type    | Default | Description                                   |
+| ------------------------------ | ------- | ------- | --------------------------------------------- |
+| `radius`                       | number  | —       | Search radius in miles (maximum: 100)         |
+| `street`                       | string  | —       | Street address for center point               |
+| `city`                         | string  | —       | City name for center point                    |
+| `state_code`                   | string  | —       | Two-letter state code for center point        |
+| `zipcode`                      | string  | —       | ZIP code for center point                     |
+| `include_historical_locations` | boolean | `false` | Include historical addresses in radius search |
+
+<Callout type="warning" title="Radius Limit">
+  The maximum allowed radius is **100 miles**. Requests with larger values will
+  be rejected.
+</Callout>
+
+## Examples
+
+### Search by City with Radius
+
+Find people within 5 miles of downtown Portland:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR&radius=5' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Search by ZIP Code with Radius
+
+Find people within 1 miles of a specific ZIP code:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?zipcode=98101&radius=1' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Search by Full Address with Radius
+
+Find people within 0.1 miles of a specific street address:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA&zipcode=98101&radius=0.1' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Include Historical Addresses
+
+Find people who currently live or have previously lived within 10 miles of a location:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?city=Austin&state_code=TX&radius=10&include_historical_locations=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Combine with Name Search
+
+Find a specific person within a radius:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&city=Denver&state_code=CO&radius=25' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Location Specification
+
+You can specify the center point for radius searches in several ways:
+
+### Street Address (Most Precise)
+
+Provide a full street address for the most accurate center point:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Boston&state_code=MA&radius=5' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### City and State
+
+Use city and state for a broader center point (typically the city center):
+
+```bash
+curl 'https://api.whitepages.com/v1/person?city=San%20Francisco&state_code=CA&radius=20' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### ZIP Code
+
+Use a ZIP code as the center point:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?zipcode=10001&radius=3' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="info" title="Geocoding Accuracy">
+  - **Street addresses** provide the most precise center point - **ZIP codes**
+  use the geographic center of the ZIP code area - **City/State** combinations
+  use the city center coordinates For best results, provide as much location
+  detail as possible.
+</Callout>
+
+## Response
+
+The response format is identical to standard person searches, including all address, phone, and demographic information:
+
+```json title="Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "aliases": ["Johnny Smith"],
+    "is_dead": false,
+    "current_addresses": [
+      { "id": "A9876543210", "address": "789 Pine St, Seattle, WA 98102" }
+    ],
+    "historic_addresses": [
+      { "id": "A1234567890", "address": "456 Oak Ave, Seattle, WA 98101" }
+    ],
+    "owned_properties": [
+      { "id": "R5432109876", "address": "789 Pine St, Seattle, WA 98102" }
+    ],
+    "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
+    "emails": ["john.smith@example.com"],
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+  }
+]
+```
+
+<Callout type="info" title="Distance Not Included">
+  The response does not include the calculated distance from the center point.
+  Results are ordered by relevance score, which factors in distance along with
+  other matching criteria.
+</Callout>
+
+## Error Handling
+
+### Graceful Degradation
+
+If the location cannot be geocoded (e.g., invalid address or service unavailable), the API automatically falls back to standard address matching without distance filtering:
+
+```bash
+# If geocoding fails, this behaves like a standard city/state search
+curl 'https://api.whitepages.com/v1/person?city=InvalidCity&state_code=XX&radius=10' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Radius Too Large
+
+Requests with radius values exceeding 100 miles will return a validation error:
+
+```json title="Error Response"
+{
+  "error": {
+    "code": 400,
+    "message": "Bad Request",
+    "long_message": "Request validation failed. Validation failed for field 'query -> radius'. Please check the provided data.",
+    "meta": null
+  },
+  "wp_trace_id": "10860e0010134c52833b9a3cdbdacfd3"
+}
+```
+
+## Best Practices
+
+### Choose Appropriate Radius
+
+- **Urban areas**: Use smaller radii (2-10 miles) for more targeted results
+- **Suburban areas**: Use medium radii (10-25 miles) to cover broader regions
+- **Rural areas**: Use larger radii (25-100 miles) to account for lower population density
+
+### Combine with Other Filters
+
+Radius searches work well with other parameters:
+
+```bash
+# Find people aged 30-40 within 15 miles of a location
+curl 'https://api.whitepages.com/v1/person?city=Chicago&state_code=IL&radius=15&min_age=30&max_age=40' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Performance Considerations
+
+- Larger radii return more results but will take longer to process
+- Combining radius with name or other filters improves performance
+- Consider whether you need to use radius or if other filters like city and state would be sufficient
+
+<Callout type="tip" title="Optimization">
+  For best performance, combine radius searches with additional filters like
+  name, age range, or phone number to narrow down results.
+</Callout>
