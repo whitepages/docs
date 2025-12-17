@@ -1,6 +1,11 @@
 {
   "title": "Person Search",
   "icon": "User",
-  "pages": ["partial-name-search", "filter-by-age-range", "search-by-address"],
+  "pages": [
+    "partial-name-search",
+    "filter-by-age-range",
+    "search-by-address",
+    "search-by-radius"
+  ],
   "defaultOpen": true
 }
