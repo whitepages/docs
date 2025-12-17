@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
 
 ## Styling
 
@@ -73,4 +74,5 @@ All notable changes to this project will be documented in this file.
 ## Ci
 
 - Add linting and formatting checks to deploy workflow by @KevinEdry
+- Separate status checks + deploy github workflows by @lhagenWP in #2
 
