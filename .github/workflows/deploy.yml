@@ -8,6 +8,7 @@ on:
 env:
   WRANGLER_BUILD_CONDITIONS: ""
   WRANGLER_BUILD_PLATFORM: node
+  NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ secrets.AMPLITUDE_API_KEY }}
 
 jobs:
   deploy:
@@ -39,4 +40,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
+          command: deploy -- --keep-vars
