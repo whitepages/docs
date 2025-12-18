@@ -2,6 +2,7 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import "./global.css";
 import { Roboto } from "next/font/google";
 import type { Metadata } from "next";
+import { Amplitude } from "@/lib/amplitude";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -53,6 +54,7 @@ export const metadata: Metadata = {
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={roboto.className} suppressHydrationWarning>
+      <Amplitude />
       <body className="flex flex-col min-h-screen">
         <RootProvider>{children}</RootProvider>
       </body>
