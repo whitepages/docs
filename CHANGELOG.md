@@ -36,6 +36,7 @@ All notable changes to this project will be documented in this file.
 - Improve docs site with video embed, redirects, and API schema display by @KevinEdry
 - Add robots.txt, sitemap, and validation command by @KevinEdry
 - Add llms.txt route and update gitignore by @KevinEdry
+- Add Amplitude analytics over docs to evaluate pageviews by @lhagenWP in #3
 
 ## Miscellaneous
 
@@ -56,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
