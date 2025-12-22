@@ -1,10 +1,16 @@
 ---
 title: Property Search
-description: Get ownership and resident data for any address
+description: Get ownership and resident data for any property
 icon: House
 ---
 
-The Property Search API returns ownership and resident information for a given address. Use it to identify property owners, find current residents, or verify address details.
+The Property Search API returns ownership and resident information for a given property. Use it to identify property owners, find current residents, or verify property details.
+
+<Callout type="info">
+  **V2 API Available**: We recommend using the [V2 Property
+  API](/references/property/search_property_by_address_v2) for new integrations.
+  The V2 API provides improved data structure and additional features.
+</Callout>
 
 ## Make Your First Request
 
@@ -12,10 +18,10 @@ The Property Search API returns ownership and resident information for a given a
 <Step>
 ### Send a Request
 
-Search for property details by address:
+Search for property details by address using the V2 API:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/property?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
+curl 'https://api.whitepages.com/v2/property?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -30,33 +36,92 @@ A successful request returns property details with owner and resident informatio
 
 ```json title="Response"
 {
-  "id": "PR5432109876",
-  "property_address": {
-    "id": "A9876543210",
-    "full_address": "1600 Pennsylvania Ave NW, Washington, DC"
-  },
-  "owners": [
-    {
-      "id": "P1234567890",
-      "name": "John Smith",
-      "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
-      "emails": ["john.smith@example.com"]
-    }
-  ],
-  "residents": [
-    {
-      "id": "P9876543210",
-      "name": "Jane Smith",
-      "phones": [
-        { "number": "(212) 555-0123", "type": "landline", "score": 85 }
+  "result": {
+    "property_id": "RVMKL8l80mK",
+    "apn": "0187-S000-0802",
+    "property_address": {
+      "full_address": "1600 Pennsylvania Ave NW Washington, DC 20500",
+      "line1": "1600 Pennsylvania Ave NW",
+      "city": "Washington",
+      "state": "DC",
+      "zip": "20500",
+      "house": "1600",
+      "street": "Pennsylvania",
+      "street_type": "Ave",
+      "county": "District of Columbia"
+    },
+    "mailing_address": {
+      "full_address": "1600 Pennsylvania Ave NW Washington, DC 20500",
+      "line1": "1600 Pennsylvania Ave NW",
+      "city": "Washington",
+      "state": "DC",
+      "zip": "20500",
+      "house": "1600",
+      "street": "Pennsylvania",
+      "street_type": "Ave",
+      "county": "District of Columbia"
+    },
+    "geolocation": {
+      "lat": 38.897697,
+      "lng": -77.034392
+    },
+    "ownership_info": {
+      "owner_type": "Business",
+      "business_owners": [
+        {
+          "name": "United States Of America"
+        }
       ],
-      "emails": ["jane.smith@example.com"]
-    }
-  ]
+      "person_owners": [
+        {
+          "id": "PX3vr2aM2E3",
+          "name": "Donald Duck",
+          "current_addresses": [
+            {
+              "full_address": "1600 Pennsylvania Ave NW # 666 Washington, DC 20500"
+            }
+          ],
+          "phones": [
+            {
+              "number": "12015215520",
+              "type": "Landline"
+            }
+          ],
+          "emails": [
+            {
+              "email": "sample.email@gmail.com"
+            }
+          ]
+        }
+      ]
+    },
+    "residents": [
+      {
+        "id": "PX3vr2aM2E3",
+        "name": "Donald Duck",
+        "current_addresses": [
+          {
+            "full_address": "1600 Pennsylvania Ave NW # 666 Washington, DC 20500"
+          }
+        ],
+        "phones": [
+          {
+            "number": "12015215520",
+            "type": "Landline"
+          }
+        ],
+        "emails": [
+          {
+            "email": "sample.email@gmail.com"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
-The response includes the verified address, property owners with contact details, and current residents.
+The response includes the verified property with geolocation, property owners, and current residents.
 
 </Step>
 </Steps>
@@ -65,32 +130,27 @@ The response includes the verified address, property owners with contact details
 
 | Parameter    | Required | Description           | Example                    |
 | ------------ | -------- | --------------------- | -------------------------- |
-| `street`     | Yes      | Street address        | `1600 Pennsylvania Ave NW` |
-| `city`       | No       | City name             | `Washington`               |
-| `state_code` | No       | Two-letter state code | `DC`                       |
-| `zip`        | No       | ZIP code              | `20500`                    |
+| `street`     | No\*     | Street address        | `1600 Pennsylvania Ave NW` |
+| `city`       | No\*     | City name             | `Washington`               |
+| `state_code` | No\*     | Two-letter state code | `DC`                       |
+| `zipcode`    | No\*     | ZIP code              | `20500`                    |
 
 <Callout>
-  The `street` parameter is required. Include `city` and `state_code` or `zip`
-  for more accurate results.
+  At least one parameter is required. Include multiple parameters for more
+  precise results.
 </Callout>
 
 **Example with ZIP code:**
 
 ```
-https://api.whitepages.com/v1/property?street=1600%20Pennsylvania%20Ave%20NW&zip=20500
+https://api.whitepages.com/v2/property?street=1600%20Pennsylvania%20Ave%20NW&zipcode=20500
 ```
 
-## Response Codes
+**Example by property ID:**
 
-| Status                  | Description                   | Billable |
-| ----------------------- | ----------------------------- | -------- |
-| `200 OK`                | Property found                | Yes      |
-| `400 Bad Request`       | Missing or invalid parameters | No       |
-| `403 Forbidden`         | Invalid API key               | No       |
-| `404 Not Found`         | No property found             | Yes      |
-| `429 Too Many Requests` | Rate limit exceeded           | No       |
-| `5xx`                   | Server error                  | No       |
+```
+https://api.whitepages.com/v2/property/RVMKL8l80mK
+```
 
 ## What's Next
 
