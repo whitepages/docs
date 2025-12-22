@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - Add purchasing API and LLM docs links to sidebar by @KevinEdry
 - Add purchasing API documentation by @KevinEdry
 - Add search-by-radius guide by @lhagenWP
+- Add documentation guides and reference for v2/property namespace by @lhagenWP in #4
 
 ## Features
 
@@ -57,6 +58,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
