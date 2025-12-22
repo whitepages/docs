@@ -1,4 +1,8 @@
 {
   "title": "Property",
-  "pages": ["get_property_by_address"]
+  "pages": [
+    "search_property_by_address_v2",
+    "get_property_by_id_v2",
+    "get_property_by_address"
+  ]
 }
