@@ -59,6 +59,12 @@ Each record includes identifiers, addresses, phone numbers, emails, employment i
 </Step>
 </Steps>
 
+<Callout type="info" title="Understanding Phone Scores">
+  Each phone number includes a **score** indicating **relative confidence** in
+  the record's accuracy. A Higher score means that a number is more likely to be
+  accurate than a lower score.
+</Callout>
+
 ## Request Parameters
 
 Combine any of these parameters to refine your search:
@@ -78,6 +84,13 @@ Combine any of these parameters to refine your search:
 | `max_age`                      | Maximum age filter (18-65)                                | `55`          |
 | `include_historical_locations` | Include historical addresses in search (default: `false`) | `true`        |
 
+<Callout type="warn" title="Query Parameter Behavior">
+  The API uses **AND logic**, meaning all parameters must match. For example,
+  `first_name=John` will return records named John.
+  `first_name=John&last_name=Smith` will only return those same records that
+  also have the last name Smith.
+</Callout>
+
 **Example with multiple parameters:**
 
 ```
@@ -88,12 +101,18 @@ https://api.whitepages.com/v1/person?name=John%20Smith&zipcode=10001
 
 | Status                  | Description                   | Billable |
 | ----------------------- | ----------------------------- | -------- |
-| `200 OK`                | Records found                 | Yes      |
+| `200 OK`                | Request successful            | Yes      |
 | `400 Bad Request`       | Missing or invalid parameters | No       |
 | `403 Forbidden`         | Invalid API key               | No       |
-| `404 Not Found`         | No matching records           | Yes      |
+| `404 Not Found`         | No matching record (by id)    | Yes      |
 | `429 Too Many Requests` | Rate limit exceeded           | No       |
 | `5xx`                   | Server error                  | No       |
+
+<Callout type="info">
+  **Note**: A `200 OK` status means the request was processed successfully, but
+  it doesn't guarantee results were found. Check the response body to see if any
+  records were returned.
+</Callout>
 
 ## Next Steps
 

@@ -21,7 +21,7 @@ The Property Search API returns ownership and resident information for a given p
 Search for property details by address using the V2 API:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v2/property?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
+curl 'https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -143,7 +143,7 @@ The response includes the verified property with geolocation, property owners, a
 **Example with ZIP code:**
 
 ```
-https://api.whitepages.com/v2/property?street=1600%20Pennsylvania%20Ave%20NW&zipcode=20500
+https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&zipcode=20500
 ```
 
 **Example by property ID:**
