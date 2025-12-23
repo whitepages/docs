@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Update ESLint config for Next.js 16 flat config by @KevinEdry
 - Use relative links in routes page to prevent double /docs prefix by @KevinEdry
 - Correct relative link paths in routes page by @KevinEdry
+- Update reference generation from openapi.json to be compatible for new namespaces by @lhagenWP
 
 ## Documentation
 
@@ -22,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Add purchasing API documentation by @KevinEdry
 - Add search-by-radius guide by @lhagenWP
 - Add documentation guides and reference for v2/property namespace by @lhagenWP in #4
+- Clarify api behavior sections by @lhagenWP
 
 ## Features
 
@@ -38,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - Add robots.txt, sitemap, and validation command by @KevinEdry
 - Add llms.txt route and update gitignore by @KevinEdry
 - Add Amplitude analytics over docs to evaluate pageviews by @lhagenWP in #3
+- Create DEPRECATED_TAGS variable, ingest in generation, generate by @lhagenWP in #5
 
 ## Miscellaneous
 
@@ -58,6 +61,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
