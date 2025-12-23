@@ -9,7 +9,7 @@
     "rate-limits",
     "billing",
     "...person",
-    "...property",
+    "...property-v2",
     "...account",
     "---SDK Reference---",
     "typescript-sdk",

@@ -36,10 +36,13 @@ function addRoutesToTagGroups(
         tagGroups.set(tagName, { name: tagName, description: "", routes: [] });
       }
 
+      // Convert tag name to URL-safe format: "Property V2" -> "property-v2"
+      const urlSafeTag = tagName.toLowerCase().replace(/\s+/g, "-");
+
       tagGroups.get(tagName)!.routes.push({
         title: operation.summary ?? operationId,
         description: operation.description?.split("\n")[0] ?? "",
-        href: `/docs/references/${tagName.toLowerCase()}/${slugify(operationId)}`,
+        href: `/references/${urlSafeTag}/${slugify(operationId)}`,
       });
     }
   }

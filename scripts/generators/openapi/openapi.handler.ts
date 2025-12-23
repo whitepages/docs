@@ -34,7 +34,7 @@ import { Cards, Card } from "fumadocs-ui/components/card";
 
 The Whitepages API provides comprehensive access to person and property data with enterprise-grade authentication and usage tracking.
 
-Before using the API, review the [Authentication](/docs/references/authentication), [Rate Limits](/docs/references/rate-limits), and [Billing](/docs/references/billing) documentation.
+Before using the API, review the [Authentication](/references/authentication), [Rate Limits](/references/rate-limits), and [Billing](/references/billing) documentation.
 
 ${sections}
 `;
