@@ -1,5 +1,8 @@
 import type { OpenAPISpec, TagGroup } from "./openapi.types";
 
+// Tags to exclude from automatic generation (deprecated APIs)
+const DEPRECATED_TAGS = ["Property"];
+
 export function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -7,10 +10,18 @@ export function slugify(text: string): string {
     .replace(/^_|_$/g, "");
 }
 
+export function tagToDirectoryName(tagName: string): string {
+  return tagName.toLowerCase().replace(/\s+/g, "-");
+}
+
 function createTagGroupsFromSpec(spec: OpenAPISpec): Map<string, TagGroup> {
   const tagGroups = new Map<string, TagGroup>();
 
   for (const tag of spec.tags ?? []) {
+    if (DEPRECATED_TAGS.includes(tag.name)) {
+      continue;
+    }
+
     tagGroups.set(tag.name, {
       name: tag.name,
       description: tag.description ?? "",
@@ -30,19 +41,23 @@ function addRoutesToTagGroups(
       if (method === "parameters") continue;
 
       const tagName = operation.tags?.[0] ?? "default";
+
+      if (DEPRECATED_TAGS.includes(tagName)) {
+        continue;
+      }
+
       const operationId = operation.operationId ?? `${method}_${tagName}`;
 
       if (!tagGroups.has(tagName)) {
         tagGroups.set(tagName, { name: tagName, description: "", routes: [] });
       }
 
-      // Convert tag name to URL-safe format: "Property V2" -> "property-v2"
-      const urlSafeTag = tagName.toLowerCase().replace(/\s+/g, "-");
+      const directoryName = tagToDirectoryName(tagName);
 
       tagGroups.get(tagName)!.routes.push({
         title: operation.summary ?? operationId,
         description: operation.description?.split("\n")[0] ?? "",
-        href: `/references/${urlSafeTag}/${slugify(operationId)}`,
+        href: `/references/${directoryName}/${slugify(operationId)}`,
       });
     }
   }

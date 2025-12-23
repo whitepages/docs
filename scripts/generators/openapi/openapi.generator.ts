@@ -1,7 +1,7 @@
 import { generateFiles } from "fumadocs-openapi";
 import { createOpenAPI } from "fumadocs-openapi/server";
 import type { OpenAPISpec } from "./openapi.types";
-import { extractTagGroups } from "./openapi.utils";
+import { extractTagGroups, tagToDirectoryName } from "./openapi.utils";
 import { generateRoutesPageMarkdown } from "./openapi.handler";
 
 const OPENAPI_URL = "https://api.whitepages.com/openapi.json";
@@ -40,11 +40,9 @@ async function generateMetaFiles(spec: OpenAPISpec): Promise<void> {
   const tagGroups = extractTagGroups(spec);
 
   for (const group of tagGroups) {
-    // Convert tag name to directory name: "Property V2" -> "property-v2"
-    const dirName = group.name.toLowerCase().replace(/\s+/g, "-");
-    const metaPath = `${OUTPUT_DIR}/${dirName}/meta.json`;
+    const directoryName = tagToDirectoryName(group.name);
+    const metaPath = `${OUTPUT_DIR}/${directoryName}/meta.json`;
 
-    // Extract page names from routes
     const pages = group.routes.map((route) => {
       const parts = route.href.split("/");
       return parts[parts.length - 1];
