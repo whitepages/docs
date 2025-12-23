@@ -36,10 +36,35 @@ async function generateRoutesPage(spec: OpenAPISpec): Promise<void> {
   console.log(`Generated: ${routesPath}`);
 }
 
+async function generateMetaFiles(spec: OpenAPISpec): Promise<void> {
+  const tagGroups = extractTagGroups(spec);
+
+  for (const group of tagGroups) {
+    // Convert tag name to directory name: "Property V2" -> "property-v2"
+    const dirName = group.name.toLowerCase().replace(/\s+/g, "-");
+    const metaPath = `${OUTPUT_DIR}/${dirName}/meta.json`;
+
+    // Extract page names from routes
+    const pages = group.routes.map((route) => {
+      const parts = route.href.split("/");
+      return parts[parts.length - 1];
+    });
+
+    const metaContent = {
+      title: group.name,
+      pages: pages,
+    };
+
+    await Bun.write(metaPath, JSON.stringify(metaContent, null, 2) + "\n");
+    console.log(`Generated: ${metaPath}`);
+  }
+}
+
 async function main(): Promise<void> {
   const spec = await fetchOpenAPISpec();
   await generateApiEndpointDocs();
   await generateRoutesPage(spec);
+  await generateMetaFiles(spec);
 }
 
 void main();
