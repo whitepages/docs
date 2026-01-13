@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - Use relative links in routes page to prevent double /docs prefix by @KevinEdry
 - Correct relative link paths in routes page by @KevinEdry
 - Update reference generation from openapi.json to be compatible for new namespaces by @lhagenWP
+- Correct property v2 link destination by @lhagenWP
+- Opengraph default image on link share by @lhagenWP in #6
 
 ## Documentation
 
@@ -61,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
