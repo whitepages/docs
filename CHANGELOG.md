@@ -43,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - Add llms.txt route and update gitignore by @KevinEdry
 - Add Amplitude analytics over docs to evaluate pageviews by @lhagenWP in #3
 - Create DEPRECATED_TAGS variable, ingest in generation, generate by @lhagenWP in #5
+- Add beginner-friendly first request guide by @KevinEdry in #7
 
 ## Miscellaneous
 
@@ -63,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
