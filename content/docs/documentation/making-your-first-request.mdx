@@ -1,0 +1,145 @@
+---
+title: Making Your First Request
+description: A beginner-friendly guide to making your first Whitepages API request
+icon: Play
+---
+
+Ready to test your API key? You can try it right here in your browser, or follow the step-by-step guide using Postman.
+
+## Quick Test
+
+<ApiKeyTester />
+
+## Using Postman (No Code Required)
+
+Postman is a free tool that lets you interact with APIs without writing code. Click the button below to import our pre-configured collection, or follow the manual setup steps.
+
+<a href="https://god.gw.postman.com/run-collection/38340398-c9c1d404-1b4d-4465-9201-1286f9f890fe?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D38340398-c9c1d404-1b4d-4465-9201-1286f9f890fe%26entityType%3Dcollection%26workspaceId%3Dd72854a7-b64f-444d-b8c7-12d52e990360">
+  <img
+    src="https://run.pstmn.io/button.svg"
+    alt="Run In Postman"
+    width="128"
+    height="32"
+  />
+</a>
+
+### What You'll Need
+
+- Your Whitepages API key (received via email after [signing up for a trial](/documentation/getting-trial-api-key))
+- [Postman](https://www.postman.com/downloads/) (free download)
+
+### Step-by-Step Guide
+
+<Steps>
+<Step>
+### Download and Open Postman
+
+Download Postman from [postman.com/downloads](https://www.postman.com/downloads/) and install it. Create a free account or skip sign-in to continue.
+
+</Step>
+
+<Step>
+### Create a New Request
+
+1. Click the **+** button to open a new request tab
+2. Make sure **GET** is selected in the dropdown (it's the default)
+
+</Step>
+
+<Step>
+### Enter the API URL
+
+Paste this URL into the request field:
+
+```
+https://api.whitepages.com/v1/person?name=John%20Smith&address.city=Seattle&address.state_code=WA
+```
+
+</Step>
+
+<Step>
+### Add Your API Key
+
+1. Click the **Headers** tab below the URL field
+2. In the **Key** column, enter: `X-Api-Key`
+3. In the **Value** column, paste your API key
+
+<Callout type="warn" title="Header Name is Case-Sensitive">
+  Make sure to use `X-Api-Key` exactly as shown, with capital X, A, and K.
+</Callout>
+
+</Step>
+
+<Step>
+### Send the Request
+
+Click the **Send** button. You should see a JSON response in the panel below.
+
+```json title="Example Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "current_addresses": [
+      {
+        "address": "123 Main St, Seattle, WA 98101"
+      }
+    ],
+    "phones": [
+      {
+        "number": "(206) 555-0198",
+        "type": "mobile"
+      }
+    ]
+  }
+]
+```
+
+If you see data like this, your API key is working correctly.
+
+</Step>
+</Steps>
+
+## Using cURL (Command Line)
+
+If you prefer the command line, you can use cURL:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&address.city=Seattle&address.state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Replace `YOUR_API_KEY` with your actual API key.
+
+## Troubleshooting
+
+### 403 Forbidden or "Invalid API Key"
+
+- Double-check that you copied the entire API key from your email
+- Verify the header name is exactly `X-Api-Key` (case-sensitive)
+- Make sure there are no extra spaces before or after your API key
+
+### No Results Found
+
+A 404 response with no results is normal—it means your API key is working, but no records matched your search. Try different search parameters.
+
+### Need Help?
+
+Contact [support@whitepages.com](mailto:support@whitepages.com) if you continue to have issues.
+
+## Next Steps
+
+Now that you've made your first request, explore what else you can do:
+
+<Cards>
+  <Card
+    title="Person Search"
+    href="/documentation/person-search"
+    description="Search for individuals by name, phone, or address"
+  />
+  <Card
+    title="Property Search"
+    href="/documentation/property-search"
+    description="Look up property ownership and resident data"
+  />
+</Cards>
