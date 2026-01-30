@@ -32,6 +32,18 @@ jobs:
       - name: Generate OpenAPI docs
         run: bun run generate:openapi
 
+      - name: Generate Postman collection
+        run: bun run generate:postman
+
+      - name: Push collection to Postman
+        run: |
+          curl --silent --show-error --fail \
+            --request PUT \
+            --url "https://api.getpostman.com/collections/${{ vars.POSTMAN_COLLECTION_UID }}" \
+            --header "X-Api-Key: ${{ secrets.POSTMAN_API_KEY }}" \
+            --header "Content-Type: application/json" \
+            --data "{\"collection\": $(cat ./public/postman/collection.json)}"
+
       - name: Build with OpenNext
         run: bunx opennextjs-cloudflare build
 
