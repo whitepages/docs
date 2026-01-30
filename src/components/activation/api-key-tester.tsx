@@ -71,7 +71,7 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
 
     try {
       const result = await fetch(
-        "/docs/api/test-proxy?name=John%20Smith&address.city=Seattle&address.state_code=WA",
+        "/docs/api/test-proxy?name=John%20Smith&city=Seattle&state_code=WA",
         {
           headers: {
             "X-Api-Key": apiKey.trim(),

@@ -52,7 +52,7 @@ Download Postman from [postman.com/downloads](https://www.postman.com/downloads/
 Paste this URL into the request field:
 
 ```
-https://api.whitepages.com/v1/person?name=John%20Smith&address.city=Seattle&address.state_code=WA
+https://api.whitepages.com/v1/person?name=John%20Smith&city=Seattle&state_code=WA
 ```
 
 </Step>
@@ -105,7 +105,7 @@ If you see data like this, your API key is working correctly.
 If you prefer the command line, you can use cURL:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?name=John%20Smith&address.city=Seattle&address.state_code=WA' \
+curl 'https://api.whitepages.com/v1/person?name=John%20Smith&city=Seattle&state_code=WA' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
