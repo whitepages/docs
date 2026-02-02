@@ -5,7 +5,8 @@
     "partial-name-search",
     "filter-by-age-range",
     "search-by-address",
-    "search-by-radius"
+    "search-by-radius",
+    "reverse-phone-lookup"
   ],
   "defaultOpen": true
 }

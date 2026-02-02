@@ -1,0 +1,95 @@
+---
+title: Reverse Phone Lookup
+description: Find the owner of a phone number
+---
+
+Use the `phone` parameter to perform a reverse phone lookup and identify who owns a phone number. This returns person records associated with the phone number, including their name, address, and other contact information.
+
+## Basic Usage
+
+Look up a phone number:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/person?phone=2065550198' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This returns person records associated with the phone number.
+
+## Parameters
+
+| Parameter | Type   | Description             |
+| --------- | ------ | ----------------------- |
+| `phone`   | string | Phone number to look up |
+
+## Examples
+
+### Basic Phone Lookup
+
+Find who owns a phone number:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?phone=2125550198' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Combine with Name for Verification
+
+Verify that a phone number belongs to a specific person:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?phone=2125550198&name=John%20Smith' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Combine with Location
+
+Narrow results by adding location filters:
+
+```bash
+curl 'https://api.whitepages.com/v1/person?phone=2125550198&state_code=NY' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="tip" title="Use Cases">
+  Reverse phone lookup is useful for verifying caller identity, confirming
+  contact information accuracy, and enriching customer records with additional
+  details.
+</Callout>
+
+## Response
+
+The response includes the phone owner's information along with all associated contact details:
+
+```json title="Response"
+[
+  {
+    "id": "P1234567890",
+    "name": "John Smith",
+    "aliases": ["Johnny Smith"],
+    "is_dead": false,
+    "current_addresses": [
+      { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
+    ],
+    "historic_addresses": [
+      { "id": "A1234567890", "address": "456 Oak Ave, Brooklyn, NY 11201" }
+    ],
+    "owned_properties": [],
+    "phones": [
+      { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
+      { "number": "(212) 555-0199", "type": "landline", "score": 72 }
+    ],
+    "emails": ["john.smith@example.com"],
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+  }
+]
+```
+
+<Callout type="info" title="Multiple Results">
+  In rare cases, a phone number may be associated with multiple people. When
+  this occurs, the response includes all matching records sorted by relevance.
+</Callout>
