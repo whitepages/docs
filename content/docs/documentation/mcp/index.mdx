@@ -1,0 +1,336 @@
+---
+title: MCP Server
+description: Connect to Whitepages API via Model Context Protocol for AI assistants
+icon: Plug
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+The Whitepages MCP (Model Context Protocol) server allows AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools to directly access Whitepages API functionality.
+
+## Quick Start
+
+<Steps>
+<Step>
+### Get Your API Key
+
+If you don't have an API key yet, [get a trial key](/documentation/getting-trial-api-key).
+
+</Step>
+
+<Step>
+### Configure Your AI Tool
+
+Choose your AI tool below and copy the configuration.
+
+</Step>
+</Steps>
+
+## Configuration
+
+<Tabs items={['Claude Desktop', 'Claude Code', 'Cursor', 'Cline', 'OpenCode', 'Zed', 'Postman', 'MCP Inspector']}>
+<Tab value="Claude Desktop">
+
+Claude Desktop does not support custom headers directly for remote MCP servers. Use `mcp-remote` as a bridge to handle authentication.
+
+Add this to your Claude Desktop configuration file:
+
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+**Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "whitepages": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://api.whitepages.com/mcp",
+        "--header",
+        "x-api-key: ${WHITEPAGES_API_KEY}"
+      ],
+      "env": {
+        "WHITEPAGES_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+<Callout type="info">
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+</Callout>
+
+After saving, restart Claude Desktop for the changes to take effect.
+
+</Tab>
+
+<Tab value="Claude Code">
+
+Add the MCP server using the CLI or edit your configuration file directly.
+
+**Using CLI:**
+
+```bash
+claude mcp add whitepages --scope user
+```
+
+**Or edit** `~/.claude.json` **(macOS/Linux) or** `%USERPROFILE%\.claude.json` **(Windows):**
+
+```json
+{
+  "mcpServers": {
+    "whitepages": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://api.whitepages.com/mcp",
+        "--header",
+        "x-api-key: ${WHITEPAGES_API_KEY}"
+      ],
+      "env": {
+        "WHITEPAGES_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+<Callout type="info">
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+</Callout>
+
+Restart Claude Code after updating the configuration.
+
+</Tab>
+
+<Tab value="Cursor">
+
+Add this to your Cursor MCP settings file:
+
+**macOS/Linux**: `~/.cursor/mcp.json`
+
+**Windows**: `%USERPROFILE%\.cursor\mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "whitepages": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://api.whitepages.com/mcp",
+        "--header",
+        "x-api-key: ${WHITEPAGES_API_KEY}"
+      ],
+      "env": {
+        "WHITEPAGES_API_KEY": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+Restart Cursor after updating the configuration.
+
+</Tab>
+
+<Tab value="Cline">
+
+Cline supports custom headers directly for remote MCP servers.
+
+In VS Code with Cline extension:
+
+1. Click the MCP Servers icon in the Cline panel
+2. Select the Configure tab
+3. Click "Edit MCP Settings" to open `cline_mcp_settings.json`
+4. Add this configuration:
+
+```json
+{
+  "mcpServers": {
+    "whitepages": {
+      "url": "https://api.whitepages.com/mcp",
+      "headers": {
+        "x-api-key": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab value="OpenCode">
+
+OpenCode supports custom headers directly for remote MCP servers.
+
+Add this to your `opencode.json` configuration:
+
+```json
+{
+  "mcp": {
+    "whitepages": {
+      "type": "remote",
+      "url": "https://api.whitepages.com/mcp",
+      "headers": {
+        "x-api-key": "YOUR_API_KEY_HERE"
+      },
+      "enabled": true
+    }
+  }
+}
+```
+
+</Tab>
+
+<Tab value="Zed">
+
+Zed currently focuses on stdio-based MCP servers. Use `mcp-remote` to connect to remote servers.
+
+Add this to your Zed settings (`~/.config/zed/settings.json` or via Zed → Settings):
+
+```json
+{
+  "context_servers": {
+    "whitepages": {
+      "command": {
+        "path": "npx",
+        "args": [
+          "mcp-remote",
+          "https://api.whitepages.com/mcp",
+          "--header",
+          "x-api-key: YOUR_API_KEY_HERE"
+        ]
+      }
+    }
+  }
+}
+```
+
+<Callout type="warn">
+  Zed's remote MCP support is still evolving. Check the [Zed MCP
+  documentation](https://zed.dev/docs/ai/mcp) for the latest configuration
+  format.
+</Callout>
+
+</Tab>
+
+<Tab value="Postman">
+
+While Postman doesn't directly support MCP, you can test the underlying API:
+
+1. Create a new request
+2. Set method to `POST`
+3. Set URL to `https://api.whitepages.com/mcp`
+4. Add headers:
+   - `Content-Type`: `application/json`
+   - `Accept`: `text/event-stream`
+   - `x-api-key`: `YOUR_API_KEY_HERE`
+5. Set body (raw JSON):
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "postman-test",
+      "version": "1.0.0"
+    }
+  }
+}
+```
+
+<Callout type="warn">
+  Note: Postman may have limitations with Server-Sent Events (SSE) responses.
+  For full MCP testing, use the MCP Inspector instead.
+</Callout>
+
+</Tab>
+
+<Tab value="MCP Inspector">
+
+The [MCP Inspector](https://github.com/modelcontextprotocol/inspector) is the official tool for testing MCP servers:
+
+1. Install and run:
+
+```bash
+npx @modelcontextprotocol/inspector https://api.whitepages.com/mcp
+```
+
+2. In the Inspector UI:
+   - Transport Type: **SSE**
+   - URL: `https://api.whitepages.com/mcp`
+   - Click **Authentication** button
+   - Add header: `x-api-key` = `YOUR_API_KEY_HERE`
+   - Click **Connect**
+
+3. Once connected, you can explore available tools and test them interactively.
+
+</Tab>
+</Tabs>
+
+## Authentication
+
+All requests to the Whitepages MCP server require authentication via the `x-api-key` header:
+
+```
+x-api-key: YOUR_API_KEY_HERE
+```
+
+If you don't have an API key:
+
+- [Get a trial key](/documentation/getting-trial-api-key) for testing
+- [Purchase a plan](/documentation/purchasing-api) for production use
+
+## Available Tools
+
+Each API endpoint is accessible through the MCP server as a tool. The available tools and their parameters will be shown in your AI assistant after connecting.
+
+## Usage in AI Assistants
+
+After configuring the MCP server, you can ask your AI assistant to use Whitepages data:
+
+**Example prompts:**
+
+- "Find contact information for John Smith in Seattle"
+- "Look up who owns the phone number 206-555-0100"
+- "Get details about the property at 123 Main St, Seattle, WA"
+
+Your AI assistant will automatically use the appropriate Whitepages MCP tools to fulfill these requests.
+
+## Billing
+
+MCP requests are billed identically to direct API calls. Each tool invocation through the MCP server consumes credits from your subscription plan at the same rate as if you called the REST API directly.
+
+For example:
+
+- A person search via MCP = same cost as a person search via REST API
+- A reverse phone lookup via MCP = same cost as a reverse phone lookup via REST API
+
+See [Billing](/references/billing) for detailed pricing information.
+
+## Troubleshooting
+
+<Callout type="error">
+  **Connection Failed**: Verify your API key is correct and has active credits.
+</Callout>
+
+<Callout type="warn">
+  **Rate Limits**: MCP requests count against your [API rate
+  limits](/references/rate-limits). Monitor your usage in the dashboard.
+</Callout>
+
+If you encounter issues:
+
+1. Check that your API key is valid and has credits
+2. Verify the server URL is correct: `https://api.whitepages.com/mcp`
+3. Ensure the `x-api-key` header is properly configured
+4. Restart your AI tool after configuration changes
