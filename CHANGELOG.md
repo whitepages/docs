@@ -27,6 +27,8 @@ All notable changes to this project will be documented in this file.
 - Add search-by-radius guide by @lhagenWP
 - Add documentation guides and reference for v2/property namespace by @lhagenWP in #4
 - Clarify api behavior sections by @lhagenWP
+- Add reverse phone lookup guide by @KevinEdry in #9
+- Add MCP server integration guide by @KevinEdry in #10
 
 ## Features
 
@@ -65,6 +67,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
