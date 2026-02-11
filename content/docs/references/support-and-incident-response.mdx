@@ -1,0 +1,112 @@
+---
+title: Support & Incident Response
+description: Learn about our support channels, incident response times, breaking change policies, and how we communicate critical updates.
+icon: Shield
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+We are committed to keeping the Whitepages API reliable and transparent. This page covers how to get help, what to expect during incidents, and how we handle changes to the API.
+
+## Support Channels
+
+For any questions, issues, or feature requests, reach out through the following channels:
+
+| Channel | Contact                | Use For                                                                    |
+| ------- | ---------------------- | -------------------------------------------------------------------------- |
+| Email   | support@whitepages.com | General inquiries, account issues, billing questions, API integration help |
+
+<Callout type="info">
+  For urgent production issues, email support@whitepages.com with the subject
+  line prefixed by **[URGENT]** to ensure priority routing.
+</Callout>
+
+## Incident Response Times
+
+We classify incidents by severity. The following are our typical response and resolution times based on current operational metrics. These are not formal SLAs.
+
+Incidents are typically detected and responded to within **30 seconds**, with resolution within **15-30 minutes** depending on the nature of the issue.
+
+<Callout type="info">
+  Our automated monitoring systems detect incidents within seconds, enabling
+  rapid response across all severity levels.
+</Callout>
+
+### During an Incident
+
+When an incident occurs, we follow this process:
+
+1. **Detection** — Our automated monitoring systems detect anomalies and trigger alerts within seconds
+2. **Acknowledgment** — The engineering team is immediately engaged
+3. **Investigation** — The team identifies root cause and works toward resolution
+4. **Resolution** — The issue is resolved and services are verified as operational
+5. **Post-mortem** — For Critical and High severity incidents, an internal post-mortem is conducted to prevent recurrence
+
+## Getting Help During an Outage
+
+If you suspect an outage or are experiencing unexpected errors:
+
+1. Email support@whitepages.com with:
+   - Your API key identifier (first 8 characters only, never send the full key)
+   - The endpoint(s) affected
+   - Error responses you are receiving
+   - Approximate time the issue started
+
+## Breaking Changes Policy
+
+We avoid breaking changes at nearly all cost. Backward compatibility is a top priority, and our goal is to minimize disruption to your integrations.
+
+### What We Consider a Breaking Change
+
+- Removing or renaming an existing API endpoint
+- Removing or renaming a field from a response body
+- Changing the type of an existing response field
+- Adding a new required parameter to a request
+- Changing authentication or authorization behavior
+- Modifying error response formats
+
+### What Is Not a Breaking Change
+
+- Adding new optional request parameters
+- Adding new fields to a response body
+- Adding new API endpoints
+- Adding new values to an existing enum field
+- Improvements to error messages (text changes only, not format)
+
+<Callout type="info">
+  We recommend that your integration ignores unknown fields in API responses.
+  This allows us to add new fields without affecting your application.
+</Callout>
+
+### Our Commitment
+
+- **Breaking changes are always introduced in a new API version.** Your existing integration continues to work on the current version.
+- **No unannounced breaking changes.** Every breaking change is communicated in advance.
+- **Minimum 30-day notice** before any breaking change takes effect.
+- **Migration guides** are provided for every breaking change with clear before-and-after examples.
+- **Deprecation notices** are communicated via email and changelog for endpoints scheduled for removal.
+- **Version support** — When a new API version introduces breaking changes, the previous version continues to be supported for at least 3 months.
+
+## Change Notifications
+
+We notify you about critical changes through multiple channels to ensure you never miss an important update.
+
+### Notification Types
+
+| Type                      | Channel          | Lead Time           |
+| ------------------------- | ---------------- | ------------------- |
+| **Breaking changes**      | Email, changelog | 30 days minimum     |
+| **Deprecation notices**   | Email, changelog | 30 days minimum     |
+| **New features**          | Email, changelog | At release          |
+| **Scheduled maintenance** | Email            | 7 days minimum      |
+| **Emergency maintenance** | Email            | As soon as possible |
+
+### Staying Informed
+
+- **Changelog** — All API changes are documented in our [changelog](/docs/changelog) with detailed descriptions
+- **Email notifications** — Sent to the email address associated with your API account. Ensure your contact information is up to date.
+
+<Callout type="warn">
+  Make sure your account email is current. Critical notifications about breaking
+  changes and security updates are sent exclusively to your registered email.
+</Callout>
