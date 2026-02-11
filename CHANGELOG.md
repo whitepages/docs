@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - Clarify api behavior sections by @lhagenWP
 - Add reverse phone lookup guide by @KevinEdry in #9
 - Add MCP server integration guide by @KevinEdry in #10
+- Add support and incident response reference page by @KevinEdry in #11
 
 ## Features
 
@@ -67,6 +68,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
