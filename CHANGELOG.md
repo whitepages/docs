@@ -50,6 +50,7 @@ All notable changes to this project will be documented in this file.
 - Add beginner-friendly first request guide by @KevinEdry in #7
 - Add webhooks announcement banner by @KevinEdry in #12
 - Add webhook guides and API reference pages by @KevinEdry in #13
+- Add events API reference and guide pages by @KevinEdry in #14
 
 ## Miscellaneous
 
@@ -70,6 +71,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
