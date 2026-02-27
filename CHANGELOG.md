@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - Correct property v2 link destination by @lhagenWP
 - Opengraph default image on link share by @lhagenWP in #6
 - Correct API query parameters for person search by @KevinEdry in #8
+- Align event and webhook guides with OpenAPI spec by @KevinEdry in #16
 
 ## Documentation
 
@@ -72,6 +73,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
