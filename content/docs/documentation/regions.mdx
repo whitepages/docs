@@ -1,0 +1,35 @@
+---
+title: Regions
+description: Browse and search US states and counties available in the Whitepages API
+icon: Map
+---
+
+The Regions API provides access to the full list of US states and their associated counties. This data is used across the Whitepages platform for geographic filtering, webhook subscriptions, and event coverage lookups.
+
+Use the interactive browser below to explore available regions, or jump to the API reference for programmatic access.
+
+## Browse Regions
+
+<RegionSearch />
+
+## API Reference
+
+| Endpoint                                           | Description                            |
+| -------------------------------------------------- | -------------------------------------- |
+| [List States](/references/regions/list_states)     | Retrieve all US states and territories |
+| [List Counties](/references/regions/list_counties) | Retrieve counties for a given state    |
+
+## Next Steps
+
+<Cards>
+  <Card
+    title="Webhooks"
+    description="Subscribe to property deed events filtered by region."
+    href="/documentation/webhooks"
+  />
+  <Card
+    title="Events"
+    description="Retrieve property deed events from specific regions."
+    href="/documentation/events"
+  />
+</Cards>

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^2.32.2",
+    "@modelcontextprotocol/sdk": "^1.25.3",
     "@opennextjs/cloudflare": "^1.14.4",
     "@radix-ui/react-collapsible": "^1.1.12",
     "@radix-ui/react-popover": "^1.1.15",
@@ -30,6 +31,7 @@
     "fumadocs-mdx": "14.1.0",
     "fumadocs-openapi": "^10.1.1",
     "fumadocs-ui": "16.2.3",
+    "fuse.js": "^7.1.0",
     "lucide-react": "^0.552.0",
     "next": "16.0.7",
     "next-themes": "^0.4.6",
