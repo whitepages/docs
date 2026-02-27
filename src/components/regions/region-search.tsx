@@ -3,7 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Fuse, { type IFuseOptions } from "fuse.js";
 import { Loader2 } from "lucide-react";
-import type { BreadcrumbEntry, RegionEntry } from "./types";
+import {
+  BrowseLevel,
+  RegionLevel,
+  type BreadcrumbEntry,
+  type RegionEntry,
+} from "./types";
 import { SearchInput } from "./search-input";
 import { BreadcrumbNavigation } from "./breadcrumb-navigation";
 import { RegionRow } from "./region-row";
@@ -13,7 +18,10 @@ const FUSE_OPTIONS: IFuseOptions<RegionEntry> = {
   threshold: 0.3,
 };
 
-const ROOT_BREADCRUMB: BreadcrumbEntry = { label: "States", level: "states" };
+const ROOT_BREADCRUMB: BreadcrumbEntry = {
+  label: "States",
+  level: BrowseLevel.States,
+};
 
 export function RegionSearch() {
   const [regions, setRegions] = useState<RegionEntry[]>([]);
@@ -55,7 +63,7 @@ export function RegionSearch() {
   }, [search]);
 
   const states = useMemo(
-    () => regions.filter((region) => region.level === "state"),
+    () => regions.filter((region) => region.level === RegionLevel.State),
     [regions],
   );
 
@@ -69,17 +77,17 @@ export function RegionSearch() {
     const results = fuse.search(query, { limit: 50 }).map((r) => r.item);
     results.sort((a, b) => {
       if (a.level === b.level) return 0;
-      return a.level === "state" ? -1 : 1;
+      return a.level === RegionLevel.State ? -1 : 1;
     });
     return results;
   }, [isSearching, fuse, query]);
 
   const browseItems = useMemo(() => {
     if (isSearching) return [];
-    if (currentBreadcrumb.level === "states") return states;
+    if (currentBreadcrumb.level === BrowseLevel.States) return states;
     return regions.filter(
       (region) =>
-        region.level === "county" &&
+        region.level === RegionLevel.County &&
         region.stateCode === currentBreadcrumb.stateCode,
     );
   }, [isSearching, currentBreadcrumb, states, regions]);
@@ -95,7 +103,7 @@ export function RegionSearch() {
       ...previous,
       {
         label: item.name,
-        level: "counties",
+        level: BrowseLevel.Counties,
         stateCode: item.state_code,
       },
     ]);
@@ -107,7 +115,7 @@ export function RegionSearch() {
     clearSearch();
     setBreadcrumbs([
       ROOT_BREADCRUMB,
-      { label: state.name, level: "counties", stateCode },
+      { label: state.name, level: BrowseLevel.Counties, stateCode },
     ]);
   }
 
@@ -116,7 +124,7 @@ export function RegionSearch() {
     setBreadcrumbs((previous) => previous.slice(0, index + 1));
   }
 
-  const canDrillDown = currentBreadcrumb.level === "states";
+  const canDrillDown = currentBreadcrumb.level === BrowseLevel.States;
 
   if (loading) {
     return (
@@ -163,12 +171,12 @@ export function RegionSearch() {
               <RegionRow
                 key={item.slug}
                 region={item}
-                showParent={isSearching && item.level === "county"}
+                showParent={isSearching && item.level === RegionLevel.County}
                 showChevron={isSearching || canDrillDown}
                 onClick={
                   isSearching
                     ? () =>
-                        item.level === "state"
+                        item.level === RegionLevel.State
                           ? drillDown(item)
                           : item.stateCode
                             ? navigateToState(item.stateCode)

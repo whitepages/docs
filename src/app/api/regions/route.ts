@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 const BASE_URL = "https://api.whitepages.com/v1/regions";
 
+enum RegionLevel {
+  State = "state",
+  County = "county",
+}
+
 interface Region {
   name: string;
   slug: string;
@@ -14,7 +19,7 @@ interface RegionEntry {
   slug: string;
   state_code?: string;
   fips_code?: string;
-  level: "state" | "county";
+  level: RegionLevel;
   stateName?: string;
   stateCode?: string;
 }
@@ -25,16 +30,21 @@ async function fetchAllRegions(): Promise<RegionEntry[]> {
   const statesData = await statesResponse.json();
   const states: Region[] = statesData.results ?? statesData;
 
-  const stateEntries: RegionEntry[] = states.map((state) => ({
+  const statesWithCodes = states.filter(
+    (state): state is Region & { state_code: string } =>
+      typeof state.state_code === "string",
+  );
+
+  const stateEntries: RegionEntry[] = statesWithCodes.map((state) => ({
     ...state,
-    level: "state",
+    level: RegionLevel.State,
   }));
 
   const countyBatches = await Promise.all(
-    states.map(async (state) => {
+    statesWithCodes.map(async (state) => {
       try {
         const response = await fetch(
-          `${BASE_URL}/states/${encodeURIComponent(state.state_code!)}/counties`,
+          `${BASE_URL}/states/${encodeURIComponent(state.state_code)}/counties`,
         );
         if (!response.ok) return [];
         const data = await response.json();
@@ -42,7 +52,7 @@ async function fetchAllRegions(): Promise<RegionEntry[]> {
         return counties.map(
           (county): RegionEntry => ({
             ...county,
-            level: "county",
+            level: RegionLevel.County,
             stateName: state.name,
             stateCode: state.state_code,
           }),
