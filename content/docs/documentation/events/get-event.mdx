@@ -3,7 +3,7 @@ title: Get an Event
 description: Retrieve a specific property deed event by its unique identifier
 ---
 
-Use the `GET /v1/events/{event_id}` endpoint to retrieve a single event by its ID. This is useful for fetching the full details of an event referenced in a webhook delivery or for looking up a specific transaction.
+Use the `GET /v1/events/{event_id}` endpoint to retrieve a single event by its ID. Webhook deliveries include a link to this endpoint so you can fetch the full event details after receiving a notification.
 
 <Callout type="warn" title="Invite-Only Access">
   The Events API is currently available by invite only. To request access,
@@ -29,63 +29,80 @@ curl 'https://api.whitepages.com/v1/events/evt_abc123' \
 
 ## Response
 
-The response returns the full event object:
+The response returns the full event object wrapped in a `result` envelope:
 
 ```json title="Response"
 {
-  "id": "evt_abc123",
-  "object": "event",
-  "event_type": "deed.transfer",
-  "event_date": "2026-02-27T00:00:00Z",
-  "created_at": "2026-02-27T12:00:00Z",
-  "jurisdiction": {
-    "county": "King",
-    "state": "WA",
-    "fips_code": "53033"
-  },
-  "property": {
-    "id": "prop_123",
-    "address": {
-      "line1": "123 Main St",
-      "city": "Seattle",
-      "state": "WA",
-      "zip": "98101",
-      "county": "King"
-    },
-    "apn": "123456-7890",
-    "location": {
-      "latitude": 47.6062,
-      "longitude": -122.3321
+  "result": {
+    "id": "evt_abc123",
+    "object": "event",
+    "event_type": "deed.transfer",
+    "data": {
+      "jurisdiction": {
+        "county": "King",
+        "state": "WA",
+        "fips_code": "53033"
+      },
+      "property": {
+        "property_id": "prop_123",
+        "property_address": {
+          "line1": "123 Main St",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101",
+          "county": "King"
+        },
+        "apn": "123456-7890",
+        "parcel_id": "P-7890",
+        "geolocation": {
+          "lat": 47.6062,
+          "lng": -122.3321
+        },
+        "legal_description": null,
+        "bedrooms": 3,
+        "bathrooms": 2.5,
+        "living_sqft": 1850,
+        "lot_sqft": 5000,
+        "property_purpose": "single_family"
+      },
+      "parties": [
+        {
+          "role": "grantor",
+          "name": "Jane Doe",
+          "type": "individual",
+          "person_id": "per_456",
+          "addresses": [{ "full_address": "123 Main St, Seattle, WA 98101" }]
+        },
+        {
+          "role": "grantee",
+          "name": "John Smith",
+          "type": "individual",
+          "person_id": null,
+          "addresses": []
+        }
+      ],
+      "detail": {
+        "document_type": {
+          "category": "deed",
+          "text": "Warranty Deed"
+        },
+        "recorded_date": "2026-02-27",
+        "instrument_date": "2026-02-25",
+        "consideration": 750000,
+        "transaction_reason": {
+          "category": "sale",
+          "text": "Arms-length sale"
+        }
+      }
     }
-  },
-  "parties": [
-    {
-      "role": "grantor",
-      "name": "Jane Doe",
-      "type": "individual"
-    },
-    {
-      "role": "grantee",
-      "name": "John Smith",
-      "type": "individual"
-    }
-  ],
-  "detail": {
-    "document_number": "20260227001234",
-    "recorded_date": "2026-02-27",
-    "consideration": 750000,
-    "transfer_reason": "sale"
-  },
-  "source": {
-    "name": "king_county_recorder"
   }
 }
 ```
 
 <Callout type="tip" title="Webhook Integration">
-  When your webhook endpoint receives an event delivery, the payload includes
-  the full event object. Use this endpoint to re-fetch an event if you need to
-  reprocess it or verify its contents.
+  Webhook notifications include a `links` array with the URL to this endpoint.
+  After receiving a notification, call the linked URL to retrieve the full event
+  details.
 </Callout>
 
 For full request and response schemas, see the [Retrieve a single event by ID](/references/events/get_event) API reference.

@@ -16,7 +16,7 @@ curl -X POST 'https://api.whitepages.com/v1/webhooks/wh_abc123/test' \
   --data '{}'
 ```
 
-This sends a mock payload using the webhook's subscribed event type.
+This sends a mock notification using the webhook's subscribed event type.
 
 ## Parameters
 
@@ -36,61 +36,50 @@ The response tells you whether your endpoint received the delivery successfully:
     "response_time_ms": 150,
     "timestamp": "2026-02-27T12:00:00Z"
   },
-  "mock_payload": {
-    "id": "evt_mock_abc123",
-    "object": "event",
+  "payload": {
+    "event_id": "evt_mock_abc123",
     "event_type": "deed.transfer",
-    "event_date": "2026-02-27T00:00:00Z",
-    "created_at": "2026-02-27T12:00:00Z",
-    "test": true,
-    "jurisdiction": {
-      "county": "King",
-      "state": "WA",
-      "fips_code": "53033"
-    },
-    "property": {
-      "id": "prop_mock_123",
-      "address": {
-        "line1": "123 Main St",
-        "city": "Seattle",
-        "state": "WA",
-        "zip": "98101",
-        "county": "King"
-      },
-      "apn": "123456-7890",
-      "location": {
-        "latitude": 47.6062,
-        "longitude": -122.3321
-      }
-    },
-    "parties": [
+    "links": [
       {
-        "role": "grantor",
-        "name": "Jane Doe",
-        "type": "individual"
-      },
-      {
-        "role": "grantee",
-        "name": "John Smith",
-        "type": "individual"
+        "version": "1",
+        "url": "https://api.whitepages.com/v1/events/evt_mock_abc123"
       }
-    ],
-    "detail": {
-      "document_number": "20260227001234",
-      "recorded_date": "2026-02-27",
-      "consideration": 750000,
-      "transfer_reason": "sale"
-    },
-    "source": {
-      "name": "king_county_recorder"
-    }
+    ]
   }
 }
 ```
 
-<Callout type="info" title="Test Payloads">
-  Test deliveries always have `"test": true` in the payload. Use this field to
-  distinguish test events from real ones in your application.
+The `payload` field shows what was sent to your endpoint. This is a lightweight notification containing the event type and a link to retrieve the full event details using the [Events API](/documentation/events/get-event).
+
+## What Your Endpoint Receives
+
+Your webhook URL receives a POST request with the following payload:
+
+```json title="Webhook delivery payload"
+{
+  "event_id": "evt_mock_abc123",
+  "event_type": "deed.transfer",
+  "links": [
+    {
+      "version": "1",
+      "url": "https://api.whitepages.com/v1/events/evt_mock_abc123"
+    }
+  ]
+}
+```
+
+| Field        | Type   | Description                                                                                                |
+| ------------ | ------ | ---------------------------------------------------------------------------------------------------------- |
+| `event_id`   | string | Unique identifier for the event                                                                            |
+| `event_type` | string | The type of event (see [Event Types](/documentation/events/event-types))                                   |
+| `links`      | array  | One or more links to retrieve the full event details via the [Events API](/documentation/events/get-event) |
+
+Each entry in `links` contains a `version` string and a `url` pointing to the full event resource.
+
+<Callout type="info" title="Test Events">
+  The event linked in a test delivery is a mock event. Use it to verify your
+  endpoint receives and parses the notification correctly, but note that the
+  linked event data is synthetic.
 </Callout>
 
 ## Diagnosing Failures

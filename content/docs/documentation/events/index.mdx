@@ -5,7 +5,7 @@ description: Retrieve and understand property deed events from the Whitepages AP
 
 Events represent property deed activities — transfers, recordings, and other deed transactions — captured from county recorder offices across the United States. Each event contains structured data about the property, the parties involved, and the transaction details.
 
-Events are the core data delivered by [webhook subscriptions](/documentation/webhooks). You can also retrieve individual events directly using the Events API.
+When a deed event occurs, [webhook subscriptions](/documentation/webhooks) deliver a lightweight notification containing the event type and a link to fetch the full details. Use the Events API to retrieve the complete event data.
 
 <Callout type="warn" title="Invite-Only Access">
   The Events API is currently available by invite only. To request access,

@@ -3,28 +3,60 @@ title: Event Payload
 description: Explore the full structure of an event object
 ---
 
-Every event follows a consistent JSON structure containing metadata, jurisdiction information, property details, party information, and transaction details.
+When you retrieve an event using the [Events API](/documentation/events/get-event), the response is wrapped in a `result` envelope containing the full event object described below.
+
+<Callout type="info" title="Webhook Notifications">
+  Webhook deliveries do **not** include the full event payload. Instead, your
+  endpoint receives a lightweight notification with the event type and a link to
+  fetch the complete details:
+
+```json
+{
+  "event_id": "evt_abc123",
+  "event_type": "deed.transfer",
+  "links": [
+    {
+      "version": "1",
+      "url": "https://api.whitepages.com/v1/events/evt_abc123"
+    }
+  ]
+}
+```
+
+Use the `url` in the `links` array to call the Events API and retrieve the
+full event object shown below.
+
+</Callout>
 
 ## Top-Level Fields
 
-| Field        | Type    | Description                                                                   |
-| ------------ | ------- | ----------------------------------------------------------------------------- |
-| `id`         | string  | Unique event identifier (e.g., `evt_abc123`)                                  |
-| `object`     | string  | Always `"event"`                                                              |
-| `event_type` | string  | The type of deed event (see [Event Types](/documentation/events/event-types)) |
-| `event_date` | string  | ISO 8601 timestamp of when the event occurred                                 |
-| `created_at` | string  | ISO 8601 timestamp of when the event was ingested                             |
-| `test`       | boolean | Present and `true` only for test webhook deliveries                           |
+| Field        | Type   | Description                                                                   |
+| ------------ | ------ | ----------------------------------------------------------------------------- |
+| `id`         | string | Unique event identifier (UUID)                                                |
+| `object`     | string | Always `"event"`                                                              |
+| `event_type` | string | The type of deed event (see [Event Types](/documentation/events/event-types)) |
+| `data`       | object | Type-specific event data (see sections below)                                 |
+
+## Data
+
+The `data` object contains all event-specific information: jurisdiction, property, parties, and deed detail.
+
+| Field          | Type   | Required | Description                                         |
+| -------------- | ------ | -------- | --------------------------------------------------- |
+| `jurisdiction` | object | Yes      | Geographic jurisdiction where the deed was recorded |
+| `property`     | object | No       | Property involved in the event                      |
+| `parties`      | array  | Yes      | Individuals or entities involved                    |
+| `detail`       | object | No       | Deed-specific transaction detail                    |
 
 ## Jurisdiction
 
 The `jurisdiction` object identifies the county and state where the deed was recorded.
 
-| Field       | Type   | Description                                   |
-| ----------- | ------ | --------------------------------------------- |
-| `county`    | string | County name                                   |
-| `state`     | string | Two-letter state abbreviation                 |
-| `fips_code` | string | Federal Information Processing Standards code |
+| Field       | Type   | Required | Description                                   |
+| ----------- | ------ | -------- | --------------------------------------------- |
+| `county`    | string | No       | County name                                   |
+| `state`     | string | Yes      | Two-letter state abbreviation                 |
+| `fips_code` | string | No       | Federal Information Processing Standards code |
 
 ```json title="Example"
 {
@@ -38,14 +70,21 @@ The `jurisdiction` object identifies the county and state where the deed was rec
 
 ## Property
 
-The `property` object contains details about the property involved in the deed event.
+The `property` object contains details about the property involved in the deed event. All fields are nullable.
 
-| Field      | Type   | Description                                 |
-| ---------- | ------ | ------------------------------------------- |
-| `id`       | string | Whitepages property identifier              |
-| `address`  | object | Structured address of the property          |
-| `apn`      | string | Assessor's Parcel Number                    |
-| `location` | object | Geographic coordinates (latitude/longitude) |
+| Field               | Type    | Description                        |
+| ------------------- | ------- | ---------------------------------- |
+| `property_id`       | string  | Whitepages property identifier     |
+| `property_address`  | object  | Structured address of the property |
+| `apn`               | string  | Assessor's Parcel Number           |
+| `parcel_id`         | string  | Parcel identifier                  |
+| `geolocation`       | object  | Geographic coordinates             |
+| `legal_description` | object  | Legal description of the property  |
+| `bedrooms`          | integer | Number of bedrooms                 |
+| `bathrooms`         | number  | Number of bathrooms                |
+| `living_sqft`       | integer | Living area in square feet         |
+| `lot_sqft`          | integer | Lot size in square feet            |
+| `property_purpose`  | string  | Property type                      |
 
 ### Address Fields
 
@@ -57,11 +96,24 @@ The `property` object contains details about the property involved in the deed e
 | `zip`    | string | ZIP code              |
 | `county` | string | County name           |
 
+### Geolocation Fields
+
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| `lat` | number | Latitude    |
+| `lng` | number | Longitude   |
+
+### Legal Description Fields
+
+| Field  | Type   | Description                        |
+| ------ | ------ | ---------------------------------- |
+| `text` | string | Full legal description as raw text |
+
 ```json title="Example"
 {
   "property": {
-    "id": "prop_123",
-    "address": {
+    "property_id": "prop_123",
+    "property_address": {
       "line1": "123 Main St",
       "city": "Seattle",
       "state": "WA",
@@ -69,10 +121,19 @@ The `property` object contains details about the property involved in the deed e
       "county": "King"
     },
     "apn": "123456-7890",
-    "location": {
-      "latitude": 47.6062,
-      "longitude": -122.3321
-    }
+    "parcel_id": "P-7890",
+    "geolocation": {
+      "lat": 47.6062,
+      "lng": -122.3321
+    },
+    "legal_description": {
+      "text": "LOT 1 BLK 2 SEATTLE LAND CO ADD"
+    },
+    "bedrooms": 3,
+    "bathrooms": 2.5,
+    "living_sqft": 1850,
+    "lot_sqft": 5000,
+    "property_purpose": "single_family"
   }
 }
 ```
@@ -81,11 +142,19 @@ The `property` object contains details about the property involved in the deed e
 
 The `parties` array lists individuals or entities involved in the deed transaction.
 
-| Field  | Type   | Description                                           |
-| ------ | ------ | ----------------------------------------------------- |
-| `role` | string | Party's role: `grantor` (seller) or `grantee` (buyer) |
-| `name` | string | Full name of the individual or entity                 |
-| `type` | string | `individual` or `entity`                              |
+| Field       | Type   | Required | Description                                           |
+| ----------- | ------ | -------- | ----------------------------------------------------- |
+| `role`      | string | Yes      | Party's role: `grantor` (seller) or `grantee` (buyer) |
+| `name`      | string | No       | Full name of the individual or entity                 |
+| `type`      | string | No       | `individual` or `entity`                              |
+| `person_id` | string | No       | Whitepages person ID, if resolved                     |
+| `addresses` | array  | No       | Associated addresses                                  |
+
+### Party Address Fields
+
+| Field          | Type   | Required | Description            |
+| -------------- | ------ | -------- | ---------------------- |
+| `full_address` | string | Yes      | Formatted full address |
 
 ```json title="Example"
 {
@@ -93,12 +162,16 @@ The `parties` array lists individuals or entities involved in the deed transacti
     {
       "role": "grantor",
       "name": "Jane Doe",
-      "type": "individual"
+      "type": "individual",
+      "person_id": "per_456",
+      "addresses": [{ "full_address": "123 Main St, Seattle, WA 98101" }]
     },
     {
       "role": "grantee",
       "name": "Acme Properties LLC",
-      "type": "entity"
+      "type": "entity",
+      "person_id": null,
+      "addresses": []
     }
   ]
 }
@@ -108,81 +181,114 @@ The `parties` array lists individuals or entities involved in the deed transacti
 
 The `detail` object contains transaction-specific information from the deed record.
 
-| Field             | Type   | Description                                    |
-| ----------------- | ------ | ---------------------------------------------- |
-| `document_number` | string | Official document number from the recorder     |
-| `recorded_date`   | string | Date the deed was recorded (YYYY-MM-DD format) |
-| `consideration`   | number | Transaction amount in USD                      |
-| `transfer_reason` | string | Reason for transfer (e.g., `sale`, `gift`)     |
+| Field                | Type   | Description                           |
+| -------------------- | ------ | ------------------------------------- |
+| `document_type`      | object | Document classification               |
+| `recorded_date`      | string | Date the deed was recorded (ISO 8601) |
+| `instrument_date`    | string | Date the deed was executed (ISO 8601) |
+| `consideration`      | number | Transaction amount in USD             |
+| `transaction_reason` | object | Transaction classification            |
+
+### Document Type Fields
+
+| Field      | Type   | Description          |
+| ---------- | ------ | -------------------- |
+| `category` | string | Normalized category  |
+| `text`     | string | Human-readable label |
+
+### Transaction Reason Fields
+
+| Field      | Type   | Description          |
+| ---------- | ------ | -------------------- |
+| `category` | string | Normalized category  |
+| `text`     | string | Human-readable label |
 
 ```json title="Example"
 {
   "detail": {
-    "document_number": "20260227001234",
+    "document_type": {
+      "category": "deed",
+      "text": "Warranty Deed"
+    },
     "recorded_date": "2026-02-27",
+    "instrument_date": "2026-02-25",
     "consideration": 750000,
-    "transfer_reason": "sale"
+    "transaction_reason": {
+      "category": "sale",
+      "text": "Arms-length sale"
+    }
   }
 }
 ```
 
-## Source
-
-The `source` object identifies where the event data originated.
-
-| Field  | Type   | Description                                      |
-| ------ | ------ | ------------------------------------------------ |
-| `name` | string | Source identifier (e.g., `king_county_recorder`) |
-
 ## Full Example
 
-```json title="Complete event payload"
+```json title="Complete event response"
 {
-  "id": "evt_abc123",
-  "object": "event",
-  "event_type": "deed.transfer",
-  "event_date": "2026-02-27T00:00:00Z",
-  "created_at": "2026-02-27T12:00:00Z",
-  "jurisdiction": {
-    "county": "King",
-    "state": "WA",
-    "fips_code": "53033"
-  },
-  "property": {
-    "id": "prop_123",
-    "address": {
-      "line1": "123 Main St",
-      "city": "Seattle",
-      "state": "WA",
-      "zip": "98101",
-      "county": "King"
-    },
-    "apn": "123456-7890",
-    "location": {
-      "latitude": 47.6062,
-      "longitude": -122.3321
+  "result": {
+    "id": "evt_abc123",
+    "object": "event",
+    "event_type": "deed.transfer",
+    "data": {
+      "jurisdiction": {
+        "county": "King",
+        "state": "WA",
+        "fips_code": "53033"
+      },
+      "property": {
+        "property_id": "prop_123",
+        "property_address": {
+          "line1": "123 Main St",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101",
+          "county": "King"
+        },
+        "apn": "123456-7890",
+        "parcel_id": "P-7890",
+        "geolocation": {
+          "lat": 47.6062,
+          "lng": -122.3321
+        },
+        "legal_description": {
+          "text": "LOT 1 BLK 2 SEATTLE LAND CO ADD"
+        },
+        "bedrooms": 3,
+        "bathrooms": 2.5,
+        "living_sqft": 1850,
+        "lot_sqft": 5000,
+        "property_purpose": "single_family"
+      },
+      "parties": [
+        {
+          "role": "grantor",
+          "name": "Jane Doe",
+          "type": "individual",
+          "person_id": "per_456",
+          "addresses": [{ "full_address": "123 Main St, Seattle, WA 98101" }]
+        },
+        {
+          "role": "grantee",
+          "name": "John Smith",
+          "type": "individual",
+          "person_id": null,
+          "addresses": []
+        }
+      ],
+      "detail": {
+        "document_type": {
+          "category": "deed",
+          "text": "Warranty Deed"
+        },
+        "recorded_date": "2026-02-27",
+        "instrument_date": "2026-02-25",
+        "consideration": 750000,
+        "transaction_reason": {
+          "category": "sale",
+          "text": "Arms-length sale"
+        }
+      }
     }
-  },
-  "parties": [
-    {
-      "role": "grantor",
-      "name": "Jane Doe",
-      "type": "individual"
-    },
-    {
-      "role": "grantee",
-      "name": "John Smith",
-      "type": "individual"
-    }
-  ],
-  "detail": {
-    "document_number": "20260227001234",
-    "recorded_date": "2026-02-27",
-    "consideration": 750000,
-    "transfer_reason": "sale"
-  },
-  "source": {
-    "name": "king_county_recorder"
   }
 }
 ```
