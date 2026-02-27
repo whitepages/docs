@@ -49,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - Create DEPRECATED_TAGS variable, ingest in generation, generate by @lhagenWP in #5
 - Add beginner-friendly first request guide by @KevinEdry in #7
 - Add webhooks announcement banner by @KevinEdry in #12
+- Add webhook guides and API reference pages by @KevinEdry in #13
 
 ## Miscellaneous
 
@@ -69,6 +70,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
