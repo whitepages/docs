@@ -1,0 +1,77 @@
+---
+title: Create a Webhook
+description: Register a new webhook subscription to receive property event notifications
+---
+
+Use the `POST /v1/webhooks/` endpoint to create a webhook subscription. When a matching property event occurs in your subscribed region, a JSON payload is delivered to your HTTPS endpoint.
+
+## Basic Usage
+
+Create a webhook that listens for all deed events in King County, WA:
+
+```bash title="Request"
+curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "url": "https://example.com/webhooks/deeds",
+    "event_type": "deed.*",
+    "region": "county:king_wa"
+  }'
+```
+
+## Parameters
+
+| Parameter    | Type   | Required | Description                                                   |
+| ------------ | ------ | -------- | ------------------------------------------------------------- |
+| `url`        | string | Yes      | HTTPS endpoint to receive webhook deliveries (max 2048 chars) |
+| `event_type` | string | Yes      | Event type to subscribe to. Use `deed.*` for all deed events  |
+| `region`     | string | Yes      | Region filter in `type:value` format                          |
+| `name`       | string | No       | Human-readable label for the subscription (max 255 chars)     |
+
+<Callout type="warn" title="HTTPS Required">
+  The `url` must use HTTPS. HTTP endpoints are rejected.
+</Callout>
+
+## Add a Name for Easy Identification
+
+Assigning a name makes it easier to manage multiple subscriptions:
+
+```bash title="Request"
+curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "url": "https://example.com/webhooks/deeds",
+    "event_type": "deed.*",
+    "region": "county:king_wa",
+    "name": "King County Deed Transfers"
+  }'
+```
+
+## Response
+
+A successful request returns the created webhook subscription:
+
+```json title="Response"
+{
+  "result": {
+    "id": "wh_abc123",
+    "url": "https://example.com/webhooks/deeds",
+    "name": "King County Deed Transfers",
+    "event_type": "deed.*",
+    "region": "county:king_wa",
+    "status": "active",
+    "created_at": "2026-02-27T12:00:00Z",
+    "updated_at": "2026-02-27T12:00:00Z"
+  }
+}
+```
+
+<Callout type="tip" title="Test After Creating">
+  After creating a webhook, use the [test
+  endpoint](/documentation/webhooks/test-webhook) to verify your server receives
+  and processes payloads correctly.
+</Callout>
+
+For full request and response schemas, see the [Create a webhook subscription](/references/webhooks/create_webhook) API reference.

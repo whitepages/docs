@@ -1,0 +1,111 @@
+---
+title: Test a Webhook
+description: Send a mock event payload to verify your webhook endpoint
+---
+
+Use the `POST /v1/webhooks/{webhook_id}/test` endpoint to send a mock event payload to your webhook's URL. This lets you verify that your server receives and processes deliveries correctly without waiting for a real event.
+
+## Basic Usage
+
+Send a test delivery to a webhook:
+
+```bash title="Request"
+curl -X POST 'https://api.whitepages.com/v1/webhooks/wh_abc123/test' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{}'
+```
+
+This sends a mock payload using the webhook's subscribed event type.
+
+## Parameters
+
+| Parameter    | Type   | Required | Description                                                        |
+| ------------ | ------ | -------- | ------------------------------------------------------------------ |
+| `event_type` | string | No       | Event type to simulate. Defaults to the webhook's subscribed type. |
+
+## Response
+
+The response tells you whether your endpoint received the delivery successfully:
+
+```json title="Response"
+{
+  "success": true,
+  "delivery": {
+    "status_code": 200,
+    "response_time_ms": 150,
+    "timestamp": "2026-02-27T12:00:00Z"
+  },
+  "mock_payload": {
+    "id": "evt_mock_abc123",
+    "object": "event",
+    "event_type": "deed.transfer",
+    "event_date": "2026-02-27T00:00:00Z",
+    "created_at": "2026-02-27T12:00:00Z",
+    "test": true,
+    "jurisdiction": {
+      "county": "King",
+      "state": "WA",
+      "fips_code": "53033"
+    },
+    "property": {
+      "id": "prop_mock_123",
+      "address": {
+        "line1": "123 Main St",
+        "city": "Seattle",
+        "state": "WA",
+        "zip": "98101",
+        "county": "King"
+      },
+      "apn": "123456-7890",
+      "location": {
+        "latitude": 47.6062,
+        "longitude": -122.3321
+      }
+    },
+    "parties": [
+      {
+        "role": "grantor",
+        "name": "Jane Doe",
+        "type": "individual"
+      },
+      {
+        "role": "grantee",
+        "name": "John Smith",
+        "type": "individual"
+      }
+    ],
+    "detail": {
+      "document_number": "20260227001234",
+      "recorded_date": "2026-02-27",
+      "consideration": 750000,
+      "transfer_reason": "sale"
+    },
+    "source": {
+      "name": "king_county_recorder"
+    }
+  }
+}
+```
+
+<Callout type="info" title="Test Payloads">
+  Test deliveries always have `"test": true` in the payload. Use this field to
+  distinguish test events from real ones in your application.
+</Callout>
+
+## Diagnosing Failures
+
+If `success` is `false`, check the `delivery.status_code` to diagnose the issue:
+
+| Status Code | Meaning                                                 |
+| ----------- | ------------------------------------------------------- |
+| `0`         | Could not connect to your endpoint                      |
+| `4xx`       | Your server rejected the request (check authentication) |
+| `5xx`       | Your server encountered an error processing the payload |
+
+<Callout type="tip" title="When to Test">
+  Run a test delivery after creating a new webhook or updating the delivery URL
+  to confirm everything is wired up correctly.
+</Callout>
+
+For full request and response schemas, see the [Test a webhook delivery](/references/webhooks/test_webhook) API reference.

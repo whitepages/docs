@@ -1,0 +1,12 @@
+{
+  "title": "Webhook Endpoints",
+  "defaultOpen": true,
+  "pages": [
+    "create_webhook",
+    "list_webhooks",
+    "get_webhook",
+    "update_webhook",
+    "delete_webhook",
+    "test_webhook"
+  ]
+}

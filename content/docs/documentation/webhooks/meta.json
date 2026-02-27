@@ -1,0 +1,12 @@
+{
+  "title": "Webhooks",
+  "icon": "Webhook",
+  "pages": [
+    "create-webhook",
+    "list-webhooks",
+    "update-webhook",
+    "delete-webhook",
+    "test-webhook"
+  ],
+  "defaultOpen": true
+}

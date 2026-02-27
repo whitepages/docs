@@ -1,4 +1,4 @@
 {
-  "title": "Property V2",
+  "title": "Property Endpoints",
   "pages": ["get_property_by_id_v2", "search_property_v2"]
 }

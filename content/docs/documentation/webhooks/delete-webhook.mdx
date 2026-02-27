@@ -1,0 +1,36 @@
+---
+title: Delete a Webhook
+description: Permanently remove a webhook subscription
+---
+
+Use the `DELETE /v1/webhooks/{webhook_id}` endpoint to permanently remove a webhook subscription. Once deleted, no further events will be delivered to the endpoint.
+
+## Basic Usage
+
+Delete a webhook subscription:
+
+```bash title="Request"
+curl -X DELETE 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+A successful deletion returns a `204 No Content` response with no body.
+
+<Callout type="warn" title="Permanent Action">
+  Deleting a webhook is permanent and cannot be undone. If you need to
+  temporarily stop receiving events, consider updating the webhook's URL to a
+  staging endpoint instead.
+</Callout>
+
+## Verify Deletion
+
+After deleting, you can confirm the webhook no longer exists by listing your subscriptions:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/webhooks/' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+The deleted webhook will not appear in the results.
+
+For full request and response schemas, see the [Delete a webhook subscription](/references/webhooks/delete_webhook) API reference.
