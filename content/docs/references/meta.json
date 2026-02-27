@@ -9,9 +9,10 @@
     "rate-limits",
     "billing",
     "support-and-incident-response",
-    "...person",
-    "...property-v2",
-    "...account",
+    "person",
+    "webhooks",
+    "property-v2",
+    "account",
     "---SDK Reference---",
     "typescript-sdk",
     "python-sdk"

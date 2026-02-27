@@ -1,0 +1,79 @@
+---
+title: Update a Webhook
+description: Modify an existing webhook subscription
+---
+
+Use the `PATCH /v1/webhooks/{webhook_id}` endpoint to update a webhook subscription. All fields are optional — only include the fields you want to change.
+
+## Basic Usage
+
+Update the delivery URL for a webhook:
+
+```bash title="Request"
+curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "url": "https://example.com/webhooks/deeds-v2"
+  }'
+```
+
+## Parameters
+
+| Parameter    | Type   | Required | Description                                                |
+| ------------ | ------ | -------- | ---------------------------------------------------------- |
+| `url`        | string | No       | New HTTPS endpoint for webhook deliveries (max 2048 chars) |
+| `event_type` | string | No       | New event type to subscribe to                             |
+| `region`     | string | No       | New region filter in `type:value` format                   |
+| `name`       | string | No       | New human-readable label (max 255 chars)                   |
+
+## Rename a Webhook
+
+```bash title="Request"
+curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "name": "King County Deeds - Production"
+  }'
+```
+
+## Change the Region
+
+Move a subscription to a different region:
+
+```bash title="Request"
+curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
+  --header 'X-Api-Key: YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "region": "county:los_angeles_ca"
+  }'
+```
+
+## Response
+
+The response returns the full updated webhook subscription:
+
+```json title="Response"
+{
+  "result": {
+    "id": "wh_abc123",
+    "url": "https://example.com/webhooks/deeds-v2",
+    "name": "King County Deeds - Production",
+    "event_type": "deed.*",
+    "region": "county:los_angeles_ca",
+    "status": "active",
+    "created_at": "2026-02-27T12:00:00Z",
+    "updated_at": "2026-02-27T14:30:00Z"
+  }
+}
+```
+
+<Callout type="tip" title="Verify After Updating">
+  If you change the `url`, use the [test
+  endpoint](/documentation/webhooks/test-webhook) to confirm your new endpoint
+  receives payloads correctly.
+</Callout>
+
+For full request and response schemas, see the [Update a webhook subscription](/references/webhooks/update_webhook) API reference.

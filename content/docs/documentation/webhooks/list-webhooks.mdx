@@ -1,0 +1,97 @@
+---
+title: List Webhooks
+description: List and filter your webhook subscriptions
+---
+
+Use the `GET /v1/webhooks/` endpoint to retrieve all of your webhook subscriptions. You can filter by status or event type.
+
+## Basic Usage
+
+List all webhook subscriptions:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/webhooks/' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Query Parameters
+
+| Parameter    | Type   | Required | Description                              |
+| ------------ | ------ | -------- | ---------------------------------------- |
+| `status`     | string | No       | Filter by status: `active` or `inactive` |
+| `event_type` | string | No       | Filter by subscribed event type          |
+
+## Filter by Status
+
+List only active subscriptions:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/webhooks/?status=active' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Filter by Event Type
+
+List subscriptions for a specific event type:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/webhooks/?event_type=deed.*' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Response
+
+The response includes an array of all matching webhook subscriptions:
+
+```json title="Response"
+{
+  "results": [
+    {
+      "id": "wh_abc123",
+      "url": "https://example.com/webhooks/deeds",
+      "name": "King County Deed Transfers",
+      "event_type": "deed.*",
+      "region": "county:king_wa",
+      "status": "active",
+      "created_at": "2026-02-27T12:00:00Z",
+      "updated_at": "2026-02-27T12:00:00Z"
+    },
+    {
+      "id": "wh_def456",
+      "url": "https://example.com/webhooks/deeds-ca",
+      "name": "LA County Deed Transfers",
+      "event_type": "deed.*",
+      "region": "county:los_angeles_ca",
+      "status": "active",
+      "created_at": "2026-02-20T08:30:00Z",
+      "updated_at": "2026-02-20T08:30:00Z"
+    }
+  ]
+}
+```
+
+## Get a Single Webhook
+
+Retrieve a specific subscription by its ID:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```json title="Response"
+{
+  "result": {
+    "id": "wh_abc123",
+    "url": "https://example.com/webhooks/deeds",
+    "name": "King County Deed Transfers",
+    "event_type": "deed.*",
+    "region": "county:king_wa",
+    "status": "active",
+    "created_at": "2026-02-27T12:00:00Z",
+    "updated_at": "2026-02-27T12:00:00Z"
+  }
+}
+```
+
+For full request and response schemas, see the [List webhook subscriptions](/references/webhooks/list_webhooks) and [Get a webhook subscription](/references/webhooks/get_webhook) API references.

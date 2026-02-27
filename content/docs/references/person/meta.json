@@ -1,4 +1,5 @@
 {
-  "title": "Person",
+  "title": "Person Endpoints",
+  "defaultOpen": true,
   "pages": ["search_person_by_name_phone_or_address", "get_person_by_id"]
 }
