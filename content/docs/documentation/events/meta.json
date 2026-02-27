@@ -1,0 +1,6 @@
+{
+  "title": "Events",
+  "icon": "Bell",
+  "pages": ["get-event", "event-types", "event-payload"],
+  "defaultOpen": true
+}

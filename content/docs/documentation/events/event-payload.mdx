@@ -1,0 +1,188 @@
+---
+title: Event Payload
+description: Explore the full structure of an event object
+---
+
+Every event follows a consistent JSON structure containing metadata, jurisdiction information, property details, party information, and transaction details.
+
+## Top-Level Fields
+
+| Field        | Type    | Description                                                                   |
+| ------------ | ------- | ----------------------------------------------------------------------------- |
+| `id`         | string  | Unique event identifier (e.g., `evt_abc123`)                                  |
+| `object`     | string  | Always `"event"`                                                              |
+| `event_type` | string  | The type of deed event (see [Event Types](/documentation/events/event-types)) |
+| `event_date` | string  | ISO 8601 timestamp of when the event occurred                                 |
+| `created_at` | string  | ISO 8601 timestamp of when the event was ingested                             |
+| `test`       | boolean | Present and `true` only for test webhook deliveries                           |
+
+## Jurisdiction
+
+The `jurisdiction` object identifies the county and state where the deed was recorded.
+
+| Field       | Type   | Description                                   |
+| ----------- | ------ | --------------------------------------------- |
+| `county`    | string | County name                                   |
+| `state`     | string | Two-letter state abbreviation                 |
+| `fips_code` | string | Federal Information Processing Standards code |
+
+```json title="Example"
+{
+  "jurisdiction": {
+    "county": "King",
+    "state": "WA",
+    "fips_code": "53033"
+  }
+}
+```
+
+## Property
+
+The `property` object contains details about the property involved in the deed event.
+
+| Field      | Type   | Description                                 |
+| ---------- | ------ | ------------------------------------------- |
+| `id`       | string | Whitepages property identifier              |
+| `address`  | object | Structured address of the property          |
+| `apn`      | string | Assessor's Parcel Number                    |
+| `location` | object | Geographic coordinates (latitude/longitude) |
+
+### Address Fields
+
+| Field    | Type   | Description           |
+| -------- | ------ | --------------------- |
+| `line1`  | string | Street address        |
+| `city`   | string | City name             |
+| `state`  | string | Two-letter state code |
+| `zip`    | string | ZIP code              |
+| `county` | string | County name           |
+
+```json title="Example"
+{
+  "property": {
+    "id": "prop_123",
+    "address": {
+      "line1": "123 Main St",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101",
+      "county": "King"
+    },
+    "apn": "123456-7890",
+    "location": {
+      "latitude": 47.6062,
+      "longitude": -122.3321
+    }
+  }
+}
+```
+
+## Parties
+
+The `parties` array lists individuals or entities involved in the deed transaction.
+
+| Field  | Type   | Description                                           |
+| ------ | ------ | ----------------------------------------------------- |
+| `role` | string | Party's role: `grantor` (seller) or `grantee` (buyer) |
+| `name` | string | Full name of the individual or entity                 |
+| `type` | string | `individual` or `entity`                              |
+
+```json title="Example"
+{
+  "parties": [
+    {
+      "role": "grantor",
+      "name": "Jane Doe",
+      "type": "individual"
+    },
+    {
+      "role": "grantee",
+      "name": "Acme Properties LLC",
+      "type": "entity"
+    }
+  ]
+}
+```
+
+## Detail
+
+The `detail` object contains transaction-specific information from the deed record.
+
+| Field             | Type   | Description                                    |
+| ----------------- | ------ | ---------------------------------------------- |
+| `document_number` | string | Official document number from the recorder     |
+| `recorded_date`   | string | Date the deed was recorded (YYYY-MM-DD format) |
+| `consideration`   | number | Transaction amount in USD                      |
+| `transfer_reason` | string | Reason for transfer (e.g., `sale`, `gift`)     |
+
+```json title="Example"
+{
+  "detail": {
+    "document_number": "20260227001234",
+    "recorded_date": "2026-02-27",
+    "consideration": 750000,
+    "transfer_reason": "sale"
+  }
+}
+```
+
+## Source
+
+The `source` object identifies where the event data originated.
+
+| Field  | Type   | Description                                      |
+| ------ | ------ | ------------------------------------------------ |
+| `name` | string | Source identifier (e.g., `king_county_recorder`) |
+
+## Full Example
+
+```json title="Complete event payload"
+{
+  "id": "evt_abc123",
+  "object": "event",
+  "event_type": "deed.transfer",
+  "event_date": "2026-02-27T00:00:00Z",
+  "created_at": "2026-02-27T12:00:00Z",
+  "jurisdiction": {
+    "county": "King",
+    "state": "WA",
+    "fips_code": "53033"
+  },
+  "property": {
+    "id": "prop_123",
+    "address": {
+      "line1": "123 Main St",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101",
+      "county": "King"
+    },
+    "apn": "123456-7890",
+    "location": {
+      "latitude": 47.6062,
+      "longitude": -122.3321
+    }
+  },
+  "parties": [
+    {
+      "role": "grantor",
+      "name": "Jane Doe",
+      "type": "individual"
+    },
+    {
+      "role": "grantee",
+      "name": "John Smith",
+      "type": "individual"
+    }
+  ],
+  "detail": {
+    "document_number": "20260227001234",
+    "recorded_date": "2026-02-27",
+    "consideration": 750000,
+    "transfer_reason": "sale"
+  },
+  "source": {
+    "name": "king_county_recorder"
+  }
+}
+```
