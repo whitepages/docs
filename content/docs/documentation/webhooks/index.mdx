@@ -3,7 +3,7 @@ title: Webhooks
 description: Receive real-time property deed notifications delivered to your endpoint
 ---
 
-The Webhooks API delivers real-time property deed event notifications directly to your HTTPS endpoint, eliminating the need to poll for changes. When a deed transfer, recording, or other deed event occurs in a region you subscribe to, a structured JSON payload is sent to your server within minutes.
+The Webhooks API delivers real-time property deed event notifications directly to your HTTPS endpoint, eliminating the need to poll for changes. When a deed transfer, recording, or other deed event occurs in a region you subscribe to, a notification is sent to your server within minutes containing the event type and a link to retrieve the full event details.
 
 <Callout type="warn" title="Invite-Only Access">
   Webhooks are currently available by invite only. To request access, contact
@@ -17,7 +17,7 @@ The Webhooks API delivers real-time property deed event notifications directly t
 - **Real-time updates** — Get notified as soon as deed events are recorded, rather than polling the API on a schedule
 - **Reduced API usage** — Receive only the events you care about instead of repeatedly querying for changes
 - **Regional targeting** — Subscribe to specific counties or states to focus on the markets that matter to your business
-- **Structured payloads** — Each delivery includes full event details with property information, party names, deed details, and jurisdiction data
+- **Lightweight notifications** — Each delivery includes the event type and a link to fetch the full event, keeping payloads small and letting you control when to retrieve details
 
 ## Guides
 
