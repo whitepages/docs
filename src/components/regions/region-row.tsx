@@ -1,10 +1,11 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Radio } from "lucide-react";
 import type { RegionEntry } from "./types";
 
 interface RegionRowProps {
   region: RegionEntry;
   showParent?: boolean;
   showChevron?: boolean;
+  webhookSupported?: boolean;
   onClick?: () => void;
 }
 
@@ -12,6 +13,7 @@ export function RegionRow({
   region,
   showParent = false,
   showChevron = false,
+  webhookSupported = false,
   onClick,
 }: RegionRowProps) {
   return (
@@ -26,6 +28,12 @@ export function RegionRow({
         {showParent && region.stateName && (
           <span className="text-xs text-fd-muted-foreground shrink-0">
             {region.stateName}
+          </span>
+        )}
+        {webhookSupported && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-fd-primary/10 text-fd-primary rounded-full shrink-0">
+            <Radio className="size-3" />
+            Webhooks
           </span>
         )}
       </div>

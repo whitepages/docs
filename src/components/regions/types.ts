@@ -23,3 +23,12 @@ export interface BreadcrumbEntry {
   level: BrowseLevel;
   stateCode?: string;
 }
+
+const WEBHOOK_SUPPORTED_STATE_CODES = new Set(["TX"]);
+
+export function supportsWebhooks(region: RegionEntry): boolean {
+  if (region.level === RegionLevel.State) {
+    return WEBHOOK_SUPPORTED_STATE_CODES.has(region.state_code ?? "");
+  }
+  return WEBHOOK_SUPPORTED_STATE_CODES.has(region.stateCode ?? "");
+}
