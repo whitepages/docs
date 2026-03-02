@@ -6,12 +6,14 @@ import { Loader2 } from "lucide-react";
 import {
   BrowseLevel,
   RegionLevel,
+  supportsWebhooks,
   type BreadcrumbEntry,
   type RegionEntry,
 } from "./types";
 import { SearchInput } from "./search-input";
 import { BreadcrumbNavigation } from "./breadcrumb-navigation";
 import { RegionRow } from "./region-row";
+import { WebhookFilter } from "./webhook-filter";
 
 const FUSE_OPTIONS: IFuseOptions<RegionEntry> = {
   keys: ["name", "slug", "state_code", "fips_code", "stateName"],
@@ -29,6 +31,7 @@ export function RegionSearch() {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [webhookFilterActive, setWebhookFilterActive] = useState(false);
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbEntry[]>([
     ROOT_BREADCRUMB,
   ]);
@@ -126,6 +129,11 @@ export function RegionSearch() {
 
   const canDrillDown = currentBreadcrumb.level === BrowseLevel.States;
 
+  const webhookSupportedCount = useMemo(
+    () => regions.filter(supportsWebhooks).length,
+    [regions],
+  );
+
   if (loading) {
     return (
       <div className="not-prose border rounded-lg bg-fd-card overflow-hidden">
@@ -147,11 +155,25 @@ export function RegionSearch() {
     );
   }
 
-  const items = isSearching ? searchResults : browseItems;
+  const baseItems = isSearching ? searchResults : browseItems;
+  const items = webhookFilterActive
+    ? baseItems.filter(supportsWebhooks)
+    : baseItems;
 
   return (
     <div className="not-prose border rounded-lg bg-fd-card overflow-hidden">
       <SearchInput value={search} onChange={setSearch} />
+
+      <div className="flex items-center gap-2 px-4 py-2 border-b">
+        <WebhookFilter
+          active={webhookFilterActive}
+          onToggle={() => {
+            setWebhookFilterActive((previous) => !previous);
+            setBreadcrumbs([ROOT_BREADCRUMB]);
+          }}
+          count={webhookSupportedCount}
+        />
+      </div>
 
       {!isSearching && (
         <BreadcrumbNavigation
@@ -163,7 +185,9 @@ export function RegionSearch() {
       <div className="max-h-[400px] overflow-y-auto">
         {items.length === 0 ? (
           <p className="text-sm text-fd-muted-foreground text-center py-8">
-            No results found.
+            {webhookFilterActive
+              ? "No webhook-supported regions found."
+              : "No results found."}
           </p>
         ) : (
           <div>
@@ -173,6 +197,7 @@ export function RegionSearch() {
                 region={item}
                 showParent={isSearching && item.level === RegionLevel.County}
                 showChevron={isSearching || canDrillDown}
+                webhookSupported={supportsWebhooks(item)}
                 onClick={
                   isSearching
                     ? () =>
