@@ -7,6 +7,7 @@ import {
   BrowseLevel,
   RegionLevel,
   supportsWebhooks,
+  supportsWebhookEvent,
   type BreadcrumbEntry,
   type RegionEntry,
 } from "./types";
@@ -32,6 +33,9 @@ export function RegionSearch() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [webhookFilterActive, setWebhookFilterActive] = useState(false);
+  const [selectedEventType, setSelectedEventType] = useState<string | null>(
+    null,
+  );
   const [breadcrumbs, setBreadcrumbs] = useState<BreadcrumbEntry[]>([
     ROOT_BREADCRUMB,
   ]);
@@ -134,6 +138,16 @@ export function RegionSearch() {
     [regions],
   );
 
+  const webhookEventTypes = useMemo(() => {
+    const eventTypeSet = new Set<string>();
+    for (const region of regions) {
+      for (const eventType of region.supported_webhook_events) {
+        eventTypeSet.add(eventType);
+      }
+    }
+    return [...eventTypeSet].sort();
+  }, [regions]);
+
   if (loading) {
     return (
       <div className="not-prose border rounded-lg bg-fd-card overflow-hidden">
@@ -157,7 +171,11 @@ export function RegionSearch() {
 
   const baseItems = isSearching ? searchResults : browseItems;
   const items = webhookFilterActive
-    ? baseItems.filter(supportsWebhooks)
+    ? baseItems.filter((region) =>
+        selectedEventType
+          ? supportsWebhookEvent(region, selectedEventType)
+          : supportsWebhooks(region),
+      )
     : baseItems;
 
   return (
@@ -169,9 +187,13 @@ export function RegionSearch() {
           active={webhookFilterActive}
           onToggle={() => {
             setWebhookFilterActive((previous) => !previous);
+            setSelectedEventType(null);
             setBreadcrumbs([ROOT_BREADCRUMB]);
           }}
           count={webhookSupportedCount}
+          eventTypes={webhookEventTypes}
+          selectedEventType={selectedEventType}
+          onEventTypeChange={setSelectedEventType}
         />
       </div>
 
@@ -198,6 +220,7 @@ export function RegionSearch() {
                 showParent={isSearching && item.level === RegionLevel.County}
                 showChevron={isSearching || canDrillDown}
                 webhookSupported={supportsWebhooks(item)}
+                webhookEvents={item.supported_webhook_events}
                 onClick={
                   isSearching
                     ? () =>

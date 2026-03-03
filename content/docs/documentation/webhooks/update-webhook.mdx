@@ -34,7 +34,7 @@ curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
   --header 'X-Api-Key: YOUR_API_KEY' \
   --header 'Content-Type: application/json' \
   --data '{
-    "name": "King County Deeds - Production"
+    "name": "Dallas County Deeds - Production"
   }'
 ```
 
@@ -47,7 +47,7 @@ curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
   --header 'X-Api-Key: YOUR_API_KEY' \
   --header 'Content-Type: application/json' \
   --data '{
-    "region": "county:los_angeles_ca"
+    "region": "county:tx.harris"
   }'
 ```
 
@@ -66,9 +66,9 @@ The response returns the full updated webhook subscription:
   "result": {
     "id": "wh_abc123",
     "url": "https://example.com/webhooks/deeds-v2",
-    "name": "King County Deeds - Production",
+    "name": "Dallas County Deeds - Production",
     "event_type": "deed.*",
-    "region": "county:los_angeles_ca",
+    "region": "county:tx.harris",
     "status": "active",
     "created_at": "2026-02-27T12:00:00Z",
     "updated_at": "2026-02-27T14:30:00Z"

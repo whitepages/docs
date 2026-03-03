@@ -16,6 +16,7 @@ export interface RegionEntry {
   level: RegionLevel;
   stateName?: string;
   stateCode?: string;
+  supported_webhook_events: string[];
 }
 
 export interface BreadcrumbEntry {
@@ -24,11 +25,13 @@ export interface BreadcrumbEntry {
   stateCode?: string;
 }
 
-const WEBHOOK_SUPPORTED_STATE_CODES = new Set(["TX"]);
-
 export function supportsWebhooks(region: RegionEntry): boolean {
-  if (region.level === RegionLevel.State) {
-    return WEBHOOK_SUPPORTED_STATE_CODES.has(region.state_code ?? "");
-  }
-  return WEBHOOK_SUPPORTED_STATE_CODES.has(region.stateCode ?? "");
+  return region.supported_webhook_events.length > 0;
+}
+
+export function supportsWebhookEvent(
+  region: RegionEntry,
+  eventType: string,
+): boolean {
+  return region.supported_webhook_events.includes(eventType);
 }
