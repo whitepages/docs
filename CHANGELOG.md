@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Opengraph default image on link share by @lhagenWP in #6
 - Correct API query parameters for person search by @KevinEdry in #8
 - Align event and webhook guides with OpenAPI spec by @KevinEdry in #16
+- Update support email from support@whitepages.com to api@whitepages.com by @KevinEdry
 
 ## Documentation
 
@@ -31,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Add reverse phone lookup guide by @KevinEdry in #9
 - Add MCP server integration guide by @KevinEdry in #10
 - Add support and incident response reference page by @KevinEdry in #11
+- Clarify webhook regions and remove v2 from property label by @KevinEdry
 
 ## Features
 
@@ -53,6 +55,8 @@ All notable changes to this project will be documented in this file.
 - Add webhook guides and API reference pages by @KevinEdry in #13
 - Add events API reference and guide pages by @KevinEdry in #14
 - Add regions guide page with interactive search (#15) by @KevinEdry in #15
+- Add webhook support indicators to regions and cross-links in webhook docs by @KevinEdry
+- Add interactive webhook quickstart and fix region schemas by @KevinEdry in #17
 
 ## Miscellaneous
 
@@ -73,6 +77,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
