@@ -7,7 +7,7 @@ Use the `POST /v1/webhooks/` endpoint to create a webhook subscription. When a m
 
 ## Basic Usage
 
-Create a webhook that listens for all deed events in King County, WA:
+Create a webhook that listens for all deed events in Dallas County, TX:
 
 ```bash title="Request"
 curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
@@ -16,7 +16,7 @@ curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
   --data '{
     "url": "https://example.com/webhooks/deeds",
     "event_type": "deed.*",
-    "region": "county:king_wa"
+    "region": "county:tx.dallas"
   }'
 ```
 
@@ -50,8 +50,8 @@ curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
   --data '{
     "url": "https://example.com/webhooks/deeds",
     "event_type": "deed.*",
-    "region": "county:king_wa",
-    "name": "King County Deed Transfers"
+    "region": "county:tx.dallas",
+    "name": "Dallas County Deed Transfers"
   }'
 ```
 
@@ -64,9 +64,9 @@ A successful request returns the created webhook subscription:
   "result": {
     "id": "wh_abc123",
     "url": "https://example.com/webhooks/deeds",
-    "name": "King County Deed Transfers",
+    "name": "Dallas County Deed Transfers",
     "event_type": "deed.*",
-    "region": "county:king_wa",
+    "region": "county:tx.dallas",
     "status": "active",
     "created_at": "2026-02-27T12:00:00Z",
     "updated_at": "2026-02-27T12:00:00Z"

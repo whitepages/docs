@@ -6,6 +6,7 @@ interface RegionRowProps {
   showParent?: boolean;
   showChevron?: boolean;
   webhookSupported?: boolean;
+  webhookEvents?: string[];
   onClick?: () => void;
 }
 
@@ -14,6 +15,7 @@ export function RegionRow({
   showParent = false,
   showChevron = false,
   webhookSupported = false,
+  webhookEvents = [],
   onClick,
 }: RegionRowProps) {
   return (
@@ -33,7 +35,7 @@ export function RegionRow({
         {webhookSupported && (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-fd-primary/10 text-fd-primary rounded-full shrink-0">
             <Radio className="size-3" />
-            Webhooks
+            {webhookEvents.length > 0 ? webhookEvents.join(", ") : "Webhooks"}
           </span>
         )}
       </div>

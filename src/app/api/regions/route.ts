@@ -12,6 +12,7 @@ interface Region {
   slug: string;
   state_code?: string;
   fips_code?: string;
+  supported_webhook_events?: string[];
 }
 
 interface RegionEntry {
@@ -22,6 +23,7 @@ interface RegionEntry {
   level: RegionLevel;
   stateName?: string;
   stateCode?: string;
+  supported_webhook_events: string[];
 }
 
 async function fetchAllRegions(): Promise<RegionEntry[]> {
@@ -38,6 +40,7 @@ async function fetchAllRegions(): Promise<RegionEntry[]> {
   const stateEntries: RegionEntry[] = statesWithCodes.map((state) => ({
     ...state,
     level: RegionLevel.State,
+    supported_webhook_events: state.supported_webhook_events ?? [],
   }));
 
   const countyBatches = await Promise.all(
@@ -55,6 +58,7 @@ async function fetchAllRegions(): Promise<RegionEntry[]> {
             level: RegionLevel.County,
             stateName: state.name,
             stateCode: state.state_code,
+            supported_webhook_events: county.supported_webhook_events ?? [],
           }),
         );
       } catch {

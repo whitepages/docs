@@ -2,6 +2,7 @@
   "title": "Webhooks",
   "icon": "Webhook",
   "pages": [
+    "quickstart",
     "create-webhook",
     "list-webhooks",
     "update-webhook",
