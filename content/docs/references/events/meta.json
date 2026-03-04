@@ -1,5 +1,5 @@
 {
   "title": "Event Endpoints",
   "defaultOpen": true,
-  "pages": ["get_event"]
+  "pages": ["search_deed_events", "get_event"]
 }

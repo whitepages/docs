@@ -1,0 +1,158 @@
+---
+title: Search Deed Events
+description: Query historical property deed events by region, date range, and property identifier
+---
+
+Use `GET /v1/events/deed` to search historical property deed events. Filter by region, date range, or a specific property identifier to retrieve the events you need.
+
+<Callout type="warn" title="Invite-Only Access">
+  The Events API is currently available by invite only. To request access,
+  contact our support team at [api@whitepages.com](mailto:api@whitepages.com) or
+  visit the [Support and Incident
+  Response](/references/support-and-incident-response) page.
+</Callout>
+
+<Callout type="info" title="Supported Regions">
+  At launch, only Texas and its counties are supported. Use `state:tx` or
+  `county:tx.{county}` (e.g., `county:tx.travis`). To find valid region values,
+  see the [Regions API](/references/regions).
+</Callout>
+
+## Basic Usage
+
+### All deed events in a county
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/events/deed?region=county:tx.travis&event_date_from=2026-01-01&event_date_to=2026-03-15' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Deed events for a specific property
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v1/events/deed?region=county:tx.travis&property_id=Rl3V9Oa1Azv' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Query Parameters
+
+| Parameter         | Type    | Required | Description                                                                                     |
+| ----------------- | ------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `region`          | string  | Yes      | Geographic scope in `type:value` format (e.g., `state:tx`, `county:tx.travis`, `county:48453`). |
+| `property_id`     | string  | No       | Whitepages property ID (e.g., `Rl3V9Oa1Azv`). Narrows results to a single property.             |
+| `event_date_from` | string  | No       | Start of event date range, inclusive (ISO 8601 date, e.g., `2026-01-01`).                       |
+| `event_date_to`   | string  | No       | End of event date range, inclusive (ISO 8601 date, e.g., `2026-03-15`).                         |
+| `limit`           | integer | No       | Results per page. Default: 20, max: 100.                                                        |
+| `cursor`          | string  | No       | Pagination cursor from a previous response. See [Pagination](#pagination).                      |
+
+<Callout type="warn" title="Region Is Required">
+  Every request must include a `region` parameter. Requests without a region are
+  rejected with a `400` error. Each request accepts exactly one region — to
+  search multiple counties, make one request per county.
+</Callout>
+
+## Response
+
+A successful response returns a `results` array and a `pagination` object:
+
+```json title="Response"
+{
+  "results": [
+    {
+      "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+      "object": "event",
+      "event_type": "deed.*",
+      "data": {
+        "jurisdiction": {
+          "county": "Travis",
+          "state": "TX",
+          "fips_code": "48453"
+        },
+        "property": {
+          "property_id": "Rl3V9Oa1Azv",
+          "property_address": {
+            "line1": "456 Oak Ave",
+            "city": "Austin",
+            "state": "TX",
+            "zip": "78702",
+            "county": "Travis"
+          },
+          "apn": "02-1234-0567",
+          "parcel_id": null,
+          "geolocation": {
+            "lat": 30.2612,
+            "lng": -97.7195
+          },
+          "legal_description": {
+            "text": "LOT 12, BLOCK C, OAK HILL ESTATES, TRAVIS COUNTY, TX"
+          },
+          "bedrooms": 4,
+          "bathrooms": 3.0,
+          "living_sqft": 2850,
+          "lot_sqft": 9200,
+          "property_purpose": "Single Family Home"
+        },
+        "parties": [
+          {
+            "role": "grantor",
+            "name": "ABC Holdings LLC",
+            "type": "llc",
+            "person_id": null,
+            "addresses": [
+              { "full_address": "100 Commerce St Ste 200 Austin, TX 78701" }
+            ]
+          },
+          {
+            "role": "grantee",
+            "name": "Maria Garcia",
+            "type": "individual",
+            "person_id": "PABcd12345e",
+            "addresses": [{ "full_address": "456 Oak Ave Austin, TX 78702" }]
+          }
+        ],
+        "detail": {
+          "document_type": {
+            "category": "deed",
+            "text": "Warranty Deed"
+          },
+          "recorded_date": "2026-03-16",
+          "instrument_date": "2026-03-14",
+          "consideration": 625000,
+          "transaction_reason": {
+            "category": "sale",
+            "text": "Sale"
+          }
+        }
+      }
+    }
+  ],
+  "pagination": {
+    "next_cursor": "eyJyZWNvcmRlZF9kYXRlIjoiMjAyNi0wMy0xNSJ9"
+  }
+}
+```
+
+Each result is a full event object. For field definitions, see the [Event Payload](/documentation/events/event-payload) reference.
+
+## Pagination
+
+When more results are available, the response includes a `next_cursor` in the `pagination` object. Pass it as the `cursor` parameter in your next request:
+
+```bash title="Fetching the next page"
+curl 'https://api.whitepages.com/v1/events/deed?region=county:tx.travis&cursor=eyJyZWNvcmRlZF9kYXRlIjoiMjAyNi0wMy0xNSJ9' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+When `next_cursor` is absent from the response, you have reached the last page.
+
+## Errors
+
+| Status | Code                | Description                                                             |
+| ------ | ------------------- | ----------------------------------------------------------------------- |
+| `400`  | `invalid_parameter` | Missing `region`, invalid parameter value, or bad date format           |
+| `400`  | `unknown_region`    | Region not found — response includes a `lookup_url` for the regions API |
+| `401`  | `unauthorized`      | Missing or invalid `X-Api-Key`                                          |
+| `429`  | `rate_limited`      | Too many requests                                                       |
+| `504`  | `query_timeout`     | Query exceeded the maximum execution time                               |
+
+For full request and response schemas, see the [Search deed events](/references/events/search_deed_events) API reference.
