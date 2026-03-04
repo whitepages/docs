@@ -15,6 +15,7 @@ import { SearchInput } from "./search-input";
 import { BreadcrumbNavigation } from "./breadcrumb-navigation";
 import { RegionRow } from "./region-row";
 import { WebhookFilter } from "./webhook-filter";
+import amplitude from "@/lib/amplitude";
 
 const FUSE_OPTIONS: IFuseOptions<RegionEntry> = {
   keys: ["name", "slug", "state_code", "fips_code", "stateName"],
@@ -89,6 +90,23 @@ export function RegionSearch() {
     return results;
   }, [isSearching, fuse, query]);
 
+  useEffect(() => {
+    if (!query) return;
+    amplitude.track("region_searched", {
+      query,
+      results_count: searchResults.length,
+    });
+  }, [query, searchResults.length]);
+
+  function trackRegionSelected(item: RegionEntry) {
+    amplitude.track("region_selected", {
+      slug: item.slug,
+      name: item.name,
+      level: item.level,
+      state_code: item.state_code ?? item.stateCode,
+    });
+  }
+
   const browseItems = useMemo(() => {
     if (isSearching) return [];
     if (currentBreadcrumb.level === BrowseLevel.States) return states;
@@ -105,6 +123,7 @@ export function RegionSearch() {
   }
 
   function drillDown(item: RegionEntry) {
+    trackRegionSelected(item);
     clearSearch();
     setBreadcrumbs((previous) => [
       ...previous,
@@ -223,12 +242,14 @@ export function RegionSearch() {
                 webhookEvents={item.supported_webhook_events}
                 onClick={
                   isSearching
-                    ? () =>
-                        item.level === RegionLevel.State
-                          ? drillDown(item)
-                          : item.stateCode
-                            ? navigateToState(item.stateCode)
-                            : undefined
+                    ? () => {
+                        if (item.level === RegionLevel.State) {
+                          drillDown(item);
+                        } else if (item.stateCode) {
+                          trackRegionSelected(item);
+                          navigateToState(item.stateCode);
+                        }
+                      }
                     : canDrillDown
                       ? () => drillDown(item)
                       : undefined
