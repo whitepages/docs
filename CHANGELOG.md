@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - Add MCP server integration guide by @KevinEdry in #10
 - Add support and incident response reference page by @KevinEdry in #11
 - Clarify webhook regions and remove v2 from property label by @KevinEdry
+- Update banner copy to use 'live' instead of 'real-time' by @KevinEdry in #19
 
 ## Features
 
@@ -77,6 +78,7 @@ All notable changes to this project will be documented in this file.
 - Remove release-based grouping from changelog by @KevinEdry
 - Update changelog by @github-actions[bot]
 - Ignore generated CHANGELOG.md in prettier by @KevinEdry
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
