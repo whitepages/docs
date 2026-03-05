@@ -103,6 +103,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- **docs:** Standardize amplitude event names to WPAPIDocs convention (#20) by @KevinEdry in #20
 
 ## Styling
 
