@@ -92,14 +92,14 @@ export function RegionSearch() {
 
   useEffect(() => {
     if (!query) return;
-    amplitude.track("region_searched", {
+    amplitude.track("WPAPIDocsRegionSearched", {
       query,
       results_count: searchResults.length,
     });
   }, [query, searchResults.length]);
 
   function trackRegionSelected(item: RegionEntry) {
-    amplitude.track("region_selected", {
+    amplitude.track("WPAPIDocsRegionSelected", {
       slug: item.slug,
       name: item.name,
       level: item.level,
