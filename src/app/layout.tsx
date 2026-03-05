@@ -67,8 +67,8 @@ export default function Layout({ children }: LayoutProps<"/">) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Introducing Webhooks — Get real-time property deed updates delivered
-            to you.{" "}
+            Introducing Webhooks — Get live property deed updates delivered to
+            you.{" "}
             <span className="font-semibold underline underline-offset-2">
               Learn more &rarr;
             </span>
