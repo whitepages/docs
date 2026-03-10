@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import type { BreadcrumbEntry } from "./types";
+import amplitude from "@/lib/amplitude";
 
 interface BreadcrumbNavigationProps {
   breadcrumbs: BreadcrumbEntry[];
@@ -23,7 +24,12 @@ export function BreadcrumbNavigation({
               <span className="font-medium">{entry.label}</span>
             ) : (
               <button
-                onClick={() => onNavigate(index)}
+                onClick={() => {
+                  amplitude.track("WPAPIDocsBreadcrumbClicked", {
+                    label: entry.label,
+                  });
+                  onNavigate(index);
+                }}
                 className="text-fd-muted-foreground hover:text-fd-foreground transition-colors"
               >
                 {entry.label}

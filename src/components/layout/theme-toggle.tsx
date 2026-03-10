@@ -4,6 +4,7 @@ import { Moon, Sun, Airplay } from "lucide-react";
 import { useTheme } from "next-themes";
 import { ComponentProps, useEffect, useState } from "react";
 import { cn } from "../../lib/cn";
+import amplitude from "@/lib/amplitude";
 
 const itemVariants = cva(
   "size-6.5 rounded-full p-1.5 text-fd-muted-foreground",
@@ -49,7 +50,11 @@ export function ThemeToggle({
       <button
         className={container}
         aria-label={`Toggle Theme`}
-        onClick={() => setTheme(value === "light" ? "dark" : "light")}
+        onClick={() => {
+          const newTheme = value === "light" ? "dark" : "light";
+          amplitude.track("WPAPIDocsThemeChanged", { theme: newTheme });
+          setTheme(newTheme);
+        }}
         data-theme-toggle=""
       >
         {full.map(([key, Icon]) => {
@@ -76,7 +81,10 @@ export function ThemeToggle({
           key={key}
           aria-label={key}
           className={cn(itemVariants({ active: value === key }))}
-          onClick={() => setTheme(key)}
+          onClick={() => {
+            amplitude.track("WPAPIDocsThemeChanged", { theme: key });
+            setTheme(key);
+          }}
         >
           <Icon className="size-full" fill="currentColor" />
         </button>

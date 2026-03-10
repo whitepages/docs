@@ -1,9 +1,11 @@
 "use client";
 
 import { buttonVariants } from "@/components/ui/button";
+import amplitude from "@/lib/amplitude";
 
 export function PostmanButton() {
   const handleDownload = () => {
+    amplitude.track("WPAPIDocsPostmanDownloaded");
     const link = document.createElement("a");
     link.href = "/docs/postman/whitepages-api-collection.json";
     link.download = "Whitepages-API-Collection.json";

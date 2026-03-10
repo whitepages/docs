@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import amplitude from "@/lib/amplitude";
 
 interface CurlDisplayProps {
   command: string;
@@ -10,6 +11,7 @@ export function CurlDisplay({ command }: CurlDisplayProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
+    amplitude.track("WPAPIDocsCurlCommandCopied");
     await navigator.clipboard.writeText(command);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
