@@ -58,6 +58,7 @@ All notable changes to this project will be documented in this file.
 - Add regions guide page with interactive search (#15) by @KevinEdry in #15
 - Add webhook support indicators to regions and cross-links in webhook docs by @KevinEdry
 - Add interactive webhook quickstart and fix region schemas by @KevinEdry in #17
+- Add amplitude events to interactive components by @KevinEdry in #21
 
 ## Miscellaneous
 
@@ -105,6 +106,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Standardize amplitude event names to WPAPIDocs convention (#20) by @KevinEdry in #20
+- Update changelog by @github-actions[bot]
 
 ## Styling
 
