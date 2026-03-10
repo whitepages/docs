@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
+import amplitude from "@/lib/amplitude";
 
 interface ApiResponse {
   success: boolean;
@@ -82,6 +83,10 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
       const data = await result.json().catch(() => null);
 
       if (result.ok) {
+        amplitude.track("WPAPIDocsApiKeyTested", {
+          success: true,
+          status: result.status,
+        });
         setResponse({
           success: true,
           message: "Success! Your API key is working.",
@@ -89,6 +94,11 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
           status: result.status,
         });
       } else if (result.status === 403) {
+        amplitude.track("WPAPIDocsApiKeyTested", {
+          success: false,
+          status: result.status,
+          error: "invalid_key",
+        });
         setResponse({
           success: false,
           message: "Invalid API key",
@@ -97,6 +107,11 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
           status: result.status,
         });
       } else if (result.status === 429) {
+        amplitude.track("WPAPIDocsApiKeyTested", {
+          success: false,
+          status: result.status,
+          error: "rate_limited",
+        });
         setResponse({
           success: false,
           message: "Rate limit exceeded",
@@ -105,6 +120,11 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
           status: result.status,
         });
       } else {
+        amplitude.track("WPAPIDocsApiKeyTested", {
+          success: false,
+          status: result.status,
+          error: "request_failed",
+        });
         setResponse({
           success: false,
           message: `Request failed (${result.status})`,
@@ -114,6 +134,10 @@ export function ApiKeyTester({ mockMode = false }: ApiKeyTesterProps) {
         });
       }
     } catch {
+      amplitude.track("WPAPIDocsApiKeyTested", {
+        success: false,
+        error: "connection_error",
+      });
       setResponse({
         success: false,
         message: "Connection error",

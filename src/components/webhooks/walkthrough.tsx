@@ -1,9 +1,10 @@
 "use client";
 
-import { useReducer, useCallback } from "react";
+import { useReducer, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { WalkthroughStep, type StepStatus } from "./walkthrough-step";
+import amplitude from "@/lib/amplitude";
 
 interface StepState {
   responseData: unknown | null;
@@ -237,6 +238,16 @@ export function WebhookWalkthrough() {
         const data = await response.json().catch(() => null);
 
         if (!response.ok) {
+          const stepNames = [
+            "create_webhook",
+            "test_webhook",
+            "retrieve_event",
+          ];
+          amplitude.track("WPAPIDocsWalkthroughStepFailed", {
+            step_number: step + 1,
+            step_name: stepNames[step],
+            error_status: response.status,
+          });
           dispatch({
             type: "STEP_ERROR",
             step,
@@ -252,6 +263,12 @@ export function WebhookWalkthrough() {
           step,
           data,
           status: response.status,
+        });
+
+        const stepNames = ["create_webhook", "test_webhook", "retrieve_event"];
+        amplitude.track("WPAPIDocsWalkthroughStepCompleted", {
+          step_number: step + 1,
+          step_name: stepNames[step],
         });
 
         if (step === 0 && data?.result?.id) {
@@ -284,14 +301,23 @@ export function WebhookWalkthrough() {
       }
     }
     dispatch({ type: "RESET" });
+    amplitude.track("WPAPIDocsWalkthroughReset");
   }, [state.webhookId, state.apiKey]);
 
+  const previousAllComplete = useRef(false);
   const allComplete = state.steps.every(
     (step) =>
       step.responseStatus !== null &&
       step.responseStatus >= 200 &&
       step.responseStatus < 300,
   );
+
+  useEffect(() => {
+    if (allComplete && !previousAllComplete.current) {
+      amplitude.track("WPAPIDocsWalkthroughCompleted");
+    }
+    previousAllComplete.current = allComplete;
+  }, [allComplete]);
 
   return (
     <div className="not-prose space-y-6">

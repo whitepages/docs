@@ -5,6 +5,7 @@ import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { useI18n } from "fumadocs-ui/contexts/i18n";
 import { cn } from "../../lib/cn";
 import { type ButtonProps, buttonVariants } from "../ui/button";
+import amplitude from "@/lib/amplitude";
 
 interface SearchToggleProps
   extends Omit<ComponentProps<"button">, "color">, ButtonProps {
@@ -33,6 +34,7 @@ export function SearchToggle({
       data-search=""
       aria-label="Open Search"
       onClick={() => {
+        amplitude.track("WPAPIDocsSearchOpened");
         setOpenSearch(true);
       }}
     >
@@ -61,6 +63,7 @@ export function LargeSearchToggle({
         props.className,
       )}
       onClick={() => {
+        amplitude.track("WPAPIDocsSearchOpened");
         setOpenSearch(true);
       }}
     >
