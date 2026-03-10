@@ -2,6 +2,8 @@
 
 import * as amplitude from "@amplitude/analytics-browser";
 
+const ANALYTICS_PURPOSE_ID = "CpYX";
+
 const EVENT_NAME_MAP: Record<string, string> = {
   "[Amplitude] Page Viewed": "WPAPIDocsPageViewed",
 };
@@ -18,7 +20,11 @@ const renameEventsEnrichmentPlugin: amplitude.Types.EnrichmentPlugin = {
   },
 };
 
+let initialized = false;
+
 async function initAmplitude() {
+  if (initialized) return;
+
   const apiKey = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
 
   if (!apiKey) {
@@ -35,10 +41,35 @@ async function initAmplitude() {
   }).promise;
 
   amplitude.add(renameEventsEnrichmentPlugin);
+  initialized = true;
+}
+
+function hasAnalyticsConsent(): boolean {
+  return window.zaraz?.consent?.get(ANALYTICS_PURPOSE_ID) === true;
+}
+
+function initIfConsented() {
+  if (hasAnalyticsConsent()) {
+    initAmplitude();
+  }
 }
 
 if (typeof window !== "undefined") {
-  initAmplitude();
+  if (window.zaraz?.consent?.APIReady) {
+    initIfConsented();
+  }
+
+  document.addEventListener("zarazConsentAPIReady", () => {
+    initIfConsented();
+  });
+
+  document.addEventListener("zarazConsentChoicesUpdated", () => {
+    if (hasAnalyticsConsent()) {
+      initAmplitude();
+    } else if (initialized) {
+      amplitude.setOptOut(true);
+    }
+  });
 }
 
 export const Amplitude = () => null;
