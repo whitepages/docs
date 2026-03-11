@@ -1,12 +1,12 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import { NavigationTitle } from "@/components/layout/navigation-title";
+import { WhitepagesLogoLink } from "@/components/layout/whitepages-logo-link";
 
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
       transparentMode: "top",
-      title: <NavigationTitle />,
-      url: "/",
+      title: <WhitepagesLogoLink />,
+      url: "https://www.whitepages.com",
     },
     githubUrl: "https://github.com/whitepages/docs",
   };
