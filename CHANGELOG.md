@@ -59,6 +59,7 @@ All notable changes to this project will be documented in this file.
 - Add webhook support indicators to regions and cross-links in webhook docs by @KevinEdry
 - Add interactive webhook quickstart and fix region schemas by @KevinEdry in #17
 - Add amplitude events to interactive components by @KevinEdry in #21
+- Gate amplitude behind zaraz cookie consent by @KevinEdry in #23
 
 ## Miscellaneous
 
@@ -106,6 +107,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Standardize amplitude event names to WPAPIDocs convention (#20) by @KevinEdry in #20
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
 ## Styling
