@@ -1,8 +1,7 @@
 "use client";
 
 import * as amplitude from "@amplitude/analytics-browser";
-
-const ANALYTICS_PURPOSE_ID = "CpYX";
+import { getConsent } from "@/lib/consent";
 
 const EVENT_NAME_MAP: Record<string, string> = {
   "[Amplitude] Page Viewed": "WPAPIDocsPageViewed",
@@ -20,10 +19,8 @@ const renameEventsEnrichmentPlugin: amplitude.Types.EnrichmentPlugin = {
   },
 };
 
-let initialized = false;
-
 async function initAmplitude() {
-  if (initialized) return;
+  if (amplitude.getSessionId() !== -1) return;
 
   const apiKey = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
 
@@ -41,35 +38,20 @@ async function initAmplitude() {
   }).promise;
 
   amplitude.add(renameEventsEnrichmentPlugin);
-  initialized = true;
-}
-
-function hasAnalyticsConsent(): boolean {
-  return window.zaraz?.consent?.get(ANALYTICS_PURPOSE_ID) === true;
-}
-
-function initIfConsented() {
-  if (hasAnalyticsConsent()) {
-    initAmplitude();
-  }
 }
 
 if (typeof window !== "undefined") {
-  if (window.zaraz?.consent?.APIReady) {
-    initIfConsented();
+  if (getConsent() === "accepted") {
+    initAmplitude();
   }
 
-  document.addEventListener("zarazConsentAPIReady", () => {
-    initIfConsented();
-  });
-
-  document.addEventListener("zarazConsentChoicesUpdated", () => {
-    if (hasAnalyticsConsent()) {
+  document.addEventListener("consentUpdated", ((event: CustomEvent<string>) => {
+    if (event.detail === "accepted") {
       initAmplitude();
-    } else if (initialized) {
+    } else if (amplitude.getSessionId() !== -1) {
       amplitude.setOptOut(true);
     }
-  });
+  }) as EventListener);
 }
 
 export const Amplitude = () => null;
