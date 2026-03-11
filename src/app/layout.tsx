@@ -4,6 +4,7 @@ import "./global.css";
 import { Roboto } from "next/font/google";
 import type { Metadata } from "next";
 import { Amplitude } from "@/lib/amplitude";
+import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
           </a>
         </Banner>
         <RootProvider>{children}</RootProvider>
+        <CookieConsentBanner />
       </body>
     </html>
   );
