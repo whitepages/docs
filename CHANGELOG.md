@@ -62,6 +62,7 @@ All notable changes to this project will be documented in this file.
 - Gate amplitude behind zaraz cookie consent by @KevinEdry in #23
 - **nav:** Link logo to whitepages.com with Amplitude click tracking by @jakelauer27 in #22
 - **docs:** Replace zaraz consent with cookie consent banner by @KevinEdry in #24
+- **docs:** Add New York as a supported region
 
 ## Miscellaneous
 
@@ -109,6 +110,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Standardize amplitude event names to WPAPIDocs convention (#20) by @KevinEdry in #20
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
