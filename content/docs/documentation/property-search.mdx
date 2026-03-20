@@ -6,19 +6,13 @@ icon: House
 
 The Property Search API returns ownership and resident information for a given property. Use it to identify property owners, find current residents, or verify property details.
 
-<Callout type="info">
-  **V2 API Available**: We recommend using the [V2 Property
-  API](/references/property-v2/search_property_v2) for new integrations. The V2
-  API provides improved data structure and additional features.
-</Callout>
-
 ## Make Your First Request
 
 <Steps>
 <Step>
 ### Send a Request
 
-Search for property details by address using the V2 API:
+Search for property details by address:
 
 ```bash title="Request"
 curl 'https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
@@ -151,6 +145,15 @@ https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&zi
 ```
 https://api.whitepages.com/v2/property/RVMKL8l80mK
 ```
+
+## Address Standardization
+
+Property addresses (both physical and mailing) are **not** processed through CASS certification. Property address data is sourced directly from county assessor and recorder records and is stored as-received without USPS standardization.
+
+<Callout type="info">
+  For person address standardization details, see [Search by
+  Address](/documentation/person-search/search-by-address#address-standardization-cass).
+</Callout>
 
 ## What's Next
 

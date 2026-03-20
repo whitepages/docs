@@ -10,7 +10,7 @@ Use the `phone` parameter to perform a reverse phone lookup and identify who own
 Look up a phone number:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?phone=2065550198' \
+curl 'https://api.whitepages.com/v2/person?phone=2065550198' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -29,7 +29,7 @@ This returns person records associated with the phone number.
 Find who owns a phone number:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?phone=2125550198' \
+curl 'https://api.whitepages.com/v2/person?phone=2125550198' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -38,7 +38,7 @@ curl 'https://api.whitepages.com/v1/person?phone=2125550198' \
 Verify that a phone number belongs to a specific person:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?phone=2125550198&name=John%20Smith' \
+curl 'https://api.whitepages.com/v2/person?phone=2125550198&name=John%20Smith' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -47,7 +47,7 @@ curl 'https://api.whitepages.com/v1/person?phone=2125550198&name=John%20Smith' \
 Narrow results by adding location filters:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?phone=2125550198&state_code=NY' \
+curl 'https://api.whitepages.com/v2/person?phone=2125550198&state_code=NY' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -79,7 +79,7 @@ The response includes the phone owner's information along with all associated co
       { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
       { "number": "(212) 555-0199", "type": "landline", "score": 72 }
     ],
-    "emails": ["john.smith@example.com"],
+    "emails": [{ "address": "john.smith@example.com", "score": 88 }],
     "date_of_birth": "1985-03-15",
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
