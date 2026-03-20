@@ -63,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - **nav:** Link logo to whitepages.com with Amplitude click tracking by @jakelauer27 in #22
 - **docs:** Replace zaraz consent with cookie consent banner by @KevinEdry in #24
 - **docs:** Add New York as a supported region
+- **docs:** Migrate to v2 person API and improve data docs (#26) by @KevinEdry in #26
 
 ## Miscellaneous
 
@@ -110,6 +111,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Standardize amplitude event names to WPAPIDocs convention (#20) by @KevinEdry in #20
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
