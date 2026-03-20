@@ -10,7 +10,7 @@ Use the `radius` parameter to find people within a specific distance of a locati
 Search for people within a radius of a location:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?city=Seattle&state_code=WA&radius=10' \
+curl 'https://api.whitepages.com/v2/person?city=Seattle&state_code=WA&radius=10' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -53,7 +53,7 @@ When you provide a `radius` parameter along with location information, the API:
 Find people within 5 miles of downtown Portland:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR&radius=5' \
+curl 'https://api.whitepages.com/v2/person?city=Portland&state_code=OR&radius=5' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -62,7 +62,7 @@ curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR&radius=5'
 Find people within 1 miles of a specific ZIP code:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?zipcode=98101&radius=1' \
+curl 'https://api.whitepages.com/v2/person?zipcode=98101&radius=1' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -71,7 +71,7 @@ curl 'https://api.whitepages.com/v1/person?zipcode=98101&radius=1' \
 Find people within 0.1 miles of a specific street address:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA&zipcode=98101&radius=0.1' \
+curl 'https://api.whitepages.com/v2/person?street=123%20Main%20St&city=Seattle&state_code=WA&zipcode=98101&radius=0.1' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -80,7 +80,7 @@ curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&s
 Find people who currently live or have previously lived within 10 miles of a location:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?city=Austin&state_code=TX&radius=10&include_historical_locations=true' \
+curl 'https://api.whitepages.com/v2/person?city=Austin&state_code=TX&radius=10&include_historical_locations=true' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -89,7 +89,7 @@ curl 'https://api.whitepages.com/v1/person?city=Austin&state_code=TX&radius=10&i
 Find a specific person within a radius:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?name=John%20Smith&city=Denver&state_code=CO&radius=25' \
+curl 'https://api.whitepages.com/v2/person?name=John%20Smith&city=Denver&state_code=CO&radius=25' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -102,7 +102,7 @@ You can specify the center point for radius searches in several ways:
 Provide a full street address for the most accurate center point:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Boston&state_code=MA&radius=5' \
+curl 'https://api.whitepages.com/v2/person?street=456%20Oak%20Ave&city=Boston&state_code=MA&radius=5' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -111,7 +111,7 @@ curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Boston&st
 Use city and state for a broader center point (typically the city center):
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?city=San%20Francisco&state_code=CA&radius=20' \
+curl 'https://api.whitepages.com/v2/person?city=San%20Francisco&state_code=CA&radius=20' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -120,7 +120,7 @@ curl 'https://api.whitepages.com/v1/person?city=San%20Francisco&state_code=CA&ra
 Use a ZIP code as the center point:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?zipcode=10001&radius=3' \
+curl 'https://api.whitepages.com/v2/person?zipcode=10001&radius=3' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -152,7 +152,7 @@ The response format is identical to standard person searches, including all addr
       { "id": "R5432109876", "address": "789 Pine St, Seattle, WA 98102" }
     ],
     "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
-    "emails": ["john.smith@example.com"],
+    "emails": [{ "address": "john.smith@example.com", "score": 88 }],
     "date_of_birth": "1985-03-15",
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
@@ -176,7 +176,7 @@ If the location cannot be geocoded (e.g., invalid address or service unavailable
 
 ```bash
 # If geocoding fails, this behaves like a standard city/state search
-curl 'https://api.whitepages.com/v1/person?city=InvalidCity&state_code=XX&radius=10' \
+curl 'https://api.whitepages.com/v2/person?city=InvalidCity&state_code=XX&radius=10' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -210,7 +210,7 @@ Radius searches work well with other parameters:
 
 ```bash
 # Find people aged 30-40 within 15 miles of a location
-curl 'https://api.whitepages.com/v1/person?city=Chicago&state_code=IL&radius=15&min_age=30&max_age=40' \
+curl 'https://api.whitepages.com/v2/person?city=Chicago&state_code=IL&radius=15&min_age=30&max_age=40' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 

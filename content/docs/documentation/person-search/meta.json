@@ -6,7 +6,8 @@
     "filter-by-age-range",
     "search-by-address",
     "search-by-radius",
-    "reverse-phone-lookup"
+    "reverse-phone-lookup",
+    "confidence-scores"
   ],
   "defaultOpen": true
 }

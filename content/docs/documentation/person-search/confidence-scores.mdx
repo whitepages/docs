@@ -1,0 +1,63 @@
+---
+title: Confidence Scores
+description: How to interpret person, phone, and email confidence scores
+---
+
+Person search responses include confidence scores on three levels: the person record itself, each phone number, and each email address. All scores range from **0 to 100** and represent relative confidence — a higher score means stronger evidence of association.
+
+## Score Types
+
+### Person Score
+
+The top-level `score` on a person record indicates how well that record matches your search query. Higher scores reflect stronger matches across name, location, and other query parameters.
+
+```json
+{
+  "id": "P1234567890",
+  "name": "John Smith",
+  "score": 94,
+  ...
+}
+```
+
+Use this to rank or filter results when multiple people match your query.
+
+### Phone Score
+
+Each phone number includes a `score` indicating confidence that the number is actively associated with this person.
+
+```json
+"phones": [
+  { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
+  { "number": "(212) 555-0199", "type": "landline", "score": 41 }
+]
+```
+
+A higher score means the number is more likely to be current and correctly attributed. A low score may indicate the number is outdated or only loosely associated.
+
+### Email Score
+
+Each email address includes a `score` indicating confidence that the address belongs to this person.
+
+```json
+"emails": [
+  { "address": "john.smith@example.com", "score": 88 },
+  { "address": "jsmith85@gmail.com", "score": 52 }
+]
+```
+
+## Interpreting Scores
+
+Scores are **relative**, not absolute thresholds. There is no fixed cutoff for "good" vs "bad" — the right threshold depends on your use case:
+
+| Use case                         | Suggested approach                          |
+| -------------------------------- | ------------------------------------------- |
+| High-confidence verification     | Filter to scores above 80                   |
+| Lead enrichment                  | Use all scores, sort by highest first       |
+| Showing multiple contact options | Display all, surface high-score items first |
+
+<Callout type="info">
+  Scores reflect the strength of association in Whitepages data. A low score
+  does not necessarily mean the information is wrong — it may reflect limited
+  data coverage for that individual.
+</Callout>

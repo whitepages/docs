@@ -14,7 +14,7 @@ The Person Search API finds matching records in the Whitepages dataset based on 
 Search for a person by name and location:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?name=John%20Smith&city=New%20York&state_code=NY' \
+curl 'https://api.whitepages.com/v2/person?name=John%20Smith&city=New%20York&state_code=NY' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -32,6 +32,7 @@ A successful request returns matching person records:
   {
     "id": "P1234567890",
     "name": "John Smith",
+    "score": 94,
     "aliases": ["Johnny Smith", "J. Smith"],
     "is_dead": false,
     "current_addresses": [
@@ -44,7 +45,7 @@ A successful request returns matching person records:
       { "id": "R5432109876", "address": "123 Main St, New York, NY 10001" }
     ],
     "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
-    "emails": ["john.smith@example.com"],
+    "emails": [{ "address": "john.smith@example.com", "score": 88 }],
     "date_of_birth": "1985-03-15",
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
@@ -59,10 +60,10 @@ Each record includes identifiers, addresses, phone numbers, emails, employment i
 </Step>
 </Steps>
 
-<Callout type="info" title="Understanding Phone Scores">
-  Each phone number includes a **score** indicating **relative confidence** in
-  the record's accuracy. A Higher score means that a number is more likely to be
-  accurate than a lower score.
+<Callout type="info" title="Confidence Scores">
+  Person records, phone numbers, and email addresses each include a **score**
+  (0–100) indicating confidence of association. See [Confidence
+  Scores](/documentation/person-search/confidence-scores) for details.
 </Callout>
 
 ## Request Parameters
@@ -94,7 +95,7 @@ Combine any of these parameters to refine your search:
 **Example with multiple parameters:**
 
 ```
-https://api.whitepages.com/v1/person?name=John%20Smith&zipcode=10001
+https://api.whitepages.com/v2/person?name=John%20Smith&zipcode=10001
 ```
 
 ## Response Codes

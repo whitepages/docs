@@ -20,7 +20,7 @@
               }
             ],
             "url": {
-              "raw": "https://api.whitepages.com/v1/person",
+              "raw": "https://api.whitepages.com/v2/person",
               "protocol": "https",
               "host": ["api", "whitepages", "com"],
               "path": ["v1", "person"],
@@ -120,7 +120,7 @@
               }
             ],
             "url": {
-              "raw": "https://api.whitepages.com/v1/person/:id",
+              "raw": "https://api.whitepages.com/v2/person/:id",
               "protocol": "https",
               "host": ["api", "whitepages", "com"],
               "path": ["v1", "person", ":id"]
@@ -145,7 +145,7 @@
               }
             ],
             "url": {
-              "raw": "https://api.whitepages.com/v1/property?street=",
+              "raw": "https://api.whitepages.com/v2/property?street=",
               "protocol": "https",
               "host": ["api", "whitepages", "com"],
               "path": ["v1", "property"],
@@ -195,7 +195,7 @@
               }
             ],
             "url": {
-              "raw": "https://api.whitepages.com/v1/account/usage?start_date=&end_date=",
+              "raw": "https://api.whitepages.com/account/usage?start_date=&end_date=",
               "protocol": "https",
               "host": ["api", "whitepages", "com"],
               "path": ["v1", "account", "usage"],

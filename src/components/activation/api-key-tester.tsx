@@ -34,7 +34,7 @@ const MOCK_DATA = [
     emails: [
       {
         address: "john.smith@email.com",
-        is_primary: true,
+        score: 88,
       },
     ],
   },

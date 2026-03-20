@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
   const queryString = searchParams.toString();
-  const url = `https://api.whitepages.com/v1/person?${queryString}`;
+  const url = `https://api.whitepages.com/v2/person?${queryString}`;
 
   try {
     const response = await fetch(url, {

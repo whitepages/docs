@@ -18,7 +18,7 @@ Use individual name parameters when:
 Find all people with a specific last name in a location:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?last_name=Smith&city=Seattle&state_code=WA' \
+curl 'https://api.whitepages.com/v2/person?last_name=Smith&city=Seattle&state_code=WA' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -27,7 +27,7 @@ curl 'https://api.whitepages.com/v1/person?last_name=Smith&city=Seattle&state_co
 When you know both first and last name but want to match regardless of middle name:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?first_name=John&last_name=Smith&state_code=NY' \
+curl 'https://api.whitepages.com/v2/person?first_name=John&last_name=Smith&state_code=NY' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -36,7 +36,7 @@ curl 'https://api.whitepages.com/v1/person?first_name=John&last_name=Smith&state
 For more precise matching when you have complete name information:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?first_name=John&middle_name=Robert&last_name=Smith&zipcode=10001' \
+curl 'https://api.whitepages.com/v2/person?first_name=John&middle_name=Robert&last_name=Smith&zipcode=10001' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 

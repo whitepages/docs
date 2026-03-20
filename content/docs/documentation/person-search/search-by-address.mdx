@@ -10,7 +10,7 @@ Use address parameters to find people associated with a specific location. By de
 Search for people at a specific address:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA' \
+curl 'https://api.whitepages.com/v2/person?street=123%20Main%20St&city=Seattle&state_code=WA' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -21,7 +21,7 @@ This returns people whose **current address** matches the search criteria.
 To search both current and historical addresses, set `include_historical_locations=true`:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?street=123%20Main%20St&city=Seattle&state_code=WA&include_historical_locations=true' \
+curl 'https://api.whitepages.com/v2/person?street=123%20Main%20St&city=Seattle&state_code=WA&include_historical_locations=true' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -44,7 +44,7 @@ This returns people who currently live at the address **or** have previously liv
 Find people in a specific ZIP code:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?zipcode=98101' \
+curl 'https://api.whitepages.com/v2/person?zipcode=98101' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -53,7 +53,7 @@ curl 'https://api.whitepages.com/v1/person?zipcode=98101' \
 Find people in a specific city:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR' \
+curl 'https://api.whitepages.com/v2/person?city=Portland&state_code=OR' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -62,7 +62,7 @@ curl 'https://api.whitepages.com/v1/person?city=Portland&state_code=OR' \
 Find anyone who has ever lived at an address:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Denver&state_code=CO&zipcode=80202&include_historical_locations=true' \
+curl 'https://api.whitepages.com/v2/person?street=456%20Oak%20Ave&city=Denver&state_code=CO&zipcode=80202&include_historical_locations=true' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -71,7 +71,7 @@ curl 'https://api.whitepages.com/v1/person?street=456%20Oak%20Ave&city=Denver&st
 Find a specific person at an address:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?name=John%20Smith&street=789%20Pine%20St&city=Austin&state_code=TX&include_historical_locations=true' \
+curl 'https://api.whitepages.com/v2/person?name=John%20Smith&street=789%20Pine%20St&city=Austin&state_code=TX&include_historical_locations=true' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -103,7 +103,7 @@ The response includes both current and historical addresses for each person foun
       { "id": "R5432109876", "address": "123 Main St, Seattle, WA 98101" }
     ],
     "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
-    "emails": ["john.smith@example.com"],
+    "emails": [{ "address": "john.smith@example.com", "score": 88 }],
     "date_of_birth": "1985-03-15",
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
@@ -117,4 +117,29 @@ The response includes both current and historical addresses for each person foun
   When `include_historical_locations=true`, the search matches against both
   `current_addresses` and `historic_addresses`. The response always includes
   both fields regardless of the search setting.
+</Callout>
+
+## Address Standardization (CASS)
+
+Person addresses in the Whitepages dataset are processed through **CASS certification** (Coding Accuracy Support System), the USPS address standardization program. All addresses are run through SmartyStreets to normalize formatting and assign a validity status before being stored.
+
+This means:
+
+- Addresses are in a **consistent format** regardless of how they were originally recorded
+- Every address has a **validity status** indicating how well it was verified
+
+### Validity Status
+
+| Status              | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `valid`             | Address fully verified and deliverable                       |
+| `missing_secondary` | Valid street address but missing a unit or apartment number  |
+| `invalid_secondary` | Unit or apartment number provided but does not match records |
+| `invalid_primary`   | Street number could not be confirmed                         |
+| `invalid`           | Address could not be verified                                |
+
+<Callout type="info">
+  Addresses with a non-`valid` status are still included in results. For
+  example, `missing_secondary` addresses are real, occupied locations that
+  simply lack a unit identifier in the data — they are not excluded.
 </Callout>

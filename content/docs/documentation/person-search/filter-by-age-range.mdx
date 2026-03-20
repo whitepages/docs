@@ -10,7 +10,7 @@ Use the `min_age` and `max_age` parameters to filter person search results by ag
 Add `min_age` and/or `max_age` to your request to filter results:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v1/person?name=John%20Smith&min_age=25&max_age=45' \
+curl 'https://api.whitepages.com/v2/person?name=John%20Smith&min_age=25&max_age=45' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -35,7 +35,7 @@ This returns only records for individuals between 25 and 45 years old.
 Filter for individuals 21 years or older:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?name=Jane%20Doe&city=Chicago&state_code=IL&min_age=21' \
+curl 'https://api.whitepages.com/v2/person?name=Jane%20Doe&city=Chicago&state_code=IL&min_age=21' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -44,7 +44,7 @@ curl 'https://api.whitepages.com/v1/person?name=Jane%20Doe&city=Chicago&state_co
 Filter for individuals 40 or younger:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?last_name=Johnson&state_code=FL&max_age=40' \
+curl 'https://api.whitepages.com/v2/person?last_name=Johnson&state_code=FL&max_age=40' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -53,7 +53,7 @@ curl 'https://api.whitepages.com/v1/person?last_name=Johnson&state_code=FL&max_a
 Filter for individuals between 25 and 55:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?name=Michael%20Williams&zipcode=90210&min_age=25&max_age=55' \
+curl 'https://api.whitepages.com/v2/person?name=Michael%20Williams&zipcode=90210&min_age=25&max_age=55' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -62,7 +62,7 @@ curl 'https://api.whitepages.com/v1/person?name=Michael%20Williams&zipcode=90210
 Age filters work alongside all other person search parameters:
 
 ```bash
-curl 'https://api.whitepages.com/v1/person?first_name=Sarah&last_name=Miller&city=Seattle&state_code=WA&min_age=30&max_age=50' \
+curl 'https://api.whitepages.com/v2/person?first_name=Sarah&last_name=Miller&city=Seattle&state_code=WA&min_age=30&max_age=50' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
@@ -90,7 +90,7 @@ The response format remains the same as a standard person search. Age filters on
     ],
     "owned_properties": [],
     "phones": [{ "number": "(312) 555-0123", "type": "mobile", "score": 88 }],
-    "emails": ["jsmith@example.com"],
+    "emails": [{ "address": "jsmith@example.com", "score": 88 }],
     "date_of_birth": "1992-07-22",
     "linkedin_url": "https://linkedin.com/in/jsmith",
     "company_name": "Tech Solutions Inc",

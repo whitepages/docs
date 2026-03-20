@@ -1,4 +1,4 @@
 {
-  "title": "Property",
-  "pages": ["get_property_by_address"]
+  "title": "Property Endpoints",
+  "pages": ["get_property_by_id", "search_property"]
 }
