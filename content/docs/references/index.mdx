@@ -26,41 +26,44 @@ Account management endpoints for retrieving usage statistics.
 
 <Cards>
   <Card
+    title="Search all deed events"
+    description="Search historical deed events by region and optional filters."
+    href="/references/events/search_events"
+  />
+  <Card
     title="Retrieve a single event by ID"
     description="Return a single event by its unique identifier."
     href="/references/events/get_event"
   />
 </Cards>
 
-## Person API
-
-Search for individuals by name, phone number, and address.
+## Person V2 API
 
 <Cards>
   <Card
     title="Search for a person by name, phone number, and address"
-    description="Retrieve person information based on the provided query parameters."
-    href="/references/person/search_person_by_name_phone_or_address"
+    description="Retrieve person information with match scores and enriched emails."
+    href="/references/person-v2/search_person_by_name_phone_or_address_v2"
   />
   <Card
     title="Gets person details by id"
     description="Retrieve detailed person information by Whitepages person ID."
-    href="/references/person/get_person_by_id"
+    href="/references/person-v2/get_person_by_id_v2"
   />
 </Cards>
 
-## Property API
+## Property V2 API
 
 <Cards>
   <Card
     title="Get property details by ID"
     description="Retrieve detailed property information by Whitepages property ID."
-    href="/references/property/get_property_by_id"
+    href="/references/property-v2/get_property_by_id_v2"
   />
   <Card
     title="Search for property by address"
     description="Search for property by address parameters."
-    href="/references/property/search_property"
+    href="/references/property-v2/search_property_v2"
   />
 </Cards>
 
@@ -81,35 +84,37 @@ Search for individuals by name, phone number, and address.
 
 ## Webhooks API
 
+Manage webhook subscriptions for near-live property event notifications. Register an HTTPS endpoint, choose an event type and geographic region, and receive POST notifications when matching events occur. Currently supports `deed.*` events in Texas counties.
+
 <Cards>
   <Card
     title="Create a webhook subscription"
-    description="Register a new webhook subscription for property events."
+    description="Register a new webhook subscription for property events. The endpoint URL is validated on creation — it must be reachable and return a 2xx response. Currently supports `deed.*` events scoped to Texas counties."
     href="/references/webhooks/create_webhook"
   />
   <Card
     title="List webhook subscriptions"
-    description="List webhook subscriptions with optional filtering."
+    description="List all webhook subscriptions for the authenticated account. Optionally filter by status or event type."
     href="/references/webhooks/list_webhooks"
   />
   <Card
     title="Get a webhook subscription"
-    description="Retrieve a webhook subscription by ID."
+    description="Retrieve a single webhook subscription by its ID."
     href="/references/webhooks/get_webhook"
   />
   <Card
     title="Update a webhook subscription"
-    description="Apply a partial update to a webhook subscription."
+    description="Partially update a webhook subscription. Only provided fields are modified; omitted fields remain unchanged."
     href="/references/webhooks/update_webhook"
   />
   <Card
     title="Delete a webhook subscription"
-    description="Permanently delete a webhook subscription."
+    description="Permanently delete a webhook subscription. This action cannot be undone."
     href="/references/webhooks/delete_webhook"
   />
   <Card
     title="Test a webhook delivery"
-    description="Send a mock event payload to the webhook endpoint."
+    description="Send a synthetic notification to the webhook endpoint. Uses the same payload format as real deliveries with a fixed event ID."
     href="/references/webhooks/test_webhook"
   />
 </Cards>

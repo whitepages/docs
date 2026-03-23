@@ -1,6 +1,5 @@
 {
-  "title": "Webhook Endpoints",
-  "defaultOpen": true,
+  "title": "Webhooks",
   "pages": [
     "create_webhook",
     "list_webhooks",

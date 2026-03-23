@@ -1,13 +1,18 @@
 import { generateFiles } from "fumadocs-openapi";
 import { createOpenAPI } from "fumadocs-openapi/server";
 import type { OpenAPISpec } from "./openapi.types";
-import { extractTagGroups, tagToDirectoryName } from "./openapi.utils";
+import {
+  DEPRECATED_TAGS,
+  extractTagGroups,
+  tagToDirectoryName,
+  tagToDisplayName,
+} from "./openapi.utils";
 import { generateRoutesPageMarkdown } from "./openapi.handler";
 
 const OPENAPI_URL = "https://api.whitepages.com/openapi.json";
 const OUTPUT_DIR = "./content/docs/references";
 
-async function fetchOpenAPISpec(): Promise<OpenAPISpec> {
+async function fetchOpenApiSpec(): Promise<OpenAPISpec> {
   const response = await fetch(OPENAPI_URL);
 
   if (!response.ok) {
@@ -24,11 +29,21 @@ async function generateApiEndpointDocs(): Promise<void> {
     input: openapi,
     output: OUTPUT_DIR,
     groupBy: "tag",
+    beforeWrite(files) {
+      const deprecatedDirectories = DEPRECATED_TAGS.map(tagToDirectoryName);
+      const nonDeprecatedFiles = files.filter(
+        (file) =>
+          !deprecatedDirectories.some((directory) =>
+            file.path.startsWith(`${directory}/`),
+          ),
+      );
+      files.splice(0, files.length, ...nonDeprecatedFiles);
+    },
   });
 }
 
-async function generateRoutesPage(spec: OpenAPISpec): Promise<void> {
-  const tagGroups = extractTagGroups(spec);
+async function generateRoutesPage(openApiSpec: OpenAPISpec): Promise<void> {
+  const tagGroups = extractTagGroups(openApiSpec);
   const routesContent = generateRoutesPageMarkdown(tagGroups);
 
   const routesPath = `${OUTPUT_DIR}/index.mdx`;
@@ -36,20 +51,20 @@ async function generateRoutesPage(spec: OpenAPISpec): Promise<void> {
   console.log(`Generated: ${routesPath}`);
 }
 
-async function generateMetaFiles(spec: OpenAPISpec): Promise<void> {
-  const tagGroups = extractTagGroups(spec);
+async function generateMetaFiles(openApiSpec: OpenAPISpec): Promise<void> {
+  const tagGroups = extractTagGroups(openApiSpec);
 
-  for (const group of tagGroups) {
-    const directoryName = tagToDirectoryName(group.name);
+  for (const tagGroup of tagGroups) {
+    const directoryName = tagToDirectoryName(tagGroup.name);
     const metaPath = `${OUTPUT_DIR}/${directoryName}/meta.json`;
 
-    const pages = group.routes.map((route) => {
-      const parts = route.href.split("/");
-      return parts[parts.length - 1];
+    const pages = tagGroup.routes.map((route) => {
+      const hrefSegments = route.href.split("/");
+      return hrefSegments[hrefSegments.length - 1];
     });
 
     const metaContent = {
-      title: group.name,
+      title: tagToDisplayName(tagGroup.name),
       pages: pages,
     };
 
@@ -58,11 +73,19 @@ async function generateMetaFiles(spec: OpenAPISpec): Promise<void> {
   }
 }
 
+async function cleanupDeprecatedDirectories(): Promise<void> {
+  for (const tag of DEPRECATED_TAGS) {
+    const directoryPath = `${OUTPUT_DIR}/${tagToDirectoryName(tag)}`;
+    await Bun.$`rm -rf ${directoryPath}`;
+  }
+}
+
 async function main(): Promise<void> {
-  const spec = await fetchOpenAPISpec();
+  const openApiSpec = await fetchOpenApiSpec();
+  await cleanupDeprecatedDirectories();
   await generateApiEndpointDocs();
-  await generateRoutesPage(spec);
-  await generateMetaFiles(spec);
+  await generateRoutesPage(openApiSpec);
+  await generateMetaFiles(openApiSpec);
 }
 
 void main();
