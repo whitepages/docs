@@ -118,6 +118,11 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Rename Property Endpoints category to Property by @KevinEdry in #27
+- Update changelog by @github-actions[bot]
+
+## Refactor
+
+- **docs:** Improve openapi generator and migrate to v2 endpoints by @KevinEdry in #28
 
 ## Styling
 
