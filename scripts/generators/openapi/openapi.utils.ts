@@ -1,7 +1,11 @@
 import type { OpenAPISpec, TagGroup } from "./openapi.types";
 
-// Tags to exclude from automatic generation (deprecated APIs)
-const DEPRECATED_TAGS = ["Property"];
+export const DEPRECATED_TAGS = ["Property", "Person"];
+
+const TAG_DISPLAY_NAMES: Record<string, string> = {
+  "Person V2": "Person",
+  "Property V2": "Property",
+};
 
 export function slugify(text: string): string {
   return text
@@ -14,10 +18,16 @@ export function tagToDirectoryName(tagName: string): string {
   return tagName.toLowerCase().replace(/\s+/g, "-");
 }
 
-function createTagGroupsFromSpec(spec: OpenAPISpec): Map<string, TagGroup> {
+export function tagToDisplayName(tagName: string): string {
+  return TAG_DISPLAY_NAMES[tagName] ?? tagName;
+}
+
+function createTagGroupsFromSpec(
+  openApiSpec: OpenAPISpec,
+): Map<string, TagGroup> {
   const tagGroups = new Map<string, TagGroup>();
 
-  for (const tag of spec.tags ?? []) {
+  for (const tag of openApiSpec.tags ?? []) {
     if (DEPRECATED_TAGS.includes(tag.name)) {
       continue;
     }
@@ -33,10 +43,10 @@ function createTagGroupsFromSpec(spec: OpenAPISpec): Map<string, TagGroup> {
 }
 
 function addRoutesToTagGroups(
-  spec: OpenAPISpec,
+  openApiSpec: OpenAPISpec,
   tagGroups: Map<string, TagGroup>,
 ): void {
-  for (const [, methods] of Object.entries(spec.paths)) {
+  for (const methods of Object.values(openApiSpec.paths)) {
     for (const [method, operation] of Object.entries(methods)) {
       if (method === "parameters") continue;
 
@@ -47,14 +57,20 @@ function addRoutesToTagGroups(
       }
 
       const operationId = operation.operationId ?? `${method}_${tagName}`;
+      const existingGroup = tagGroups.get(tagName);
+      const tagGroup = existingGroup ?? {
+        name: tagName,
+        description: "",
+        routes: [],
+      };
 
-      if (!tagGroups.has(tagName)) {
-        tagGroups.set(tagName, { name: tagName, description: "", routes: [] });
+      if (!existingGroup) {
+        tagGroups.set(tagName, tagGroup);
       }
 
       const directoryName = tagToDirectoryName(tagName);
 
-      tagGroups.get(tagName)!.routes.push({
+      tagGroup.routes.push({
         title: operation.summary ?? operationId,
         description: operation.description?.split("\n")[0] ?? "",
         href: `/references/${directoryName}/${slugify(operationId)}`,
@@ -63,9 +79,9 @@ function addRoutesToTagGroups(
   }
 }
 
-export function extractTagGroups(spec: OpenAPISpec): TagGroup[] {
-  const tagGroups = createTagGroupsFromSpec(spec);
-  addRoutesToTagGroups(spec, tagGroups);
+export function extractTagGroups(openApiSpec: OpenAPISpec): TagGroup[] {
+  const tagGroups = createTagGroupsFromSpec(openApiSpec);
+  addRoutesToTagGroups(openApiSpec, tagGroups);
 
   return Array.from(tagGroups.values())
     .filter((tag) => tag.routes.length > 0)
