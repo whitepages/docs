@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Correct API query parameters for person search by @KevinEdry in #8
 - Align event and webhook guides with OpenAPI spec by @KevinEdry in #16
 - Update support email from support@whitepages.com to api@whitepages.com by @KevinEdry
+- **docs:** Set search API url to include basePath by @KevinEdry in #29
 
 ## Documentation
 
@@ -118,6 +119,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Rename Property Endpoints category to Property by @KevinEdry in #27
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
 ## Refactor
