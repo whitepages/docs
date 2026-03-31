@@ -75,7 +75,15 @@ export default function Layout({ children }: LayoutProps<"/">) {
             </span>
           </a>
         </Banner>
-        <RootProvider>{children}</RootProvider>
+        <RootProvider
+          search={{
+            options: {
+              api: "/docs/api/search",
+            },
+          }}
+        >
+          {children}
+        </RootProvider>
         <CookieConsentBanner />
       </body>
     </html>
