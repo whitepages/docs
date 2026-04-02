@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - Add support and incident response reference page by @KevinEdry in #11
 - Clarify webhook regions and remove v2 from property label by @KevinEdry
 - Update banner copy to use 'live' instead of 'real-time' by @KevinEdry in #19
+- Add fuzzy matching documentation for person search by @lhagenWP in #30
 
 ## Features
 
@@ -119,6 +120,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **docs:** Rename Property Endpoints category to Property by @KevinEdry in #27
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
