@@ -1,0 +1,49 @@
+---
+title: Fuzzy Matching
+description: Broaden person search results with phonetic, nickname, and misspelling matching
+---
+
+Use the `include_fuzzy_matching` parameter to enable fuzzy name matching. When enabled, the search runs additional phonetic, nickname, and common misspelling matching logic at the cost of additional latency.
+
+## Basic Usage
+
+Add `include_fuzzy_matching=true` to your request:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/person?name=John%20Doe&city=New%20York&state_code=NY&include_fuzzy_matching=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Without fuzzy matching, this search may return no results if the name doesn't exactly match a record. With fuzzy matching enabled, the search can find records with phonetic variations, nicknames, and common misspellings.
+
+## Parameters
+
+| Parameter                | Type    | Default | Description                                          |
+| ------------------------ | ------- | ------- | ---------------------------------------------------- |
+| `include_fuzzy_matching` | boolean | `false` | Enable fuzzy name matching to broaden search results |
+
+## How It Works
+
+When `include_fuzzy_matching=true`, the search expands name matching to include:
+
+- **Phonetic variations** — names that sound similar (e.g., "Tomas" matching "Thomas")
+- **Nicknames** — common name variants (e.g., "Bob" matching "Robert")
+- **Initials** — first or middle initial matching against full names
+
+Exact name matches are still ranked higher than fuzzy matches, so precise results appear first in the response.
+
+<Callout type="info" title="Confidence Scores">
+  Fuzzy matches typically receive lower [confidence
+  scores](/documentation/person-search/confidence-scores) than exact matches. An
+  exact name match scores higher than a phonetic or nickname match for the same
+  record.
+</Callout>
+
+<Callout type="warn" title="Latency">
+  Fuzzy matching runs additional matching logic and may increase response time
+  compared to exact matching.
+</Callout>
+
+## Response
+
+The response format remains the same as a standard person search. Fuzzy matching only affects which records are returned and their confidence scores, not the structure of the response.
