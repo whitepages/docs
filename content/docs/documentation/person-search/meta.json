@@ -8,6 +8,7 @@
     "search-by-radius",
     "reverse-phone-lookup",
     "fuzzy-matching",
+    "pagination",
     "confidence-scores"
   ],
   "defaultOpen": true
