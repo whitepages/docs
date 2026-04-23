@@ -1,0 +1,147 @@
+---
+title: Changelog
+description: Notable changes to the Whitepages API, newest first.
+---
+
+---
+
+## April 22, 2026
+
+### Pagination on v2 person search
+
+The v2 person search endpoint now supports pagination. Use `page` (1–10, default 1)
+and `page_size` (1–15, default 15) to page through results. Every response now
+includes a `metadata` object:
+
+```json
+{
+  "results": [...],
+  "metadata": {
+    "result_count": 432,
+    "page": 1,
+    "page_size": 15
+  }
+}
+```
+
+`result_count` reflects the total number of matching records for your query.
+See the [pagination guide](/documentation/person-search/pagination) for details.
+
+---
+
+## April 2, 2026
+
+### Fuzzy name matching
+
+Person search now accepts `include_fuzzy_matching=true` to broaden results with
+phonetic, nickname, and misspelling matching. See the [fuzzy matching guide](/documentation/person-search/fuzzy-matching).
+
+---
+
+## March 26, 2026
+
+### Email as a search parameter
+
+Person search now accepts an `email` address alongside name, phone, and address.
+
+---
+
+## March 25, 2026
+
+### Address field breakdown
+
+Address objects in person responses now include discrete fields — `line1`, `city`,
+`state`, and `zip` — in addition to the formatted address string.
+
+---
+
+## March 12, 2026
+
+### v2 person search and detail endpoints
+
+The v2 person search (`GET /v2/person/`) and detail (`GET /v2/person/{id}`)
+endpoints are now available. v2 responses include enriched data:
+
+- `current_addresses` and `historic_addresses` as separate lists
+- `match_score` — a relevance and completeness score from 1–99
+- `matched_by` — which input fields contributed to the match
+- `emails` — email addresses with confidence scores
+
+<Callout type="warn" title="v1 person endpoint deprecation">
+  The v1 person endpoints (`GET /v1/person/` and `GET /v1/person/{id}`) are
+  deprecated. Whitepages will announce a removal date. Migrate to v2 for all new
+  integrations.
+</Callout>
+
+---
+
+## February 20, 2026
+
+### Webhooks for property deed events
+
+Subscribe to real-time property deed events and receive HTTP POST notifications
+when deeds record in your target jurisdictions.
+
+- `POST /v1/webhooks` — create a subscription
+- `GET /v1/webhooks` — list subscriptions
+- `PUT /v1/webhooks/{id}` — update a subscription
+- `DELETE /v1/webhooks/{id}` — remove a subscription
+- `POST /v1/webhooks/{id}/test` — send a test delivery
+
+See the [Webhook Quickstart](/documentation/webhooks/quickstart) for setup instructions.
+
+---
+
+## February 18, 2026
+
+### Regions endpoint
+
+`GET /v1/regions/states` and `GET /v1/regions/states/{state}/counties` return
+the list of supported states and counties, including a `webhook_available` field
+indicating which jurisdictions support deed event delivery.
+
+---
+
+## February 11, 2026
+
+### Address confidence scores
+
+Address objects in person responses now include a `score` field (0–100) indicating
+confidence in the address association with the person.
+
+---
+
+## January 9, 2026
+
+### Search by geographic radius
+
+Person search now accepts a `radius` parameter (in miles) alongside an address
+to restrict results to records within that distance. See the [search by radius guide](/documentation/person-search/search-by-radius).
+
+---
+
+## December 11, 2025
+
+### Age range filter
+
+Person search accepts `min_age` and `max_age` parameters (18–65) to filter
+results to people within a specific age range.
+
+---
+
+## December 9, 2025
+
+### Component name parameters
+
+In addition to `name`, person search now accepts `first_name`, `middle_name`,
+and `last_name` as discrete parameters. `name` and the component parameters
+are mutually exclusive.
+
+---
+
+## November 21, 2025
+
+### Historical locations
+
+Person search accepts `include_historical_locations=true` to include past
+addresses in address matching. By default, only current addresses are considered.
