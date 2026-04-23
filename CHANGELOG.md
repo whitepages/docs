@@ -69,6 +69,7 @@ All notable changes to this project will be documented in this file.
 - **docs:** Replace zaraz consent with cookie consent banner by @KevinEdry in #24
 - **docs:** Add New York as a supported region
 - **docs:** Migrate to v2 person API and improve data docs (#26) by @KevinEdry in #26
+- Add changelog page and update banner by @lhagenWP
 
 ## Miscellaneous
 
@@ -129,6 +130,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Regenerate API reference files by @lhagenWP
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
 ## Refactor
