@@ -1,0 +1,86 @@
+---
+title: Pagination
+description: Page through person search results using the page and page_size parameters
+---
+
+Person search returns up to 15 results per request by default. Use the `page` and `page_size` parameters to retrieve additional results when a query matches more records than a single page can return.
+
+## Basic Usage
+
+Add `page=2` to retrieve the second page of results for the same query:
+
+```bash title="Page 1 (default)"
+curl 'https://api.whitepages.com/v2/person/?name=John%20Smith&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```bash title="Page 2"
+curl 'https://api.whitepages.com/v2/person/?name=John%20Smith&state_code=WA&page=2' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Keep all other query parameters the same across pages to retrieve consistent, ordered results.
+
+## Parameters
+
+| Parameter   | Type    | Default | Range | Description                |
+| ----------- | ------- | ------- | ----- | -------------------------- |
+| `page`      | integer | `1`     | 1–10  | Page number (1-indexed)    |
+| `page_size` | integer | `15`    | 1–15  | Number of results per page |
+
+## Response
+
+Each response includes a `metadata` object alongside the results:
+
+```json
+{
+  "results": [...],
+  "metadata": {
+    "result_count": 432,
+    "page": 2,
+    "page_size": 15
+  }
+}
+```
+
+| Field          | Description                                |
+| -------------- | ------------------------------------------ |
+| `result_count` | Total number of records matching the query |
+| `page`         | The current page number                    |
+| `page_size`    | The number of results per page             |
+
+Use `result_count` to determine whether additional pages are available. If `result_count` is greater than `page × page_size`, there are more results on the next page.
+
+## Iterating Through Pages
+
+```bash title="Iterate through all pages"
+PAGE=1
+while true; do
+  RESPONSE=$(curl -s \
+    "https://api.whitepages.com/v2/person/?name=John%20Smith&state_code=WA&page=$PAGE" \
+    --header 'X-Api-Key: YOUR_API_KEY')
+
+  RESULT_COUNT=$(echo "$RESPONSE" | jq '.metadata.result_count')
+  PAGE_SIZE=$(echo "$RESPONSE" | jq '.metadata.page_size')
+  RESULTS=$(echo "$RESPONSE" | jq '.results | length')
+
+  echo "Page $PAGE: $RESULTS results"
+
+  if [ "$((PAGE * PAGE_SIZE))" -ge "$RESULT_COUNT" ]; then
+    break
+  fi
+
+  PAGE=$((PAGE + 1))
+done
+```
+
+<Callout type="info" title="Refine before paginating">
+  Pagination works best with specific queries. If `result_count` is very high,
+  adding filters such as `state_code`, `city`, or `min_age`/`max_age` will
+  narrow results to the most relevant matches before paginating.
+</Callout>
+
+<Callout type="warn" title="Page limit">
+  Results are accessible up to page 10. If your query returns more than 150
+  records, refine your search parameters to narrow the results.
+</Callout>
