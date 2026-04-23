@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - Update banner copy to use 'live' instead of 'real-time' by @KevinEdry in #19
 - Add fuzzy matching documentation for person search by @lhagenWP in #30
 - **deed-feed:** Adding florida to supported regions
+- **person-search:** Add pagination guide by @lhagenWP
 
 ## Features
 
@@ -125,6 +126,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- Regenerate API reference files by @lhagenWP
 
 ## Refactor
 
