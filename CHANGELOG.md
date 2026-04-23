@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - Align event and webhook guides with OpenAPI spec by @KevinEdry in #16
 - Update support email from support@whitepages.com to api@whitepages.com by @KevinEdry
 - **docs:** Set search API url to include basePath by @KevinEdry in #29
+- Keep sidebar scrollbar always visible by @lhagenWP
 
 ## Documentation
 
@@ -128,6 +129,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Regenerate API reference files by @lhagenWP
+- Update changelog by @github-actions[bot]
 
 ## Refactor
 
