@@ -1,6 +1,6 @@
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { Banner } from "fumadocs-ui/components/banner";
 import "./global.css";
+import { ChangelogBanner } from "@/components/layout/changelog-banner";
 import { Roboto } from "next/font/google";
 import type { Metadata } from "next";
 import { Amplitude } from "@/lib/amplitude";
@@ -58,23 +58,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
     <html lang="en" className={roboto.className} suppressHydrationWarning>
       <Amplitude />
       <body className="flex flex-col min-h-screen">
-        <Banner
-          id="webhooks-announcement"
-          variant="normal"
-          className="!bg-fd-primary !text-fd-primary-foreground"
-        >
-          <a
-            href="https://www.whitepages.com/blog/whitepages-live-property-deed-feed"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Introducing Webhooks — Get live property deed updates delivered to
-            you.{" "}
-            <span className="font-semibold underline underline-offset-2">
-              Learn more &rarr;
-            </span>
-          </a>
-        </Banner>
+        <ChangelogBanner />
         <RootProvider
           search={{
             options: {
