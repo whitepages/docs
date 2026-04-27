@@ -35,6 +35,9 @@ async function initAmplitude() {
       formInteractions: false,
       fileDownloads: false,
     },
+    cookieOptions: {
+      domain: ".whitepages.com",
+    },
   }).promise;
 
   amplitude.add(renameEventsEnrichmentPlugin);
