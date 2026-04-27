@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Update support email from support@whitepages.com to api@whitepages.com by @KevinEdry
 - **docs:** Set search API url to include basePath by @KevinEdry in #29
 - Keep sidebar scrollbar always visible by @lhagenWP
+- Scope amplitude device-ID cookie to .whitepages.com by @trichardswp in #35
 
 ## Documentation
 
@@ -130,6 +131,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Regenerate API reference files by @lhagenWP
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
