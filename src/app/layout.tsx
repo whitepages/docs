@@ -56,8 +56,8 @@ export const metadata: Metadata = {
 export default function Layout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={roboto.className} suppressHydrationWarning>
-      <Amplitude />
       <body className="flex flex-col min-h-screen">
+        <Amplitude />
         <ChangelogBanner />
         <RootProvider
           search={{
