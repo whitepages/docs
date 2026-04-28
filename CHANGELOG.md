@@ -20,6 +20,9 @@ All notable changes to this project will be documented in this file.
 - **docs:** Set search API url to include basePath by @KevinEdry in #29
 - Keep sidebar scrollbar always visible by @lhagenWP
 - Scope amplitude device-ID cookie to .whitepages.com by @trichardswp in #35
+- Disable keep_names in wrangler esbuild bundle by @trichardswp
+- Move Amplitude inside body to fix prod hydration by @trichardswp
+- Track Amplitude init with explicit flag by @trichardswp in #36
 
 ## Documentation
 
@@ -134,6 +137,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- **deps:** Bump next to 16.0.11 by @trichardswp
 
 ## Refactor
 
