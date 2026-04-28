@@ -19,13 +19,17 @@ const renameEventsEnrichmentPlugin: amplitude.Types.EnrichmentPlugin = {
   },
 };
 
+let initialized = false;
+
 async function initAmplitude() {
-  if (amplitude.getSessionId() !== -1) return;
+  if (initialized) return;
+  initialized = true;
 
   const apiKey = process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY;
 
   if (!apiKey) {
     console.warn("Amplitude API key not found. Analytics will not be tracked.");
+    initialized = false;
     return;
   }
 
@@ -51,7 +55,7 @@ if (typeof window !== "undefined") {
   document.addEventListener("consentUpdated", ((event: CustomEvent<string>) => {
     if (event.detail === "accepted") {
       initAmplitude();
-    } else if (amplitude.getSessionId() !== -1) {
+    } else if (initialized) {
       amplitude.setOptOut(true);
     }
   }) as EventListener);
