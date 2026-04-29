@@ -4,6 +4,7 @@ import { ChangelogBanner } from "@/components/layout/changelog-banner";
 import { Roboto } from "next/font/google";
 import type { Metadata } from "next";
 import { Amplitude } from "@/lib/amplitude";
+import { GoogleTagManager } from "@/lib/gtm";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
 
 const roboto = Roboto({
@@ -58,6 +59,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
     <html lang="en" className={roboto.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <Amplitude />
+        <GoogleTagManager />
         <ChangelogBanner />
         <RootProvider
           search={{
