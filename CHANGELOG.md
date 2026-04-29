@@ -74,6 +74,7 @@ All notable changes to this project will be documented in this file.
 - **docs:** Add New York as a supported region
 - **docs:** Migrate to v2 person API and improve data docs (#26) by @KevinEdry in #26
 - Add changelog page and update banner by @lhagenWP
+- Load GTM container on docs pages, gated by consent by @trichardswp in #37
 
 ## Miscellaneous
 
@@ -139,6 +140,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 
 ## Refactor
 
