@@ -1,7 +1,7 @@
 "use client";
 
 import * as amplitude from "@amplitude/analytics-browser";
-import { getConsent } from "@/lib/consent";
+import { ConsentEvent, ConsentValue, getConsent } from "@/lib/consent";
 
 const EVENT_NAME_MAP: Record<string, string> = {
   "[Amplitude] Page Viewed": "WPAPIDocsPageViewed",
@@ -48,12 +48,14 @@ async function initAmplitude() {
 }
 
 if (typeof window !== "undefined") {
-  if (getConsent() === "accepted") {
+  if (getConsent() === ConsentValue.Accepted) {
     initAmplitude();
   }
 
-  document.addEventListener("consentUpdated", ((event: CustomEvent<string>) => {
-    if (event.detail === "accepted") {
+  document.addEventListener(ConsentEvent.Updated, ((
+    event: CustomEvent<string>,
+  ) => {
+    if (event.detail === ConsentValue.Accepted) {
       initAmplitude();
     } else if (initialized) {
       amplitude.setOptOut(true);

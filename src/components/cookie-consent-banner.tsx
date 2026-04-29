@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getConsent, setConsent } from "@/lib/consent";
+import { ConsentValue, getConsent, setConsent } from "@/lib/consent";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
@@ -15,12 +15,12 @@ export function CookieConsentBanner() {
   if (!visible) return null;
 
   function handleAccept() {
-    setConsent("accepted");
+    setConsent(ConsentValue.Accepted);
     setVisible(false);
   }
 
   function handleDecline() {
-    setConsent("declined");
+    setConsent(ConsentValue.Declined);
     setVisible(false);
   }
 
