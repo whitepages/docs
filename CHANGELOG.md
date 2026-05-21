@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - **deed-feed:** Adding florida to supported regions
 - **person-search:** Add pagination guide by @lhagenWP
 - Note that pagination consumes additional usage credits by @trichardswp
+- Surface changelog in navbar and note pagination cost by @trichardswp
 
 ## Features
 
@@ -141,6 +142,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
