@@ -45,6 +45,7 @@ All notable changes to this project will be documented in this file.
 - **person-search:** Add pagination guide by @lhagenWP
 - Note that pagination consumes additional usage credits by @trichardswp
 - Surface changelog in navbar and note pagination cost by @trichardswp
+- **refs:** Remove sdk stubs and clarify api key provisioning by @lhagenWP
 
 ## Features
 
@@ -142,6 +143,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
