@@ -5,6 +5,33 @@ description: Notable changes to the Whitepages API, newest first.
 
 ---
 
+## June 1, 2026
+
+### Address ID support on property details
+
+`GET /v2/property/{property_id}` now accepts either a Whitepages property ID
+(`R` prefix) or an address ID (`A` prefix). Address IDs are resolved to the
+associated property before lookup, so you can look up property details directly
+from the address IDs found throughout other API responses.
+
+Not every address ID has full property details, so lookups by address ID may
+return `404`. These responses are not billed.
+
+### Billability changes
+
+Billing rules have been simplified:
+
+- `400 Bad Request` responses are no longer billable on any endpoint.
+- `404 Not Found` responses on `GET /v2/property/{property_id}` are no longer
+  billable, so you can optimistically look up property details by address ID.
+
+`2xx` responses remain billable, as do `404` responses on all other endpoints.
+See [Billing](/references/billing) for the full policy. These changes apply to
+usage from June 1, 2026 onward — usage on or before May 31, 2026 is governed by
+the [prior billing policy](/references/billing-prior-to-2026-06-01).
+
+---
+
 ## April 22, 2026
 
 ### Pagination on v2 person search

@@ -3,6 +3,10 @@ title: Get property details by ID
 description: |-
   Retrieve detailed property information by Whitepages property ID.
 
+  Accepts either a Whitepages property ID (prefix ``R``) or an address ID
+  (prefix ``A``). Address IDs are resolved to the associated property
+  before lookup.
+
   This endpoint returns comprehensive property data including physical
   characteristics, tax assessment information, ownership details, mortgage
   history, predictive insights, and current residents.
@@ -19,6 +23,14 @@ _openapi:
     contents:
       - content: >-
           Retrieve detailed property information by Whitepages property ID.
+
+
+          Accepts either a Whitepages property ID (prefix ``R``) or an address
+          ID
+
+          (prefix ``A``). Address IDs are resolved to the associated property
+
+          before lookup.
 
 
           This endpoint returns comprehensive property data including physical

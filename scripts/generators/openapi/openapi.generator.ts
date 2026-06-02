@@ -2,7 +2,7 @@ import { generateFiles } from "fumadocs-openapi";
 import { createOpenAPI } from "fumadocs-openapi/server";
 import type { OpenAPISpec } from "./openapi.types";
 import {
-  DEPRECATED_TAGS,
+  EXCLUDED_TAGS,
   extractTagGroups,
   tagToDirectoryName,
   tagToDisplayName,
@@ -30,14 +30,14 @@ async function generateApiEndpointDocs(): Promise<void> {
     output: OUTPUT_DIR,
     groupBy: "tag",
     beforeWrite(files) {
-      const deprecatedDirectories = DEPRECATED_TAGS.map(tagToDirectoryName);
-      const nonDeprecatedFiles = files.filter(
+      const excludedDirectories = EXCLUDED_TAGS.map(tagToDirectoryName);
+      const includedFiles = files.filter(
         (file) =>
-          !deprecatedDirectories.some((directory) =>
+          !excludedDirectories.some((directory) =>
             file.path.startsWith(`${directory}/`),
           ),
       );
-      files.splice(0, files.length, ...nonDeprecatedFiles);
+      files.splice(0, files.length, ...includedFiles);
     },
   });
 }
@@ -73,8 +73,8 @@ async function generateMetaFiles(openApiSpec: OpenAPISpec): Promise<void> {
   }
 }
 
-async function cleanupDeprecatedDirectories(): Promise<void> {
-  for (const tag of DEPRECATED_TAGS) {
+async function cleanupExcludedDirectories(): Promise<void> {
+  for (const tag of EXCLUDED_TAGS) {
     const directoryPath = `${OUTPUT_DIR}/${tagToDirectoryName(tag)}`;
     await Bun.$`rm -rf ${directoryPath}`;
   }
@@ -82,7 +82,7 @@ async function cleanupDeprecatedDirectories(): Promise<void> {
 
 async function main(): Promise<void> {
   const openApiSpec = await fetchOpenApiSpec();
-  await cleanupDeprecatedDirectories();
+  await cleanupExcludedDirectories();
   await generateApiEndpointDocs();
   await generateRoutesPage(openApiSpec);
   await generateMetaFiles(openApiSpec);

@@ -2,6 +2,10 @@ import type { OpenAPISpec, TagGroup } from "./openapi.types";
 
 export const DEPRECATED_TAGS = ["Property", "Person"];
 
+export const INTERNAL_TAGS = ["Internal Ledger"];
+
+export const EXCLUDED_TAGS = [...DEPRECATED_TAGS, ...INTERNAL_TAGS];
+
 const TAG_DISPLAY_NAMES: Record<string, string> = {
   "Person V2": "Person",
   "Property V2": "Property",
@@ -28,7 +32,7 @@ function createTagGroupsFromSpec(
   const tagGroups = new Map<string, TagGroup>();
 
   for (const tag of openApiSpec.tags ?? []) {
-    if (DEPRECATED_TAGS.includes(tag.name)) {
+    if (EXCLUDED_TAGS.includes(tag.name)) {
       continue;
     }
 
@@ -52,7 +56,7 @@ function addRoutesToTagGroups(
 
       const tagName = operation.tags?.[0] ?? "default";
 
-      if (DEPRECATED_TAGS.includes(tagName)) {
+      if (EXCLUDED_TAGS.includes(tagName)) {
         continue;
       }
 
