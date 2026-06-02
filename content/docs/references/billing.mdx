@@ -8,30 +8,48 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 API usage is tracked and billed based on successful requests.
 
+<Callout type="warn" title="Policy change effective June 1, 2026">
+  The billing rules below apply to usage from June 1, 2026 onward. For usage on
+  or before May 31, 2026, see the [Billing Policy For Usage Prior to
+  2026-06-01](/references/billing-prior-to-2026-06-01).
+</Callout>
+
 ## Billing Rules
 
-| Response Type      | Billable |
-| ------------------ | -------- |
-| 2xx (Success)      | Yes      |
-| 4xx (Client Error) | Yes      |
-| 5xx (Server Error) | No       |
-| 429 (Rate Limit)   | No       |
+| Response Type      | Billable                                     |
+| ------------------ | -------------------------------------------- |
+| 2xx (Success)      | Yes                                          |
+| 404 (Not Found)    | Yes, except `GET /v2/property/{property_id}` |
+| 400 (Bad Request)  | No                                           |
+| 403 (Forbidden)    | No                                           |
+| 429 (Rate Limit)   | No                                           |
+| 5xx (Server Error) | No                                           |
 
 <Callout type="info">
-  Only requests to Person and Property endpoints are charged. Account endpoints
-  are not billable.
+  All Person and Property endpoints are billable, across every API version (v1
+  and v2). Account, Regions, Events, and Webhooks endpoints are not billable.
 </Callout>
 
 ## Billable Requests
 
-All `2xx` (success) and `4xx` (client error) responses from Person and Property endpoints are charged to your account.
+The following responses from Person and Property endpoints, in any API version, are charged to your account:
+
+- All `2xx` (success) responses
+- `404` (not found) responses, except on `GET /v2/property/{property_id}`
 
 ## Non-Billable Requests
 
 The following responses are **not** charged:
 
-- `5xx` (server error) responses - issues on our end
+- `400` (bad request) responses - missing or invalid parameters
+- `403` (forbidden) responses - even when an API key is provided
+- `404` (not found) responses on `GET /v2/property/{property_id}`
 - `429` (rate limit) responses - when you've exceeded rate limits
+- `5xx` (server error) responses - issues on our end
+
+### Property details lookups and 404s
+
+`GET /v2/property/{property_id}` accepts either a Whitepages property ID (`R` prefix) or an address ID (`A` prefix). Not every address ID has full property details, so these lookups may return `404`. Because `404` responses on this endpoint are never billed, you can optimistically look up property details for the address IDs you encounter throughout other API responses.
 
 ## Billing Period
 

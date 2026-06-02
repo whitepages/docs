@@ -146,6 +146,21 @@ https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&zi
 https://api.whitepages.com/v2/property/RVMKL8l80mK
 ```
 
+## Property Details by ID
+
+The property details endpoint accepts either a Whitepages property ID (`R` prefix) or an address ID (`A` prefix). Address IDs are resolved to the associated property before lookup, so you can pass the address IDs found throughout other API responses directly:
+
+```
+https://api.whitepages.com/v2/property/{property_id_or_address_id}
+```
+
+<Callout type="info">
+  Not every address ID has full property details, so lookups by address ID may
+  return `404`. These responses are not billed — see
+  [Billing](/references/billing) — so you can optimistically look up property
+  details for any address ID you encounter.
+</Callout>
+
 ## Address Standardization
 
 Property addresses (both physical and mailing) are **not** processed through CASS certification. Property address data is sourced directly from county assessor and recorder records and is stored as-received without USPS standardization.

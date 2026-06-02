@@ -1,0 +1,46 @@
+---
+title: Billing Policy For Usage Prior to 2026-06-01
+description: Billing rules that applied to usage on or before May 31, 2026.
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+<Callout type="warn" title="Archived policy">
+  This policy applies only to usage on or before May 31, 2026. For usage from
+  June 1, 2026 onward, see the current [Billing](/references/billing) policy.
+</Callout>
+
+API usage was tracked and billed based on successful requests.
+
+## Billing Rules
+
+| Response Type      | Billable |
+| ------------------ | -------- |
+| 2xx (Success)      | Yes      |
+| 4xx (Client Error) | Yes      |
+| 5xx (Server Error) | No       |
+| 429 (Rate Limit)   | No       |
+
+<Callout type="info">
+  Only requests to Person and Property endpoints were charged. Account endpoints
+  were not billable.
+</Callout>
+
+## Billable Requests
+
+All `2xx` (success) and `4xx` (client error) responses from Person and Property endpoints were charged to your account.
+
+## Non-Billable Requests
+
+The following responses were **not** charged:
+
+- `5xx` (server error) responses - issues on our end
+- `429` (rate limit) responses - when you've exceeded rate limits
+
+## Billing Period
+
+Usage was calculated from the start of the month in UTC time. Billing cycles reset on the 1st of each month at 00:00 UTC.
+
+## Support
+
+For billing inquiries about usage during this period, please contact our team at api@whitepages.com.
