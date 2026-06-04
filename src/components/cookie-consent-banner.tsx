@@ -29,7 +29,7 @@ export function CookieConsentBanner() {
       <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
         <p className="text-sm">
           We use cookies to analyze site usage and improve your experience. You
-          can accept or decline analytics cookies.
+          can accept or decline ad cookies.
         </p>
         <div className="flex shrink-0 gap-2">
           <button
