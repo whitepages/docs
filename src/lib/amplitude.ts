@@ -2,19 +2,25 @@
 
 import * as amplitude from "@amplitude/analytics-browser";
 
-const EVENT_NAME_MAP: Record<string, string> = {
-  "[Amplitude] Page Viewed": "WPAPIDocsPageViewed",
-};
+const PAGE_TYPE = "APIDocumentation" as const;
 
-const renameEventsEnrichmentPlugin: amplitude.Types.EnrichmentPlugin = {
-  name: "rename-events",
+const whitepagesPropertiesPlugin: amplitude.Types.EnrichmentPlugin = {
+  name: "whitepages-properties",
   type: "enrichment",
   setup: async () => undefined,
   execute: async (event) => {
-    if (event.event_type && EVENT_NAME_MAP[event.event_type]) {
-      event.event_type = EVENT_NAME_MAP[event.event_type];
-    }
-    return event;
+    const referringUrl = document.referrer;
+    return {
+      ...event,
+      event_properties: {
+        ...event.event_properties,
+        PathName: window.location.pathname,
+        Url: window.location.href,
+        ReferringUrl: referringUrl,
+        ...(referringUrl && { ReferringSite: new URL(referringUrl).hostname }),
+        PageType: PAGE_TYPE,
+      },
+    };
   },
 };
 
@@ -34,7 +40,10 @@ async function initAmplitude() {
 
   await amplitude.init(apiKey, undefined, {
     autocapture: {
-      pageViews: true,
+      pageViews: {
+        trackHistoryChanges: "all",
+        eventType: "ViewedAPIDocumentation",
+      },
       formInteractions: false,
       fileDownloads: false,
     },
@@ -43,7 +52,7 @@ async function initAmplitude() {
     },
   }).promise;
 
-  amplitude.add(renameEventsEnrichmentPlugin);
+  amplitude.add(whitepagesPropertiesPlugin);
 }
 
 if (typeof window !== "undefined") {
