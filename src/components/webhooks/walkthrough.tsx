@@ -571,19 +571,19 @@ export function WebhookWalkthrough() {
           </p>
           <div className="flex flex-wrap gap-3 text-sm">
             <Link
-              href="/docs/documentation/webhooks/create-webhook"
+              href="/documentation/webhooks/create-webhook"
               className="text-green-700 dark:text-green-300 underline underline-offset-2"
             >
               Create Webhook guide
             </Link>
             <Link
-              href="/docs/documentation/events/event-payload"
+              href="/documentation/events/event-payload"
               className="text-green-700 dark:text-green-300 underline underline-offset-2"
             >
               Event payload reference
             </Link>
             <Link
-              href="/docs/documentation/events/event-types"
+              href="/documentation/events/event-types"
               className="text-green-700 dark:text-green-300 underline underline-offset-2"
             >
               Event types
