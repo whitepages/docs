@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Disable keep_names in wrangler esbuild bundle by @trichardswp
 - Move Amplitude inside body to fix prod hydration by @trichardswp
 - Track Amplitude init with explicit flag by @trichardswp in #36
+- Drop /docs prefix from walkthrough completion links by @lhagenWP
 
 ## Documentation
 
@@ -81,6 +82,7 @@ All notable changes to this project will be documented in this file.
 - Load GTM container on docs pages, gated by consent by @trichardswp in #37
 - **amplitude:** Always init regardless of consent in #43
 - Instrument ViewedAPIDocumentation with standardized properties by @nkotolenko-cpu in #44
+- Sectional onboarding tester for first-request page by @lhagenWP
 
 ## Miscellaneous
 
@@ -146,6 +148,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
