@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Move Amplitude inside body to fix prod hydration by @trichardswp
 - Track Amplitude init with explicit flag by @trichardswp in #36
 - Drop /docs prefix from walkthrough completion links by @lhagenWP
+- Correct Claude Code and Cursor MCP install steps by @trichardswp in #46
 
 ## Documentation
 
@@ -148,6 +149,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
