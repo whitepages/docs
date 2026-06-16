@@ -85,6 +85,7 @@ All notable changes to this project will be documented in this file.
 - **amplitude:** Always init regardless of consent in #43
 - Instrument ViewedAPIDocumentation with standardized properties by @nkotolenko-cpu in #44
 - Sectional onboarding tester for first-request page by @lhagenWP
+- **mcp:** Add doc facet frontmatter scheme and versioning IA by @trichardswp in #48
 
 ## Miscellaneous
 
@@ -150,6 +151,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
