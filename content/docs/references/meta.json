@@ -9,6 +9,7 @@
     "rate-limits",
     "billing",
     "support-and-incident-response",
+    "versioning",
     "person-v2",
     "webhooks",
     "events",

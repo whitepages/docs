@@ -1,0 +1,5 @@
+{
+  "title": "Versioning & Breaking Changes",
+  "icon": "GitBranch",
+  "pages": ["breaking-changes-policy", "change-notifications"]
+}
