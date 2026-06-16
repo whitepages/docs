@@ -56,36 +56,66 @@ If you suspect an outage or are experiencing unexpected errors:
 
 We avoid breaking changes at nearly all cost. Backward compatibility is a top priority, and our goal is to minimize disruption to your integrations.
 
-### What We Consider a Breaking Change
-
-- Removing or renaming an existing API endpoint
-- Removing or renaming a field from a response body
-- Changing the type of an existing response field
-- Adding a new required parameter to a request
-- Changing authentication or authorization behavior
-- Modifying error response formats
-
-### What Is Not a Breaking Change
-
-- Adding new optional request parameters
-- Adding new fields to a response body
-- Adding new API endpoints
-- Adding new values to an existing enum field
-- Improvements to error messages (text changes only, not format)
-
-<Callout type="info">
-  We recommend that your integration ignores unknown fields in API responses.
-  This allows us to add new fields without affecting your application.
-</Callout>
-
-### Our Commitment
+### Our Commitments
 
 - **Breaking changes are always introduced in a new API version.** Your existing integration continues to work on the current version.
 - **No unannounced breaking changes.** Every breaking change is communicated in advance.
 - **Minimum 30-day notice** before any breaking change takes effect.
-- **Migration guides** are provided for every breaking change with clear before-and-after examples.
-- **Deprecation notices** are communicated via email and changelog for endpoints scheduled for removal.
-- **Version support** — When a new API version introduces breaking changes, the previous version continues to be supported for at least 3 months.
+- **Migration guides** — as a matter of practice, breaking changes are accompanied by a migration guide with before-and-after examples.
+- **Deprecation notices** are communicated via email and changelog before anything is removed.
+- **Version support** — when a new version introduces breaking changes, the previous version remains available for at least 3 months after the new version is released.
+
+### What We Consider a Breaking Change
+
+- Removing or renaming an endpoint or data tool you call
+- Removing or renaming a field from a response body
+- Changing the type of an existing response field
+- Adding a new required parameter to an endpoint or data tool call
+- Changing authentication or authorization behavior
+- Modifying error response formats
+
+### What We Do Not Consider a Breaking Change
+
+- Adding a new optional request parameter
+- Adding a new tool to the MCP server
+- Adding a new endpoint to the API
+- Adding new fields to an existing response shape we return
+- Adding new values to an existing enumerated field
+- Text or wording changes to error messages or descriptions
+
+<Callout type="info">
+  We recommend that your integration ignores unknown fields in API responses and
+  MCP data-tool responses. This allows us to add new fields without affecting
+  your application.
+</Callout>
+
+The same policy applies wherever we expose the API. What it means in practice depends on the surface you use.
+
+### REST / HTTP Endpoints
+
+Breaking changes ship in a new API version at a new path (for example, `/v2/`), so your current integration keeps working untouched. We announce the change with the notice and support windows above. Within a version, an endpoint's type signature — the parameters it accepts and the fields it returns — only grows: we may add new optional parameters and new response fields, but we do not remove, rename, or change the type of those already there.
+
+### MCP Server & Tools
+
+Our Breaking Changes policy covers only the [MCP server's](/documentation/mcp) **data tools**. Data tools fetch live data or change your account and **require your API key to run** — person search, property lookup, account usage, and the like.
+
+The other tools available via the MCP server are not subject to this Breaking Changes policy, as they are advisory, documentation, or navigation assistance rather than integration points.
+
+Data tools are agent-ready wrappers for the existing REST endpoints, and are therefore governed under the same breaking-changes policy as the rest of the API.
+
+Clarifications for breaking and non-breaking changes within the MCP server:
+
+- Changes to a data tool's **name, inputs, and outputs** are considered breaking changes.
+- All other changes to a tool's description or tool-definition metadata are **not** breaking changes.
+- Data tools are **deprecated and removed on the same schedule as their associated endpoint**, and disappear from the server when the endpoint does.
+- Data tools can be **removed independently of the endpoint**; in that case the tool follows the standard deprecated → removed timeline above (minimum 30-day notice).
+- **Deprecation notices name the exact tools affected**, so you know what a given change touches.
+- Changes to the **server URL, transport, authentication, or supported protocol versions** are considered breaking changes.
+
+How much any of this affects you depends on how you connect:
+
+- **Conversational clients** — Claude Desktop, Cursor, or any freeform agent pointed at the server — re-read the tool list every session and adapt to renamed tools or changed fields on their own. Only a change to the server URL, authentication, or transport, or the removal of a tool with no replacement, needs action from you.
+- **Brokered or hard-coded integrations** — a router mapping fixed tool names to actions, or code that reads specific fields out of a result — should treat a data-tool change exactly like the equivalent REST change and migrate within the announced window.
 
 ## Change Notifications
 
