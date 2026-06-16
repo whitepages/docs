@@ -4,13 +4,14 @@ import {
   frontmatterSchema,
   metaSchema,
 } from "fumadocs-mdx/config";
+import { facetFrontmatterFields } from "./src/lib/facets";
 
 // You can customise Zod schemas for frontmatter and `meta.json` here
 // see https://fumadocs.dev/docs/mdx/collections
 export const docs = defineDocs({
   dir: "content/docs",
   docs: {
-    schema: frontmatterSchema,
+    schema: frontmatterSchema.extend(facetFrontmatterFields),
     postprocess: {
       includeProcessedMarkdown: true,
     },

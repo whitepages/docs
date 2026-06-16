@@ -8,6 +8,7 @@ import {
   tagToDisplayName,
 } from "./openapi.utils";
 import { generateRoutesPageMarkdown } from "./openapi.handler";
+import { injectFacets, resolveFacets } from "./openapi.facets";
 
 const OPENAPI_URL = "https://api.whitepages.com/openapi.json";
 const OUTPUT_DIR = "./content/docs/references";
@@ -31,12 +32,17 @@ async function generateApiEndpointDocs(): Promise<void> {
     groupBy: "tag",
     beforeWrite(files) {
       const excludedDirectories = EXCLUDED_TAGS.map(tagToDirectoryName);
-      const includedFiles = files.filter(
-        (file) =>
-          !excludedDirectories.some((directory) =>
-            file.path.startsWith(`${directory}/`),
-          ),
-      );
+      const includedFiles = files
+        .filter(
+          (file) =>
+            !excludedDirectories.some((directory) =>
+              file.path.startsWith(`${directory}/`),
+            ),
+        )
+        .map((file) => ({
+          ...file,
+          content: injectFacets(file.content, resolveFacets(file.path)),
+        }));
       files.splice(0, files.length, ...includedFiles);
     },
   });
