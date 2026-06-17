@@ -1,0 +1,67 @@
+---
+title: Capability Map
+description: Map a user's intent to the exact endpoint and parameters that answer it.
+icon: Compass
+lifecycle: current
+topic: getting-started
+keywords:
+  - "capability map"
+  - "which endpoint do I use"
+  - "what endpoint for"
+  - "intent to endpoint"
+  - "reverse phone lookup"
+  - "who lives at this address"
+  - "who owns this property"
+  - "how do I find a person"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Start here. This table maps what you are trying to do to the endpoint and parameters that do it. Match the intent, copy the parameters, then read the [type document](/references) for that endpoint before writing your types.
+
+<Callout type="warn">
+  **Person search is one endpoint.** Reverse phone lookup, address lookup, and
+  name search are all the same `GET /v2/person/` call with different parameters.
+  There is no separate "phone lookup" endpoint — pass `phone=` to person search.
+</Callout>
+
+## People
+
+| You want to…                             | Endpoint              | Key parameters                                                                            |
+| ---------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------- |
+| Reverse phone lookup (who owns a number) | `GET /v2/person/`     | `phone=`                                                                                  |
+| Find who lives at an address             | `GET /v2/person/`     | `street`, `city`, `state_code`, `zipcode`                                                 |
+| Find a person by name                    | `GET /v2/person/`     | `name`, or `first_name` / `middle_name` / `last_name` (+ location)                        |
+| Narrow a person search                   | `GET /v2/person/`     | `min_age` / `max_age`, `include_fuzzy_matching`, `include_historical_locations`, `radius` |
+| Page through person results              | `GET /v2/person/`     | `page`, `page_size`                                                                       |
+| Get full detail for a known person       | `GET /v2/person/{id}` | path `id` (the `id` from any person object)                                               |
+
+A person search returns results scored by `match_score` (1–99). See [Entity Shapes](/documentation/agentic-guidance/entity-shapes) for how a person's shape differs by context.
+
+## Property
+
+| You want to…                         | Endpoint                | Key parameters                                                    |
+| ------------------------------------ | ----------------------- | ----------------------------------------------------------------- |
+| Find who owns a property             | `GET /v2/property/`     | `street`, `city`, `state_code`, `zipcode` → read `ownership_info` |
+| Find current residents of a property | `GET /v2/property/`     | same address params → read `residents`                            |
+| Get property detail by id            | `GET /v2/property/{id}` | path id (`R`-prefixed property id or `A`-prefixed address id)     |
+
+<Callout type="info">
+  Owners and residents come back as **summary** person objects that carry an
+  `id`. To get full detail (date of birth, relatives, historic addresses), call
+  `GET /v2/person/{id}` with that `id` — see [Entity
+  Shapes](/documentation/agentic-guidance/entity-shapes).
+</Callout>
+
+## Events and account
+
+| You want to…                             | Endpoint                 | Key parameters                             |
+| ---------------------------------------- | ------------------------ | ------------------------------------------ |
+| Find deed events / property transactions | `GET /v1/events/deed`    | see [Events reference](/references/events) |
+| Check usage / remaining quota            | `GET /v1/account/usage/` | date range                                 |
+
+## What's next
+
+- [Integration Guide](/documentation/agentic-guidance/integration-guide) — the workflow to follow before writing integration code.
+- [Entity Shapes](/documentation/agentic-guidance/entity-shapes) — the shapes you get back and how to hydrate summaries.
+- [FAQ](/documentation/faq) — trial limits, rate limits, and breaking changes.

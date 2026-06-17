@@ -1,0 +1,52 @@
+---
+title: Integration Guide
+description: The workflow to follow when integrating the Whitepages API, by hand or with an agent.
+icon: Workflow
+lifecycle: current
+topic: getting-started
+keywords:
+  - "integration guide"
+  - "how to integrate"
+  - "agent workflow"
+  - "writing types"
+  - "best practices"
+  - "how should I call the api"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+This is the prescribed workflow for integrating the API. Follow it in order; each step removes a mistake we have seen integrations make.
+
+## The workflow
+
+1. **Map the intent first.** Use the [Capability Map](/documentation/agentic-guidance/capability-map) to turn what you want ("reverse phone lookup", "who owns this property") into the endpoint and parameters. Do not guess at endpoints — person search is also phone search and address search.
+2. **Read the type document before writing types.** Each endpoint has a [reference](/references) carrying its request and response schema. That schema is the authoritative source for the shapes you integrate against.
+3. **Never infer types from sample responses.** Example payloads omit `null` and optional fields and show only one variant. A type built from an example will be wrong. Build types from the schema, not the sample.
+4. **Ignore unknown fields.** Adding a new field to a response is [not a breaking change](/references/versioning/breaking-changes-policy). Parse the fields you need and tolerate fields you do not, so new fields never break you.
+5. **Hydrate summaries by id.** Nested person objects (property owners, residents) are summaries that carry an `id`. Fetch full detail with `GET /v2/person/{id}`. See [Entity Shapes](/documentation/agentic-guidance/entity-shapes).
+
+## What costs money
+
+<Callout type="info">
+  **Documentation is free; data costs money.** Reading these docs and the
+  capability map never bills your key. Data calls (person search, property
+  lookup, account usage) are billed identically whether made over REST or the
+  MCP server.
+</Callout>
+
+Billing follows the response status: successful (`2xx`) and client-error (`4xx`) responses are billed; throttling (`429`) and server errors (`5xx`) are not. A `404` on a property lookup by address id is **not** billed, so you can optimistically resolve any address id you encounter. See [Billing](/references/billing).
+
+## Authentication
+
+Pass your key in the `X-Api-Key` header on every data call. The key is a bearer secret: never log it, echo it back, or place it in a URL.
+
+## Breaking changes, in one line
+
+Breaking changes ship only in a new API version, with at least 30 days' notice; within a version, response shapes only grow. Read the full [Breaking Changes Policy](/references/versioning/breaking-changes-policy) before you depend on a shape.
+
+## Gotchas
+
+- **Person search is one endpoint** — phone, address, and name search are all `GET /v2/person/` with different parameters.
+- **Addresses differ by context** — a person's addresses and a property's address are not the same shape. See [Entity Shapes](/documentation/agentic-guidance/entity-shapes).
+- **Property addresses are not CASS-standardized** — they come from county assessor records as-received.
+- **Trial keys exhaust** — when usage runs out you get `Limit Exceeded`, distinct from a `429`. See the [FAQ](/documentation/faq).
