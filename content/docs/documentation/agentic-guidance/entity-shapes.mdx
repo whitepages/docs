@@ -1,0 +1,42 @@
+---
+title: Entity Shapes by Context
+description: The same entity comes back in different shapes depending on the endpoint. Do not assume one shape.
+icon: Boxes
+lifecycle: current
+topic: person
+keywords:
+  - "person shape"
+  - "response shape"
+  - "owner summary"
+  - "resident summary"
+  - "hydrate person"
+  - "person by id"
+  - "different shapes"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+The same entity does not come back the same way everywhere. A person from one endpoint and a person from another are **different shapes** — and so are addresses. This page exists to make that one caveat unmistakable; for the exact fields, read the [type document](/references) for the endpoint you are calling.
+
+<Callout type="warn">
+  **Do not assume one shape.** A type you build from one endpoint's response
+  will not fit another's. Always read the endpoint's type document for the shape
+  it actually returns.
+</Callout>
+
+## A person comes back in three kinds
+
+- **Fetched by id** — `GET /v2/person/{id}` returns the full person record.
+- **As a search result** — `GET /v2/person/` returns persons as scored, paginated results. Same entity, presented with relevance and list context.
+- **Embedded in a property** — owners and residents inside a property response are a **reduced** form of a person, not the full record.
+
+These are not interchangeable. The embedded form in particular carries far less than the full record.
+
+<Callout type="info">
+  **Reduced forms carry an `id`.** When you get a person embedded in a property
+  response and need the full record, hydrate it with `GET /v2/person/{id}`.
+</Callout>
+
+## Addresses also differ by context
+
+An address is not one shape either: a person's address and a property's own address carry different fields. As with persons, do not reuse one address type across endpoints — check the type document for the endpoint you are calling.

@@ -1,0 +1,5 @@
+{
+  "title": "Agentic Guidance",
+  "icon": "Bot",
+  "pages": ["capability-map", "integration-guide", "entity-shapes"]
+}

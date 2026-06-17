@@ -1,0 +1,43 @@
+---
+title: FAQ
+description: Answers to the questions integrators hit most often.
+icon: CircleQuestionMark
+lifecycle: current
+topic: getting-started
+keywords:
+  - "faq"
+  - "frequently asked questions"
+  - "trial ran out"
+  - "trial exhausted"
+  - "how are rate limits applied"
+  - "what counts as a breaking change"
+  - "is person search the same as phone lookup"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+## What do I do when my trial usage runs out?
+
+When a trial key uses up its allowance, data calls return `Limit Exceeded` (not a `429`). The allowance does not refill — to keep going, [purchase a plan](/documentation/purchasing-api) or contact `api@whitepages.com`. Documentation calls keep working regardless; only data calls consume the allowance. See [Rate Limits](/references/rate-limits#monthly-query-limits--trial-exhaustion).
+
+## How are rate limits applied?
+
+There are two distinct limits:
+
+- **`429 Too Many Requests`** — short-term throttling. Back off and retry with exponential backoff; it clears on its own.
+- **`Limit Exceeded`** — you have used up your monthly plan limit or trial allowance. It persists until your quota resets (next month for a plan) or you upgrade.
+
+Neither a `429` nor a `5xx` is billed. See [Rate Limits](/references/rate-limits).
+
+## What counts as a breaking change?
+
+Removing or renaming an endpoint or field, changing a field's type, adding a required parameter, or changing auth or error formats. **Adding** a new optional parameter, a new field, a new endpoint, or a new enum value is **not** breaking — so always ignore unknown fields. Breaking changes ship only in a new API version with at least 30 days' notice. Full detail: [Breaking Changes Policy](/references/versioning/breaking-changes-policy).
+
+## Is person search the same as phone lookup?
+
+Yes. Reverse phone lookup, address lookup, and name search are all the same `GET /v2/person/` endpoint with different parameters — pass `phone=` for a reverse phone lookup. There is no separate phone endpoint. See the [Capability Map](/documentation/agentic-guidance/capability-map).
+
+<Callout type="info">
+  Not seeing your question? Use `search_documentation` over the MCP server, or
+  email `api@whitepages.com`.
+</Callout>
