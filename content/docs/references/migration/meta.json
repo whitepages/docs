@@ -1,0 +1,5 @@
+{
+  "title": "Migration Guides",
+  "icon": "GitMerge",
+  "pages": ["person-v1-to-v2", "property-v1-to-v2"]
+}
