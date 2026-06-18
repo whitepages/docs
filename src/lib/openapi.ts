@@ -1,5 +1,5 @@
 import { createOpenAPI } from "fumadocs-openapi/server";
-import { flattenOptionalUnions } from "./openapi-transform";
+import { flattenOptionalUnions, stripAutoTitles } from "./openapi-transform";
 
 const OPENAPI_URL = "https://api.whitepages.com/openapi.json";
 
@@ -12,6 +12,6 @@ export const openapi = createOpenAPI({
       );
     }
     const spec = await response.json();
-    return { [OPENAPI_URL]: flattenOptionalUnions(spec) };
+    return { [OPENAPI_URL]: stripAutoTitles(flattenOptionalUnions(spec)) };
   },
 });
