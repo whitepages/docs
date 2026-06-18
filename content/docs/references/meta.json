@@ -10,6 +10,7 @@
     "billing",
     "support-and-incident-response",
     "versioning",
+    "migration",
     "person-v2",
     "webhooks",
     "events",

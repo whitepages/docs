@@ -1,0 +1,371 @@
+---
+title: Property V1 → V2
+description: Field mapping and behavior changes when moving from /v1/property to /v2/property.
+icon: House
+lifecycle: current
+topic: property
+keywords:
+  - "property v1"
+  - "property v2"
+  - "v1 to v2"
+  - "migration"
+  - "property search migration"
+  - "property details migration"
+---
+
+This guide walks through every input and output change between the V1
+and V2 property endpoints so you can migrate cleanly. V2 splits the
+single V1 search endpoint into two distinct operations — address-based
+search and ID-based details — and the Details response is much richer
+than anything V1 exposed.
+
+## TL;DR
+
+- Swap `/v1/property/` for `/v2/property/` for address-based search.
+  The response is now wrapped in `{ "result": {...} }`.
+- Use the new `GET /v2/property/{property_id}` endpoint to pull
+  comprehensive property details (square footage, year built, tax
+  assessment, mortgage history, etc.) — capabilities V1 didn't have.
+- ZIP codes in V2 Search must be 5 digits exactly. V1 accepted 5 or 9.
+- Address IDs (prefix `A`) are now first-class on Details lookups,
+  so you can traverse directly from a person's `current_addresses[].id`
+  to property data without a separate address-to-property resolution
+  step.
+
+## Endpoint URLs
+
+| Operation              | V1                      | V2                               |
+| ---------------------- | ----------------------- | -------------------------------- |
+| Address-based search   | `GET /v1/property/?...` | `GET /v2/property/?...`          |
+| Details by property ID | _(not available)_       | `GET /v2/property/{property_id}` |
+| Details by address ID  | _(not available)_       | `GET /v2/property/{address_id}`  |
+
+The biggest URL change is the new Details endpoint. V1 returned all
+the property data it had in a single Search response. V2 returns a
+lighter Search response with enough to identify the property and its
+owners/residents, and a separate Details endpoint for the deep schema
+(physical characteristics, tax data, mortgage history).
+
+## Request parameters
+
+### Search
+
+V1 required `street` plus _(city + state_code)_ OR `zip`. V2 keeps the
+same address components but treats every parameter as optional at the
+schema level, with validation requiring enough to identify a property:
+
+| Parameter    | V1                                                 | V2                                                 |
+| ------------ | -------------------------------------------------- | -------------------------------------------------- |
+| `street`     | required                                           | recommended (validation enforces sufficient input) |
+| `city`       | required when no `zip`                             | recommended                                        |
+| `state_code` | required when no `zip`                             | recommended (2-letter)                             |
+| `zipcode`    | required when no city/state, accepts 5- or 9-digit | accepts 5-digit only                               |
+| `zip`        | _alias for `zipcode` in V1_                        | _removed — use `zipcode`_                          |
+
+### Details
+
+`GET /v2/property/{property_id}` accepts either:
+
+- **Property ID** — prefix `R` + 10 alphanumeric characters (returned
+  on Search results as `property_id`).
+- **Address ID** — prefix `A` + 10 alphanumeric characters (returned
+  throughout the API as `address_id` on address objects).
+
+Address IDs are resolved to the associated property before lookup, so
+you can traverse from a person record's `current_addresses[].id`
+directly into Property Details without a separate resolution step.
+Lookups by address ID where the property has no details return `404`
+(not billable).
+
+## Response shape (Search)
+
+### V1
+
+A V1 Search response is a single property record (or `null`):
+
+```json title="V1 /v1/property/ response"
+{
+  "id": "R5432109876",
+  "property_address": {
+    "id": "A9876543210",
+    "full_address": "123 Main St, Seattle, WA 98101"
+  },
+  "owners": [
+    {
+      "id": "P1234567890",
+      "name": "John Smith",
+      "current_addresses": [{ "id": "A9876543210", "full_address": "123 Main St, Seattle, WA 98101" }],
+      "phones": [{ "number": "(206) 555-0100", "type": "landline", "score": 70 }],
+      "emails": ["john.smith@example.com"]
+    }
+  ],
+  "residents": [...]
+}
+```
+
+### V2
+
+A V2 Search response wraps the property record in `result` and uses a
+richer schema for the property fields (mailing address, geolocation,
+ownership info, residents) while keeping the owner/resident shape
+recognizable from V1:
+
+```json title="V2 /v2/property/ response"
+{
+  "result": {
+    "property_id": "R5432109876",
+    "apn": "123-456-789",
+    "property_address": {
+      "address_id": "A9876543210",
+      "full_address": "123 Main St, Seattle, WA 98101",
+      "city": "Seattle",
+      "state": "WA",
+      "line1": "123 Main St",
+      "zip": "98101"
+    },
+    "mailing_address": null,
+    "geolocation": { "lat": 47.6062, "lng": -122.3321 },
+    "ownership_info": {
+      "owner_type": "individual",
+      "business_owners": [],
+      "person_owners": [
+        {
+          "id": "P1234567890",
+          "name": "John Smith",
+          "current_addresses": [...],
+          "phones": [{ "number": "(206) 555-0100", "type": "landline" }],
+          "emails": [{ "email": "john.smith@example.com" }]
+        }
+      ]
+    },
+    "residents": [...]
+  }
+}
+```
+
+## Response shape (Details — new in V2)
+
+`GET /v2/property/{property_id}` returns everything Search returns plus
+~25 additional fields covering physical characteristics, tax assessment,
+ownership history, and vacancy signals:
+
+```json title="V2 /v2/property/{property_id} response (additional Details-only fields)"
+{
+  "result": {
+    "...": "...all Search fields, kept",
+    "year_built": 1972,
+    "effective_year_built": 1998,
+    "property_purpose": "residential",
+    "living_sqft": 2400,
+    "lot_sqft": 7200,
+    "ground_floor_sqft": 1200,
+    "basement_sqft": 800,
+    "basement_type": "full",
+    "stories": 2,
+    "bedrooms": 4,
+    "bathrooms": 3,
+    "has_pool": false,
+    "garage_type": "attached",
+    "roof_covering": "asphalt-shingle",
+    "heating_fuel": "natural-gas",
+    "condition": "average",
+    "build_quality": "average",
+    "owner_occupied": "owner",
+    "is_vacant": false,
+    "assessed_info": {
+      "assessed_value": 950000,
+      "assessment_year": 2025
+    },
+    "ownership_info": {
+      "...": "...Search-level ownership fields, plus:",
+      "sale_date": "2018-05-12",
+      "last_sale_amount": 875000,
+      "mortgages": [...]
+    }
+  }
+}
+```
+
+If you're a V1 customer who needs only what V1 returned, V2 Search
+covers it. Reach for V2 Details when you want any of the new
+physical-characteristics / tax / mortgage data.
+
+## Field-by-field mapping
+
+### Search
+
+| V1                              | V2                                                                                 | What changed                                                                                                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Top-level: `record` (or `null`) | Top-level: `{ "result": {...} }`                                                   | Search response is wrapped. Read `response.result` to get the V1-equivalent record. `null` (no match) is now expressed as `{ "result": null }`.                              |
+| `id`                            | `result.property_id`                                                               | Renamed for clarity. Same prefix (`R`) + 10 alphanumeric characters.                                                                                                         |
+| `property_address.id`           | `result.property_address.address_id`                                               | Renamed. Same value.                                                                                                                                                         |
+| `property_address.full_address` | `result.property_address.full_address` plus `.city` / `.state` / `.line1` / `.zip` | Same value, plus a structured breakdown of the components for easier downstream use. The breakdown fields are populated for any well-formed address.                         |
+| `owners[]`                      | `result.ownership_info.person_owners[]` (+ `business_owners[]`)                    | Owners are now split into person vs. business under an `ownership_info` umbrella. The person-owner object's shape (id, name, current_addresses, phones, emails) is the same. |
+| `owners[].emails: ["a@..."]`    | `result.ownership_info.person_owners[].emails: [{ "email": "a@..." }]`             | Emails on owner records are now objects (no confidence score on this surface yet — just the address).                                                                        |
+| `owners[].phones[].score`       | `result.ownership_info.person_owners[].phones[]` (no `score`)                      | Owner-record phone confidence is not surfaced on V2 Search owner objects. Use Person Search/Details if you need confidence-scored phones.                                    |
+| `residents[]`                   | `result.residents[]`                                                               | Same shape and semantics. Email shape change matches owners (string → object).                                                                                               |
+| _(not present)_                 | `result.apn`                                                                       | New. Assessor's Parcel Number.                                                                                                                                               |
+| _(not present)_                 | `result.mailing_address`                                                           | New. Populated when the owner's mailing address differs from the property address (absentee owners).                                                                         |
+| _(not present)_                 | `result.geolocation`                                                               | New. `{ "lat": float, "lng": float }`.                                                                                                                                       |
+
+### Details (new in V2)
+
+Details adds the physical-characteristics / tax / mortgage fields shown
+in the response shape section above. V1 had no equivalent surface; the
+migration from V1 simply gains access to those fields when you call the
+Details endpoint.
+
+## V2-only features
+
+### Details by property ID
+
+V1 callers who wanted full property data had to take what came back
+from Search. V2 splits the surface:
+
+- `GET /v2/property/` returns enough to identify the property and its
+  owners / residents.
+- `GET /v2/property/{property_id}` returns the comprehensive record,
+  including everything Search returns plus tax and mortgage data.
+
+This split keeps Search responses lightweight and lets Details carry
+the deeper schema.
+
+### Details by address ID
+
+The address IDs you see throughout the API (on person records,
+property records, in Search results) are first-class lookup keys in V2.
+`GET /v2/property/{address_id}` (any ID starting with `A`) resolves to
+the associated property before lookup. You can traverse directly from
+a person's `current_addresses[].id` to that property's full details
+without a separate address-to-property resolution step.
+
+Not every address has full property details. Address-ID lookups where
+no property data exists return `404`. These responses are not
+[billable](/references/billing).
+
+### Owner vs business split
+
+V2 distinguishes between individual owners (returned in
+`person_owners[]`) and business / entity owners (returned in
+`business_owners[]`). V1 lumped both into `owners[]` with limited
+data on business entities.
+
+### Structured address components
+
+Every address object on V2 includes a breakdown of `city`, `state`,
+`line1`, `zip` alongside the `full_address` string, so you don't need
+to parse the formatted string to extract components.
+
+## Behavioral differences
+
+| Behavior                       | V1                                          | V2                                                                                                                                                     |
+| ------------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Search response shape          | Bare record or `null`.                      | `{ "result": record \| null }`.                                                                                                                        |
+| Address-based no-match         | `null` body, HTTP 200.                      | `{ "result": null }`, HTTP 200. Same billability.                                                                                                      |
+| Details by property ID         | _(not available)_                           | New endpoint; `404` when the ID doesn't resolve. Property-ID `404` is billable.                                                                        |
+| Details by address ID          | _(not available)_                           | Same endpoint as property-ID lookup; address IDs are resolved transparently. Address-ID `404` (no property data for that address) is **not** billable. |
+| ZIP code format                | 5- or 9-digit ZIP accepted.                 | 5-digit ZIP only.                                                                                                                                      |
+| Missing required parameters    | `MissingLocationParameterError` (HTTP 400). | `MissingSearchParametersError` (HTTP 400). Message format and field names differ; error code shape is the same envelope.                               |
+| `result_metadata` on responses | _(not present)_                             | _(not present — `result_metadata` is exclusive to Person Search)._                                                                                     |
+
+## Call translation examples
+
+### Search by full address
+
+V1:
+
+```bash
+curl 'https://api.whitepages.com/v1/property?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+V2:
+
+```bash
+curl 'https://api.whitepages.com/v2/property?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+The only required change is the URL path. The V2 response wraps the
+result in `{ "result": {...} }`. If you were passing a 9-digit ZIP
+(e.g., `98101-1234`), truncate to the first 5 digits for V2.
+
+### Pull full details by property ID (new in V2)
+
+V1 had no equivalent. V2:
+
+```bash
+curl 'https://api.whitepages.com/v2/property/R5432109876' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Pull full details by address ID (new in V2)
+
+Useful for traversing from a person record's `current_addresses[].id`
+straight into property data:
+
+```bash
+curl 'https://api.whitepages.com/v2/property/A9876543210' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Code translation snippets
+
+### JavaScript (Search)
+
+```js title="V1"
+const response = await fetch(
+  `https://api.whitepages.com/v1/property?street=${street}&city=${city}&state_code=${state}`,
+  { headers: { "X-Api-Key": API_KEY } },
+);
+const property = await response.json();
+if (property) {
+  console.log(property.id, property.owners?.[0]?.name);
+}
+```
+
+```js title="V2"
+const response = await fetch(
+  `https://api.whitepages.com/v2/property?street=${street}&city=${city}&state_code=${state}`,
+  { headers: { "X-Api-Key": API_KEY } },
+);
+const { result } = await response.json();
+if (result) {
+  console.log(
+    result.property_id,
+    result.ownership_info?.person_owners?.[0]?.name,
+  );
+}
+```
+
+### Python (Details — new flow)
+
+```python title="V2 Details by property ID"
+import requests
+
+r = requests.get(
+    "https://api.whitepages.com/v2/property/R5432109876",
+    headers={"X-Api-Key": API_KEY},
+)
+property_details = r.json()["result"]
+print(property_details["year_built"], property_details["bedrooms"])
+```
+
+```python title="V2 Details by address ID (from a person record)"
+person = requests.get(
+    "https://api.whitepages.com/v2/person/P1234567890",
+    headers={"X-Api-Key": API_KEY},
+).json()["result"]
+
+address_id = person["current_addresses"][0]["address_id"]
+property_details = requests.get(
+    f"https://api.whitepages.com/v2/property/{address_id}",
+    headers={"X-Api-Key": API_KEY},
+).json()["result"]
+```
+
+## Need help?
+
+If you hit a field that doesn't map cleanly, or you have questions
+about the new Details surface, reach out via
+[support](/references/support-and-incident-response).

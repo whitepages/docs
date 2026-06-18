@@ -1,0 +1,57 @@
+---
+title: Migration Guides
+description: Move from V1 endpoints to V2 with field-level mappings and call translations.
+icon: GitMerge
+lifecycle: current
+keywords:
+  - "v1 to v2"
+  - "migration"
+  - "endpoint deprecation"
+  - "person v1"
+  - "property v1"
+---
+
+V1 of the Whitepages API is being deprecated in favor of V2. V2 endpoints
+deliver richer data, pagination, and forward-compatible response metadata
+so customers can adapt to ongoing changes without code rewrites.
+
+These guides walk through every input and output change between V1 and V2
+so you can plan a clean migration:
+
+- [Person V1 → V2](/references/migration/person-v1-to-v2) — `GET /v1/person/`
+  and `GET /v1/person/{id}` map to `GET /v2/person/` and
+  `GET /v2/person/{id}`.
+- [Property V1 → V2](/references/migration/property-v1-to-v2) — `GET /v1/property/`
+  maps to `GET /v2/property/` (address-based search) and
+  `GET /v2/property/{property_id}` (details by ID, new in V2).
+
+## When to migrate
+
+The V1 endpoints continue to function during the deprecation window. We
+recommend migrating as soon as practical so you can take advantage of V2
+features (match scoring, pagination, result metadata, address-ID lookups
+on Property) and avoid the eventual V1 removal.
+
+See [Breaking Changes Policy](/references/versioning/breaking-changes-policy)
+for our deprecation timeline guarantees, and the [Changelog](/changelog)
+for the latest notable changes to V2.
+
+## Reading these guides
+
+Each guide is organized the same way:
+
+1. **TL;DR** — the minimum diff to swap V1 calls for V2.
+2. **Endpoint URLs** — what changed at the URL level.
+3. **Request parameters** — what's the same, what's new, what's gone.
+4. **Response shape** — the top-level structural changes, including
+   pagination wrappers and per-result metadata where applicable.
+5. **Field-by-field mapping** — every V1 field's location in V2, with
+   notes on shape or nullability changes.
+6. **V2-only features** — fields and behaviors that have no V1 analog.
+7. **Behavioral differences** — sort orders, error semantics, anything
+   that would surprise a V1 caller.
+8. **Forward compatibility notes** — what's still evolving in V2 and
+   how to write code that won't break when it changes.
+
+If you spot a gap or want clarification on a specific field's behavior,
+let us know via [support](/references/support-and-incident-response).
