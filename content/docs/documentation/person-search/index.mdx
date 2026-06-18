@@ -57,12 +57,30 @@ A successful request returns matching person records:
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
     "job_title": "Software Engineer",
-    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
+    "result_metadata": {
+      "details_url": "/v2/person/P1234567890",
+      "phones": { "displayed": 1, "additional": 0 },
+      "emails": { "displayed": 1, "additional": 0 },
+      "historic_addresses": { "displayed": 1, "additional": 0 },
+      "owned_properties": { "displayed": 1, "additional": 0 }
+    }
   }
 ]
 ```
 
-Each record includes identifiers, addresses, phone numbers, emails, employment information, and linked property and relative records when available.
+Each record includes identifiers, addresses, phone numbers, emails, employment information, and linked property and relative records when available, plus a `result_metadata` block summarizing each list and linking back to the canonical Person Details URL.
+
+<Callout type="info" title="result_metadata">
+  `result_metadata.{list}.displayed` is the count of items in the list on this
+  response; `additional` is the count of items linked to the person but not
+  included. Today `additional` is always `0`. A future release will tune Person
+  Search to return a lean, ranked preview per list — the items most likely to
+  inform a match decision — with smaller payloads and more digestible results.
+  The full lists will always remain available at `details_url` (`/v2/person/{id}
+  `); `additional` is the forward-compatible signal for how many more entries
+  are there. Safe to begin parsing now.
+</Callout>
 
 </Step>
 </Steps>

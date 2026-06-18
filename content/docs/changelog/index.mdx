@@ -5,6 +5,57 @@ description: Notable changes to the Whitepages API, newest first.
 
 ---
 
+## June 18, 2026
+
+### `result_metadata` on v2 person search
+
+Every record in a `GET /v2/person/` response now carries a top-level
+`result_metadata` object summarizing each list and linking back to the
+canonical Person Details URL:
+
+```json
+{
+  "results": [
+    {
+      "id": "P19Xrg1Zr34",
+      "name": "...",
+      "phones": [...],
+      "emails": [...],
+      "historic_addresses": [...],
+      "owned_properties": [...],
+      "result_metadata": {
+        "details_url": "/v2/person/P19Xrg1Zr34",
+        "phones":             { "displayed": 3, "additional": 0 },
+        "emails":             { "displayed": 1, "additional": 0 },
+        "historic_addresses": { "displayed": 4, "additional": 0 },
+        "owned_properties":   { "displayed": 0, "additional": 0 }
+      }
+    }
+  ],
+  "metadata": { ... }
+}
+```
+
+`displayed` is the actual length of the list on this response;
+`additional` is the count linked to the person but not included.
+Today `additional` is always `0`. A future release will tune Person
+Search to behave more like search: lean, ranked previews of each
+list focused on the items most likely to help a caller pick a match
+and decide whether to traverse for the full record. Payloads will be
+smaller and results easier to scan. Person Details (`details_url`)
+will always carry the full lists for callers who want everything;
+`additional` is the forward-compatible signal for how many more
+items live there. Safe to begin parsing now.
+
+`details_url` is `null` for the rare result that arrives without a
+canonical Whitepages person ID (e.g., an unresolved phone-owner
+record); those records aren't part of the upcoming tuning.
+
+This change is purely additive: no existing field on Person Search
+responses has changed type, nullability, or presence.
+
+---
+
 ## June 1, 2026
 
 ### Address ID support on property details
