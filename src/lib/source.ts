@@ -1,4 +1,8 @@
-import { docs } from "fumadocs-mdx:collections/server";
+// Import the generated collection directly rather than via the
+// `fumadocs-mdx:collections/server` alias: a relative import is bundled into
+// the server build, whereas the virtual specifier is externalized and resolved
+// at runtime via tsconfig paths, which is fragile across environments.
+import { docs } from "../../.source/server";
 import { type InferPageType, loader } from "fumadocs-core/source";
 import { lucideIconsPlugin } from "fumadocs-core/source/lucide-icons";
 import { openapiPlugin } from "fumadocs-openapi/server";
