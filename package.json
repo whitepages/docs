@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "next build",
+    "build": "fumadocs-mdx && next build",
     "dev": "next dev",
     "start": "next start",
     "types:check": "fumadocs-mdx && tsc --noEmit",
@@ -14,6 +14,7 @@
     "format:write": "bunx prettier . --write",
     "generate:openapi": "bun run scripts/generators/openapi/openapi.generator.ts",
     "generate:postman": "bun run scripts/generators/postman/postman.generator.ts",
+    "generate:corpus": "bun run scripts/generators/corpus/corpus.generator.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
@@ -48,6 +49,7 @@
     "@commitlint/config-conventional": "^20.2.0",
     "@eslint/eslintrc": "^3.3.3",
     "@tailwindcss/postcss": "^4.1.16",
+    "@types/bun": "^1.3.9",
     "@types/mdx": "^2.0.13",
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
@@ -61,6 +63,7 @@
     "prettier": "3.7.4",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3",
-    "wrangler": "^4.53.0"
+    "wrangler": "^4.53.0",
+    "yaml": "2.8.2"
   }
 }
