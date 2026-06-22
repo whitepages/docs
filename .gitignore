@@ -3,6 +3,11 @@
 
 # generated content
 .source
+/corpus
+
+# nix
+/result
+/.direnv
 
 # playwright
 .playwright-mcp

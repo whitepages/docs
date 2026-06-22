@@ -9,26 +9,15 @@ on:
       - main
 
 jobs:
-  checks:
-    name: Lint and Format Checks
+  validate:
+    name: Validate
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Check formatting
-        run: bun run format:check
-
-      - name: Lint
-        run: bun run lint
-
-      - name: Build with OpenNext
-        run: bunx opennextjs-cloudflare build
+      - name: Validate
+        run: nix develop -c sh -c 'bun install --frozen-lockfile && just validate'
