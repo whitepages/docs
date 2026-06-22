@@ -25,7 +25,7 @@
  *   but stay as a union of the remaining branches.
  */
 
-type JsonValue =
+export type JsonValue =
   | string
   | number
   | boolean
