@@ -25,6 +25,8 @@ All notable changes to this project will be documented in this file.
 - Track Amplitude init with explicit flag by @trichardswp in #36
 - Drop /docs prefix from walkthrough completion links by @lhagenWP
 - Correct Claude Code and Cursor MCP install steps by @trichardswp in #46
+- **docs:** Flatten optional anyOf in OpenAPI for cleaner type labels by @lhagenWP
+- **docs:** Strip Pydantic auto-titles so renderer shows real types by @lhagenWP in #50
 
 ## Documentation
 
@@ -51,6 +53,8 @@ All notable changes to this project will be documented in this file.
 - Update billing policy and document address id support by @trichardswp in #42
 - **refs:** Add MCP breaking changes policy by @trichardswp in #47
 - **mcp:** Add agentic guidance docs and integrator FAQ by @trichardswp in #49
+- Document result_metadata on v2 person search by @lhagenWP
+- Add V1 -> V2 migration guides for person and property by @lhagenWP
 
 ## Features
 
@@ -152,6 +156,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **deps:** Bump next to 16.0.11 by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
