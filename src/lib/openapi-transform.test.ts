@@ -1,9 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { flattenOptionalUnions, stripAutoTitles } from "./openapi-transform";
+import {
+  flattenOptionalUnions,
+  stripAutoTitles,
+  type JsonValue,
+} from "./openapi-transform";
 
 describe("flattenOptionalUnions", () => {
   test("collapses `anyOf: [string, null]` with parent title to a single string schema", () => {
-    const input = {
+    const input: JsonValue = {
       name: "phone",
       in: "query",
       schema: {
@@ -24,7 +28,7 @@ describe("flattenOptionalUnions", () => {
   });
 
   test("collapses `oneOf: [integer, null]` similarly", () => {
-    const input = {
+    const input: JsonValue = {
       schema: {
         oneOf: [{ type: "integer", minimum: 18 }, { type: "null" }],
         title: "Minimum Age",
@@ -41,7 +45,7 @@ describe("flattenOptionalUnions", () => {
   });
 
   test("leaves real multi-type unions untouched", () => {
-    const input = {
+    const input: JsonValue = {
       schema: {
         anyOf: [{ type: "string" }, { type: "integer" }],
         title: "Mixed",
@@ -56,7 +60,7 @@ describe("flattenOptionalUnions", () => {
   });
 
   test("strips null from a 3-way union, keeps remaining branches as a union", () => {
-    const input = {
+    const input: JsonValue = {
       schema: {
         anyOf: [{ type: "string" }, { type: "integer" }, { type: "null" }],
         title: "Either",
@@ -73,7 +77,7 @@ describe("flattenOptionalUnions", () => {
   test("preserves parent fields when branch sets the same key", () => {
     // Parent's title wins over the branch's, matching how single-branch
     // collapses should read in the docs UI.
-    const input = {
+    const input: JsonValue = {
       schema: {
         anyOf: [{ type: "string", title: "branch title" }, { type: "null" }],
         title: "Phone Number",
@@ -88,7 +92,7 @@ describe("flattenOptionalUnions", () => {
   });
 
   test("recurses into nested object schemas", () => {
-    const input = {
+    const input: JsonValue = {
       type: "object",
       properties: {
         phones: {
@@ -130,7 +134,7 @@ describe("flattenOptionalUnions", () => {
 
 describe("stripAutoTitles", () => {
   test("strips title from a property when it matches the auto form", () => {
-    const input = {
+    const input: JsonValue = {
       type: "object",
       properties: {
         aliases: {
@@ -153,7 +157,7 @@ describe("stripAutoTitles", () => {
   });
 
   test("keeps intentionally customized property titles", () => {
-    const input = {
+    const input: JsonValue = {
       properties: {
         // Pydantic auto-form would be "Phone"; this is overridden.
         phone: {
@@ -179,7 +183,7 @@ describe("stripAutoTitles", () => {
   });
 
   test("handles snake_case auto-titles (multi-word field names)", () => {
-    const input = {
+    const input: JsonValue = {
       properties: {
         first_name: { type: "string", title: "First Name" },
         linkedin_url: { type: "string", title: "Linkedin Url" },
@@ -204,7 +208,7 @@ describe("stripAutoTitles", () => {
   });
 
   test("strips title from a query parameter's schema when it matches the auto form", () => {
-    const input = {
+    const input: JsonValue = {
       paths: {
         "/v2/person/": {
           get: {
@@ -250,7 +254,7 @@ describe("stripAutoTitles", () => {
   });
 
   test("recurses into nested object properties", () => {
-    const input = {
+    const input: JsonValue = {
       type: "object",
       properties: {
         result_metadata: {
@@ -290,7 +294,7 @@ describe("stripAutoTitles", () => {
     // Top-level component schema names commonly carry titles that are
     // class names; those aren't redundant with a property name so we
     // leave them.
-    const input = {
+    const input: JsonValue = {
       components: {
         schemas: {
           PersonV2ResponseDto: {
