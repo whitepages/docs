@@ -24,7 +24,7 @@ When a trial key uses up its allowance, data calls return `Limit Exceeded` (not 
 
 There are two distinct limits:
 
-- **`429 Too Many Requests`** — short-term throttling. Back off and retry with exponential backoff; it clears on its own.
+- **`429 Too Many Requests`** — short-term throttling. Back off and retry with exponential backoff; it clears on its own. Rate limits vary by plan, and higher limits can be requested through [support](mailto:api@whitepages.com).
 - **`Limit Exceeded`** — you have used up your monthly plan limit or trial allowance. It persists until your quota resets (next month for a plan) or you upgrade.
 
 Neither a `429` nor a `5xx` is billed. See [Rate Limits](/references/rate-limits).
