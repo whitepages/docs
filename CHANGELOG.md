@@ -55,6 +55,7 @@ All notable changes to this project will be documented in this file.
 - **mcp:** Add agentic guidance docs and integrator FAQ by @trichardswp in #49
 - Document result_metadata on v2 person search by @lhagenWP
 - Add V1 -> V2 migration guides for person and property by @lhagenWP
+- Audit purchasing and trial-key pages, link 429s to pricing by @lhagenWP in #52
 
 ## Features
 
@@ -172,6 +173,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Add dev environment and CI by @trichardswp
+- Update changelog by @github-actions[bot]
 
 ## Refactor
 
