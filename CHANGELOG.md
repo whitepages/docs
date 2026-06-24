@@ -91,6 +91,7 @@ All notable changes to this project will be documented in this file.
 - Instrument ViewedAPIDocumentation with standardized properties by @nkotolenko-cpu in #44
 - Sectional onboarding tester for first-request page by @lhagenWP
 - **mcp:** Add doc facet frontmatter scheme and versioning IA by @trichardswp in #48
+- Add documentation corpus generator by @trichardswp
 
 ## Miscellaneous
 
@@ -169,6 +170,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- Add dev environment and CI by @trichardswp
 
 ## Refactor
 
@@ -178,6 +181,14 @@ All notable changes to this project will be documented in this file.
 
 - Apply Whitepages design system theme colors by @KevinEdry
 - Update sidebar icons for guides section by @KevinEdry
+
+## Testing
+
+- Type openapi-transform fixtures as JsonValue by @trichardswp in #51
+
+## Build
+
+- Add Nix flake for the corpus build and dev shell by @trichardswp
 
 ## Ci
 
