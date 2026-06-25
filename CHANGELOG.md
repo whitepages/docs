@@ -57,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - Add V1 -> V2 migration guides for person and property by @lhagenWP
 - Audit purchasing and trial-key pages, link 429s to pricing by @lhagenWP in #52
 - Require related links when adding documentation pages by @trichardswp in #53
+- Refresh property search example response by @lhagenWP in #54
 
 ## Features
 
@@ -176,6 +177,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Add dev environment and CI by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
