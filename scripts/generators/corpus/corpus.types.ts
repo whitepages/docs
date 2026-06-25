@@ -30,8 +30,21 @@ export interface CatalogEntry {
   readonly endpoint: EndpointFacet | null;
 }
 
+export interface TaxonomyTerm {
+  readonly value: string;
+  readonly label: string;
+  readonly count: number;
+}
+
+export interface Taxonomy {
+  readonly topics: readonly TaxonomyTerm[];
+  readonly kinds: readonly TaxonomyTerm[];
+  readonly lifecycles: readonly TaxonomyTerm[];
+}
+
 export interface Catalog {
   readonly version: number;
+  readonly taxonomy: Taxonomy;
   readonly docs: readonly CatalogEntry[];
 }
 

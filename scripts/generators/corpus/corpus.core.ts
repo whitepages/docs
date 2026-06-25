@@ -6,10 +6,12 @@ import type {
   EndpointFacet,
   Lifecycle,
   ParsedDoc,
+  Taxonomy,
+  TaxonomyTerm,
   Topic,
 } from "./corpus.types";
 
-export const CATALOG_VERSION = 2;
+export const CATALOG_VERSION = 3;
 export const RESERVED_IDS: readonly string[] = ["everything", "openapi"];
 export const NAV_SHELL_SLUGS: readonly string[] = [
   "",
@@ -353,12 +355,67 @@ export function assertCorpusInvariants(ids: readonly string[]): void {
   }
 }
 
+const TOPIC_LABELS: Record<Topic, string> = {
+  person: "Person",
+  property: "Property",
+  "deed-events": "Deed Events",
+  webhooks: "Webhooks",
+  "account-billing": "Account & Billing",
+  "getting-started": "Getting Started",
+  regions: "Regions",
+  versioning: "Versioning",
+};
+
+const KIND_LABELS: Record<DocKind, string> = {
+  guide: "Guide",
+  reference: "Reference",
+  endpoint: "Endpoint",
+};
+
+const LIFECYCLE_LABELS: Record<Lifecycle, string> = {
+  current: "Current",
+  deprecated: "Deprecated",
+};
+
+function countTerms<T extends string>(
+  values: readonly T[],
+  labels: Record<T, string>,
+): readonly TaxonomyTerm[] {
+  const counts = new Map<T, number>();
+
+  for (const value of values) {
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .map(([value, count]) => ({ value, label: labels[value], count }))
+    .sort((a, b) => a.value.localeCompare(b.value));
+}
+
+export function buildTaxonomy(entries: readonly CatalogEntry[]): Taxonomy {
+  const topics = entries
+    .map((entry) => entry.topic)
+    .filter((topic): topic is Topic => topic !== null);
+
+  return {
+    topics: countTerms(topics, TOPIC_LABELS),
+    kinds: countTerms(
+      entries.map((entry) => entry.kind),
+      KIND_LABELS,
+    ),
+    lifecycles: countTerms(
+      entries.map((entry) => entry.lifecycle),
+      LIFECYCLE_LABELS,
+    ),
+  };
+}
+
 export function buildCatalog(
   entries: readonly CatalogEntry[],
   version: number = CATALOG_VERSION,
 ): Catalog {
   const docs = [...entries].sort((a, b) => a.id.localeCompare(b.id));
-  return { version, docs };
+  return { version, taxonomy: buildTaxonomy(docs), docs };
 }
 
 export function serializeCatalog(catalog: Catalog): string {
