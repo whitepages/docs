@@ -6,15 +6,28 @@ export type Topic =
   | "deed-events"
   | "webhooks"
   | "account-billing"
-  | "getting-started";
+  | "getting-started"
+  | "regions"
+  | "versioning";
+
+export type DocKind = "guide" | "reference" | "endpoint";
+
+export interface EndpointFacet {
+  readonly operationId: string;
+  readonly path: string;
+  readonly method: string;
+}
 
 export interface CatalogEntry {
   readonly id: string;
   readonly title: string;
   readonly description: string;
+  readonly kind: DocKind;
   readonly lifecycle: Lifecycle;
   readonly topic: Topic | null;
   readonly keywords: readonly string[];
+  readonly edges: readonly string[];
+  readonly endpoint: EndpointFacet | null;
 }
 
 export interface Catalog {
@@ -24,6 +37,8 @@ export interface Catalog {
 
 export interface ParsedDoc {
   readonly id: string;
+  readonly slug: string;
   readonly entry: CatalogEntry;
   readonly body: string;
+  readonly related: readonly string[];
 }

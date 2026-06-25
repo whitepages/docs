@@ -36,6 +36,15 @@ describe("resolveFacets", () => {
 
     expect(facets.topic).toBe("person");
     expect(facets.keywords).toEqual([]);
+    expect(facets.related).toEqual([]);
+  });
+
+  test("resolves curated related URLs for a known endpoint", () => {
+    const facets = resolveFacets("person-v2/get_person_by_id_v2.mdx");
+
+    expect(facets.related).toContain(
+      "/references/person-v2/search_person_by_name_phone_or_address_v2",
+    );
   });
 });
 
@@ -47,6 +56,7 @@ describe("injectFacets", () => {
       lifecycle: "current",
       topic: "person",
       keywords: ["a", "b"],
+      related: [],
     });
 
     expect(out).toBe(
@@ -54,10 +64,23 @@ describe("injectFacets", () => {
     );
   });
 
+  test("emits the related block first, with unquoted URLs", () => {
+    const out = injectFacets(sample, {
+      lifecycle: "current",
+      keywords: [],
+      related: ["/references/billing", "/references/rate-limits"],
+    });
+
+    expect(out).toBe(
+      "---\nrelated:\n  - /references/billing\n  - /references/rate-limits\nlifecycle: current\ntitle: X\ndescription: Y\n---\n\nbody",
+    );
+  });
+
   test("omits the topic line when topic is undefined", () => {
     const out = injectFacets(sample, {
       lifecycle: "current",
       keywords: ["a"],
+      related: [],
     });
 
     expect(out).not.toContain("topic:");
@@ -69,22 +92,38 @@ describe("injectFacets", () => {
       lifecycle: "current",
       topic: "person",
       keywords: [],
+      related: [],
     });
 
     expect(out).not.toContain("keywords:");
+  });
+
+  test("omits the related block when there are no related ids", () => {
+    const out = injectFacets(sample, {
+      lifecycle: "current",
+      keywords: [],
+      related: [],
+    });
+
+    expect(out).not.toContain("related:");
   });
 
   test("quotes keywords so reserved characters stay valid YAML", () => {
     const out = injectFacets(sample, {
       lifecycle: "current",
       keywords: ["who owns this: property"],
+      related: [],
     });
 
     expect(out).toContain('  - "who owns this: property"');
   });
 
   test("preserves existing frontmatter and body", () => {
-    const out = injectFacets(sample, { lifecycle: "current", keywords: [] });
+    const out = injectFacets(sample, {
+      lifecycle: "current",
+      keywords: [],
+      related: [],
+    });
 
     expect(out).toContain("title: X");
     expect(out).toContain("description: Y");
@@ -95,7 +134,11 @@ describe("injectFacets", () => {
     const noFrontmatter = "no frontmatter here";
 
     expect(
-      injectFacets(noFrontmatter, { lifecycle: "current", keywords: ["a"] }),
+      injectFacets(noFrontmatter, {
+        lifecycle: "current",
+        keywords: ["a"],
+        related: [],
+      }),
     ).toBe(noFrontmatter);
   });
 });
