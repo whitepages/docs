@@ -1,0 +1,129 @@
+Default to using Bun instead of Node.js.
+
+- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
+- Use `bun test` instead of `jest` or `vitest`
+- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
+- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
+- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
+- Bun automatically loads .env, so don't use dotenv.
+
+## APIs
+
+- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
+- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
+- `Bun.redis` for Redis. Don't use `ioredis`.
+- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
+- `WebSocket` is built-in. Don't use `ws`.
+- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
+- Bun.$`ls` instead of execa.
+
+## Testing
+
+Use `bun test` to run tests.
+
+```ts#index.test.ts
+import { test, expect } from "bun:test";
+
+test("hello world", () => {
+  expect(1).toBe(1);
+});
+```
+
+## Frontend
+
+Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
+
+Server:
+
+```ts#index.ts
+import index from "./index.html"
+
+Bun.serve({
+  routes: {
+    "/": index,
+    "/api/users/:id": {
+      GET: (req) => {
+        return new Response(JSON.stringify({ id: req.params.id }));
+      },
+    },
+  },
+  // optional websocket support
+  websocket: {
+    open: (ws) => {
+      ws.send("Hello, world!");
+    },
+    message: (ws, message) => {
+      ws.send(message);
+    },
+    close: (ws) => {
+      // handle close
+    }
+  },
+  development: {
+    hmr: true,
+    console: true,
+  }
+})
+```
+
+HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
+
+```html#index.html
+<html>
+  <body>
+    <h1>Hello, world!</h1>
+    <script type="module" src="./frontend.tsx"></script>
+  </body>
+</html>
+```
+
+With the following `frontend.tsx`:
+
+```tsx#frontend.tsx
+import React from "react";
+
+// import .css files directly and it works
+import './index.css';
+
+import { createRoot } from "react-dom/client";
+
+const root = createRoot(document.body);
+
+export default function Frontend() {
+  return <h1>Hello, world!</h1>;
+}
+
+root.render(<Frontend />);
+```
+
+Then, run index.ts
+
+```sh
+bun --hot ./index.ts
+```
+
+For more information, read the Bun API docs in `node_modules/bun-types/docs/**.md`.
+
+## Code Style
+
+- Don't abbreviate names in code (e.g., use 'navigation' instead of 'nav')
+- Avoid comments in code. If code needs a comment to be understood, refactor it to be more readable instead.
+
+## Documentation Pages
+
+When adding a new page under `content/docs/`:
+
+- Add frontmatter with `title` and `description`, plus the facets that apply (`lifecycle`, `topic`, `keywords`).
+- Include a `related:` list of the most relevant other pages, as site-relative URLs — the further reading a reader (or agent) would want next:
+
+  ```yaml
+  related:
+    - /references/authentication
+    - /documentation/agentic-guidance/capability-map
+  ```
+
+  This is required, not optional polish. `related` drives two things: the "Related" cards rendered at the bottom of the page on the docs site, and the per-document `edges` in the generated corpus that power related-content discovery for the MCP documentation tools. A page with no `related` links is a dead end in that graph.
+
+- Keep the list curated — a few genuinely relevant neighbors, not every page in the section. Point at sibling guides, the matching endpoint reference, and the operational pages (authentication, billing, rate limits) a reader will need next.
+- Use URLs (e.g. `/references/billing`), never corpus ids. The generator resolves each URL to its corpus slug; the docs site links it directly. An unresolvable URL fails the corpus build.
+- For generated endpoint pages under `content/docs/references/`, curate related links in `scripts/generators/openapi/openapi.facets.ts` (`FILE_RELATED`), not in the generated `.mdx` files — `bun run generate:openapi` overwrites those.
