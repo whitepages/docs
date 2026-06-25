@@ -4,8 +4,13 @@ import { join } from "node:path";
 import {
   assertCorpusInvariants,
   buildCatalog,
+  isNavShell,
   parseDoc,
+  renderRelated,
+  resolveRelated,
+  rewriteBody,
   serializeCatalog,
+  withRelated,
 } from "./corpus.core";
 import type { ParsedDoc } from "./corpus.types";
 
@@ -17,9 +22,32 @@ async function readDoc(relativePath: string): Promise<ParsedDoc> {
   return parseDoc(relativePath, raw);
 }
 
+function linkDocs(docs: readonly ParsedDoc[]): readonly ParsedDoc[] {
+  const slugToId = new Map(docs.map((doc) => [doc.slug, doc.id]));
+  const idToTitle = new Map(docs.map((doc) => [doc.id, doc.entry.title]));
+
+  return docs.map((doc) => {
+    const { body, edges: linkEdges } = rewriteBody(doc.body, slugToId, doc.id);
+    const related = resolveRelated(doc.id, doc.related, slugToId);
+    const section = renderRelated(
+      related.map((id) => ({ id, title: idToTitle.get(id) ?? id })),
+    );
+    const edges = [...new Set([...linkEdges, ...related])].sort();
+
+    return {
+      ...doc,
+      body: withRelated(body, section),
+      entry: { ...doc.entry, edges },
+    };
+  });
+}
+
 async function main(): Promise<void> {
   const relativePaths = [...new Glob("**/*.mdx").scanSync(CONTENT_DIR)].sort();
-  const docs = await Promise.all(relativePaths.map(readDoc));
+  const parsed = await Promise.all(relativePaths.map(readDoc));
+  const kept = parsed.filter((doc) => !isNavShell(doc.slug));
+
+  const docs = linkDocs(kept);
 
   assertCorpusInvariants(docs.map((doc) => doc.id));
 
@@ -34,7 +62,10 @@ async function main(): Promise<void> {
 
   await writeFile(join(OUTPUT_DIR, "catalog.json"), serializeCatalog(catalog));
 
-  console.log(`Wrote ${docs.length} docs + catalog.json to ${OUTPUT_DIR}`);
+  console.log(
+    `Wrote ${docs.length} docs + catalog.json to ${OUTPUT_DIR} ` +
+      `(dropped ${parsed.length - kept.length} nav-shell pages)`,
+  );
 }
 
 await main();

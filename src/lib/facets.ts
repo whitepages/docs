@@ -17,4 +17,5 @@ export const facetFrontmatterFields = {
   lifecycle: z.enum(LIFECYCLES).default("current"),
   topic: z.enum(TOPICS).optional(),
   keywords: z.array(z.string()).default([]),
+  related: z.array(z.string()).default([]),
 };

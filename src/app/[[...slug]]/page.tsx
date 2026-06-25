@@ -9,6 +9,21 @@ import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
+import { RelatedLinks, type RelatedLink } from "@/components/related-links";
+
+function resolveRelatedLinks(urls: readonly string[]): RelatedLink[] {
+  return urls.flatMap((url) => {
+    const target = source.getPage(url.split("/").filter(Boolean));
+    if (!target) return [];
+    return [
+      {
+        url: target.url,
+        title: target.data.title,
+        description: target.data.description,
+      },
+    ];
+  });
+}
 
 export default async function Page(props: PageProps<"/[[...slug]]">) {
   const params = await props.params;
@@ -16,6 +31,7 @@ export default async function Page(props: PageProps<"/[[...slug]]">) {
   if (!page) notFound();
 
   const MDX = page.data.body;
+  const relatedLinks = resolveRelatedLinks(page.data.related);
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
@@ -27,6 +43,7 @@ export default async function Page(props: PageProps<"/[[...slug]]">) {
             a: createRelativeLink(source, page),
           })}
         />
+        <RelatedLinks links={relatedLinks} />
       </DocsBody>
     </DocsPage>
   );
