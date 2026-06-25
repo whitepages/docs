@@ -28,11 +28,11 @@ The Property Search API returns ownership and resident information for a given p
 Search for property details by address:
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&city=Washington&state_code=DC' \
+curl 'https://api.whitepages.com/v2/property/?street=STREET_ADDRESS&city=CITY&state_code=STATE_CODE' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-Replace `YOUR_API_KEY` with your actual API key.
+Replace `YOUR_API_KEY` with your actual API key, and replace `STREET_ADDRESS`, `CITY`, and `STATE_CODE` with the address of the property you want to look up (URL-encode any spaces).
 
 </Step>
 
@@ -44,84 +44,135 @@ A successful request returns property details with owner and resident informatio
 ```json title="Response"
 {
   "result": {
-    "property_id": "RVMKL8l80mK",
-    "apn": "0187-S000-0802",
+    "property_id": "RSAMPLE0001",
+    "apn": "197500-0015",
     "property_address": {
-      "full_address": "1600 Pennsylvania Ave NW Washington, DC 20500",
-      "line1": "1600 Pennsylvania Ave NW",
-      "city": "Washington",
-      "state": "DC",
-      "zip": "20500",
-      "house": "1600",
-      "street": "Pennsylvania",
-      "street_type": "Ave",
-      "county": "District of Columbia"
+      "full_address": "123 Main Street, Seattle, WA 98101",
+      "line1": "123 Main Street",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101",
+      "house": "123",
+      "street": "Main",
+      "street_type": "Street",
+      "county": "King"
     },
     "mailing_address": {
-      "full_address": "1600 Pennsylvania Ave NW Washington, DC 20500",
-      "line1": "1600 Pennsylvania Ave NW",
-      "city": "Washington",
-      "state": "DC",
-      "zip": "20500",
-      "house": "1600",
-      "street": "Pennsylvania",
-      "street_type": "Ave",
-      "county": "District of Columbia"
+      "full_address": "PO Box 4242, Bellevue, WA 98009",
+      "line1": "PO Box 4242",
+      "city": "Bellevue",
+      "state": "WA",
+      "zip": "98009",
+      "house": "4242",
+      "street": "PO Box",
+      "street_type": null,
+      "county": "King"
     },
     "geolocation": {
-      "lat": 38.897697,
-      "lng": -77.034392
+      "lat": 47.60621,
+      "lng": -122.33207
     },
     "ownership_info": {
-      "owner_type": "Business",
+      "owner_type": "individual",
       "business_owners": [
-        {
-          "name": "United States Of America"
-        }
+        { "name": "Acme Holdings LLC" },
+        { "name": "Sample Trust" }
       ],
       "person_owners": [
         {
-          "id": "PX3vr2aM2E3",
-          "name": "Donald Duck",
+          "id": "PSAMPLE0001",
+          "name": "John Smith",
           "current_addresses": [
             {
-              "full_address": "1600 Pennsylvania Ave NW # 666 Washington, DC 20500"
+              "address_id": "ASAMPLE0001",
+              "full_address": "123 Main Street, Seattle, WA 98101",
+              "line1": "123 Main Street",
+              "city": "Seattle",
+              "state": "WA",
+              "zip": "98101"
             }
           ],
           "phones": [
-            {
-              "number": "12015215520",
-              "type": "Landline"
-            }
+            { "number": "(206) 555-0142", "type": "Mobile" },
+            { "number": "(425) 555-0188", "type": "Landline" }
           ],
           "emails": [
-            {
-              "email": "sample.email@gmail.com"
-            }
+            { "email": "john.smith@example.com" },
+            { "email": "j.smith@example.org" }
           ]
+        },
+        {
+          "id": "PSAMPLE0011",
+          "name": "Jane Smith",
+          "current_addresses": [
+            {
+              "address_id": "ASAMPLE0001",
+              "full_address": "123 Main Street, Seattle, WA 98101",
+              "line1": "123 Main Street",
+              "city": "Seattle",
+              "state": "WA",
+              "zip": "98101"
+            }
+          ],
+          "phones": [{ "number": "(206) 555-0143", "type": "Mobile" }],
+          "emails": [{ "email": "jane.smith@example.com" }]
         }
       ]
     },
     "residents": [
       {
-        "id": "PX3vr2aM2E3",
-        "name": "Donald Duck",
+        "id": "PSAMPLE0001",
+        "name": "John Smith",
         "current_addresses": [
           {
-            "full_address": "1600 Pennsylvania Ave NW # 666 Washington, DC 20500"
+            "address_id": "ASAMPLE0001",
+            "full_address": "123 Main Street, Seattle, WA 98101",
+            "line1": "123 Main Street",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98101"
           }
         ],
         "phones": [
-          {
-            "number": "12015215520",
-            "type": "Landline"
-          }
+          { "number": "(206) 555-0142", "type": "Mobile" },
+          { "number": "(425) 555-0188", "type": "Landline" }
         ],
         "emails": [
-          {
-            "email": "sample.email@gmail.com"
-          }
+          { "email": "john.smith@example.com" },
+          { "email": "j.smith@example.org" }
         ]
+      },
+      {
+        "id": "PSAMPLE0011",
+        "name": "Jane Smith",
+        "current_addresses": [
+          {
+            "address_id": "ASAMPLE0001",
+            "full_address": "123 Main Street, Seattle, WA 98101",
+            "line1": "123 Main Street",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98101"
+          }
+        ],
+        "phones": [{ "number": "(206) 555-0143", "type": "Mobile" }],
+        "emails": [{ "email": "jane.smith@example.com" }]
+      },
+      {
+        "id": "PSAMPLE0013",
+        "name": "Emily Smith",
+        "current_addresses": [
+          {
+            "address_id": "ASAMPLE0001",
+            "full_address": "123 Main Street, Seattle, WA 98101",
+            "line1": "123 Main Street",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98101"
+          }
+        ],
+        "phones": [{ "number": "(206) 555-0144", "type": "Mobile" }],
+        "emails": [{ "email": "emily.smith@example.com" }]
       }
     ]
   }
@@ -135,12 +186,12 @@ The response includes the verified property with geolocation, property owners, a
 
 ## Request Parameters
 
-| Parameter    | Required | Description           | Example                    |
-| ------------ | -------- | --------------------- | -------------------------- |
-| `street`     | No\*     | Street address        | `1600 Pennsylvania Ave NW` |
-| `city`       | No\*     | City name             | `Washington`               |
-| `state_code` | No\*     | Two-letter state code | `DC`                       |
-| `zipcode`    | No\*     | ZIP code              | `20500`                    |
+| Parameter    | Required | Description           | Example           |
+| ------------ | -------- | --------------------- | ----------------- |
+| `street`     | No\*     | Street address        | `123 Main Street` |
+| `city`       | No\*     | City name             | `Seattle`         |
+| `state_code` | No\*     | Two-letter state code | `WA`              |
+| `zipcode`    | No\*     | ZIP code              | `98101`           |
 
 <Callout>
   At least one parameter is required. Include multiple parameters for more
@@ -150,13 +201,13 @@ The response includes the verified property with geolocation, property owners, a
 **Example with ZIP code:**
 
 ```
-https://api.whitepages.com/v2/property/?street=1600%20Pennsylvania%20Ave%20NW&zipcode=20500
+https://api.whitepages.com/v2/property/?street=123%20Main%20Street&zipcode=98101
 ```
 
 **Example by property ID:**
 
 ```
-https://api.whitepages.com/v2/property/RVMKL8l80mK
+https://api.whitepages.com/v2/property/RSAMPLE0001
 ```
 
 ## Property Details by ID
