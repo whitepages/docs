@@ -56,6 +56,7 @@ All notable changes to this project will be documented in this file.
 - Document result_metadata on v2 person search by @lhagenWP
 - Add V1 -> V2 migration guides for person and property by @lhagenWP
 - Audit purchasing and trial-key pages, link 429s to pricing by @lhagenWP in #52
+- Require related links when adding documentation pages by @trichardswp in #53
 
 ## Features
 
@@ -93,6 +94,8 @@ All notable changes to this project will be documented in this file.
 - Sectional onboarding tester for first-request page by @lhagenWP
 - **mcp:** Add doc facet frontmatter scheme and versioning IA by @trichardswp in #48
 - Add documentation corpus generator by @trichardswp
+- Add related links and rework the docs corpus generator by @trichardswp
+- Emit a taxonomy block in the corpus catalog by @trichardswp
 
 ## Miscellaneous
 
@@ -173,6 +176,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Add dev environment and CI by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
 ## Refactor
