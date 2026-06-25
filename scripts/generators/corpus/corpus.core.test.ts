@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   assertCorpusInvariants,
   buildCatalog,
+  buildTaxonomy,
   cleanBody,
   deriveDescription,
   deriveId,
@@ -547,17 +548,75 @@ describe("buildCatalog", () => {
       isEndpoint: false,
     });
 
-  test("sorts docs by id and sets the version", () => {
+  test("sorts docs by id, sets the version, and embeds the taxonomy", () => {
     const catalog = buildCatalog([entry("b"), entry("a")], 2);
 
     expect(catalog.version).toBe(2);
     expect(catalog.docs.map((doc) => doc.id)).toEqual(["a", "b"]);
+    expect(catalog.taxonomy.kinds).toEqual([
+      { value: "guide", label: "Guide", count: 2 },
+    ]);
+  });
+});
+
+describe("buildTaxonomy", () => {
+  const guidePerson = toCatalogEntry({
+    id: "a",
+    slug: "documentation/person-search/x",
+    data: { title: "A" },
+    cleanedBody: "",
+    rawBody: "",
+    isEndpoint: false,
+  });
+  const refBilling = toCatalogEntry({
+    id: "b",
+    slug: "references/billing",
+    data: { title: "B", lifecycle: "deprecated" },
+    cleanedBody: "",
+    rawBody: "",
+    isEndpoint: false,
+  });
+
+  test("counts distinct topics, kinds, and lifecycles with labels", () => {
+    const taxonomy = buildTaxonomy([guidePerson, refBilling]);
+
+    expect(taxonomy.topics).toEqual([
+      { value: "account-billing", label: "Account & Billing", count: 1 },
+      { value: "person", label: "Person", count: 1 },
+    ]);
+    expect(taxonomy.kinds).toEqual([
+      { value: "guide", label: "Guide", count: 1 },
+      { value: "reference", label: "Reference", count: 1 },
+    ]);
+    expect(taxonomy.lifecycles).toEqual([
+      { value: "current", label: "Current", count: 1 },
+      { value: "deprecated", label: "Deprecated", count: 1 },
+    ]);
+  });
+
+  test("excludes docs with a null topic", () => {
+    const uncategorized = toCatalogEntry({
+      id: "u",
+      slug: "floating-root",
+      data: { title: "U" },
+      cleanedBody: "",
+      rawBody: "",
+      isEndpoint: false,
+    });
+
+    expect(buildTaxonomy([uncategorized]).topics).toEqual([]);
   });
 });
 
 describe("serializeCatalog", () => {
   test("produces indented JSON with a trailing newline", () => {
-    const out = serializeCatalog({ version: 2, docs: [] });
-    expect(out).toBe('{\n  "version": 2,\n  "docs": []\n}\n');
+    const out = serializeCatalog({
+      version: 3,
+      taxonomy: { topics: [], kinds: [], lifecycles: [] },
+      docs: [],
+    });
+    expect(out).toBe(
+      '{\n  "version": 3,\n  "taxonomy": {\n    "topics": [],\n    "kinds": [],\n    "lifecycles": []\n  },\n  "docs": []\n}\n',
+    );
   });
 });
