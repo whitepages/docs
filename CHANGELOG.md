@@ -98,6 +98,7 @@ All notable changes to this project will be documented in this file.
 - Add related links and rework the docs corpus generator by @trichardswp
 - Emit a taxonomy block in the corpus catalog by @trichardswp
 - Prefill API key in onboarding tester from ?token= URL param by @lhagenWP in #55
+- Refresh header logo and product name to Whitepages Pro API by @lhagenWP in #56
 
 ## Miscellaneous
 
@@ -178,6 +179,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Add dev environment and CI by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
