@@ -1,9 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import amplitude from "@/lib/amplitude";
+
+// Decode a `?token=<value>` query param back into the user's API key. The
+// token is URL-safe base64 of the key with no padding. Returns null when
+// the param is absent, malformed, or decodes to something that doesn't
+// look like a printable key — never throws so a bad link can't break the
+// page.
+function decodeApiKeyFromToken(token: string | null): string | null {
+  if (!token) return null;
+  try {
+    const standard = token.replace(/-/g, "+").replace(/_/g, "/");
+    const padding = "=".repeat((4 - (standard.length % 4)) % 4);
+    const decoded = atob(standard + padding);
+    // Gate on printable ASCII (no whitespace, no control chars, no high
+    // bits). `atob` will happily decode any valid base64, including
+    // base64 of binary data — this check confirms the result actually
+    // looks like a key string before we paste it into the input.
+    if (!decoded || !/^[\x21-\x7E]+$/.test(decoded)) return null;
+    return decoded;
+  } catch {
+    return null;
+  }
+}
 
 interface ApiResponse {
   success: boolean;
@@ -416,6 +438,18 @@ function SectionTester({ config, apiKey }: SectionTesterProps) {
 
 export function OnboardingTester() {
   const [apiKey, setApiKey] = useState("");
+  const [prefilledFromLink, setPrefilledFromLink] = useState(false);
+
+  // Defer the URL-param read to useEffect so SSR and the first client
+  // render agree (both empty) — avoids a hydration mismatch warning.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const decoded = decodeApiKeyFromToken(params.get("token"));
+    if (decoded) {
+      setApiKey(decoded);
+      setPrefilledFromLink(true);
+    }
+  }, []);
 
   return (
     <div className="not-prose space-y-6">
@@ -434,9 +468,17 @@ export function OnboardingTester() {
           placeholder="Paste your API key here"
           className="w-full px-3 py-2 border rounded-md bg-fd-background text-fd-foreground focus:outline-none focus:ring-2 focus:ring-fd-ring"
         />
-        <p className="text-sm text-fd-muted-foreground mt-2">
-          Your API key is shared across all use cases below.
-        </p>
+        {prefilledFromLink ? (
+          <p className="text-sm text-fd-muted-foreground mt-2">
+            API key auto-filled from your link — this is your trial key. You can
+            edit it below if needed. It&apos;s shared across all use cases
+            below.
+          </p>
+        ) : (
+          <p className="text-sm text-fd-muted-foreground mt-2">
+            Your API key is shared across all use cases below.
+          </p>
+        )}
       </div>
 
       {SECTIONS.map((config) => (
