@@ -13,9 +13,9 @@ export async function GET() {
     return `- [${title}](${url})${description ? `: ${description}` : ""}`;
   });
 
-  const content = `# Whitepages API Documentation
+  const content = `# Whitepages Pro API Documentation
 
-> Documentation for the Whitepages API
+> Documentation for the Whitepages Pro API
 
 ${lines.join("\n")}
 

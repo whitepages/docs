@@ -5,7 +5,7 @@ related:
   - /documentation/agentic-guidance/integration-guide
   - /references/rate-limits
 title: MCP Server
-description: Connect to Whitepages API via Model Context Protocol for AI assistants
+description: Connect to Whitepages Pro API via Model Context Protocol for AI assistants
 icon: Plug
 ---
 
@@ -13,7 +13,7 @@ import { Callout } from "fumadocs-ui/components/callout";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
 import { Step, Steps } from "fumadocs-ui/components/steps";
 
-The Whitepages MCP (Model Context Protocol) server allows AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools to directly access Whitepages API functionality.
+The Whitepages MCP (Model Context Protocol) server allows AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools to directly access Whitepages Pro API functionality.
 
 ## Quick Start
 
@@ -66,7 +66,7 @@ Add this to your Claude Desktop configuration file:
 ```
 
 <Callout type="info">
-  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages Pro API key.
 </Callout>
 
 After saving, restart Claude Desktop for the changes to take effect.
@@ -103,7 +103,7 @@ claude mcp add --transport http whitepages https://api.whitepages.com/mcp \
 ```
 
 <Callout type="info">
-  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages Pro API key.
 </Callout>
 
 After running `claude mcp add`, reconnect with `/mcp` in an open

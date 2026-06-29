@@ -17,7 +17,7 @@ export async function GET(
     <DefaultImage
       title={page.data.title}
       description={page.data.description}
-      site="Whitepages API Documentation"
+      site="Whitepages Pro API Documentation"
     />,
     {
       width: 1200,
