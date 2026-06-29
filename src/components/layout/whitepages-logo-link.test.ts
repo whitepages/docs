@@ -5,28 +5,16 @@ mock.module("@/lib/amplitude", () => ({
 }));
 
 const { default: amplitude } = await import("@/lib/amplitude");
-const { trackHomepageLinkClick } = await import("./whitepages-logo-link");
+const { trackHeaderSiteLinkClick } = await import("./whitepages-logo-link");
 
-describe("trackHomepageLinkClick", () => {
-  test("tracks WPAPIDocsHomepageLinkClicked with source_page", () => {
+describe("trackHeaderSiteLinkClick", () => {
+  test("fires WPClickedHeaderSiteLink with LinkType: API", () => {
     const spy = spyOn(amplitude, "track");
-    const url = "https://api.whitepages.com/docs/documentation/getting-started";
 
-    trackHomepageLinkClick(url);
+    trackHeaderSiteLinkClick();
 
-    expect(spy).toHaveBeenCalledWith("WPAPIDocsHomepageLinkClicked", {
-      source_page: url,
-    });
-  });
-
-  test("passes the exact source_page URL provided", () => {
-    const spy = spyOn(amplitude, "track");
-    const url = "https://api.whitepages.com/docs/references";
-
-    trackHomepageLinkClick(url);
-
-    expect(spy).toHaveBeenCalledWith("WPAPIDocsHomepageLinkClicked", {
-      source_page: url,
+    expect(spy).toHaveBeenCalledWith("WPClickedHeaderSiteLink", {
+      LinkType: "API",
     });
   });
 });

@@ -13,11 +13,11 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: {
-    default: "Whitepages API Documentation",
-    template: "%s | Whitepages API",
+    default: "Whitepages Pro API Documentation",
+    template: "%s | Whitepages Pro API",
   },
   description:
-    "Official documentation for the Whitepages API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
+    "Official documentation for the Whitepages Pro API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
   keywords: [
     "Whitepages",
     "API",
@@ -34,16 +34,16 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Whitepages API Documentation",
-    title: "Whitepages API Documentation",
+    siteName: "Whitepages Pro API Documentation",
+    title: "Whitepages Pro API Documentation",
     description:
-      "Official documentation for the Whitepages API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
+      "Official documentation for the Whitepages Pro API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Whitepages API Documentation",
+    title: "Whitepages Pro API Documentation",
     description:
-      "Official documentation for the Whitepages API. Access comprehensive person and property data.",
+      "Official documentation for the Whitepages Pro API. Access comprehensive person and property data.",
   },
   icons: {
     icon: "/docs/favicon.ico",

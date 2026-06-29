@@ -6,7 +6,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       transparentMode: "top",
       title: <WhitepagesLogoLink />,
-      url: "https://www.whitepages.com",
+      url: "https://www.whitepages.com/pro-api",
     },
     githubUrl: "https://github.com/whitepages/docs",
   };
