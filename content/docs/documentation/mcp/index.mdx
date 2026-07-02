@@ -35,7 +35,7 @@ Choose your AI tool below and copy the configuration.
 
 ## Configuration
 
-<Tabs items={['Claude Desktop', 'Claude Code', 'Cursor', 'Cline', 'OpenCode', 'Zed', 'Postman', 'MCP Inspector']}>
+<Tabs items={['Claude Desktop', 'Claude Code', 'Codex', 'Gemini CLI', 'Cursor', 'Cline', 'OpenCode', 'Zed', 'Postman', 'MCP Inspector']}>
 <Tab value="Claude Desktop">
 
 Claude Desktop does not support custom headers directly for remote MCP servers. Use `mcp-remote` as a bridge to handle authentication.
@@ -109,6 +109,69 @@ claude mcp add --transport http whitepages https://api.whitepages.com/mcp \
 After running `claude mcp add`, reconnect with `/mcp` in an open
 session. A full restart is only needed if you edited `~/.claude.json`
 by hand.
+
+</Tab>
+
+<Tab value="Codex">
+
+Add the server with a single `codex mcp add` command. It uses
+`mcp-remote` as a stdio bridge to send the `X-Api-Key` header:
+
+```bash
+codex mcp add whitepages -- npx -y mcp-remote https://api.whitepages.com/mcp \
+  --header "X-Api-Key: YOUR_API_KEY_HERE"
+```
+
+**Or edit** `~/.codex/config.toml` directly to connect to the remote
+server natively, without the `mcp-remote` bridge:
+
+```toml
+[mcp_servers.whitepages]
+url = "https://api.whitepages.com/mcp"
+http_headers = { "X-Api-Key" = "YOUR_API_KEY_HERE" }
+```
+
+<Callout type="info">
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+</Callout>
+
+In the `codex` TUI, run `/mcp` to confirm the server is connected.
+
+</Tab>
+
+<Tab value="Gemini CLI">
+
+Gemini CLI connects to remote Streamable HTTP servers with custom
+headers. Add the server with the CLI or edit your `settings.json`
+directly.
+
+**Using CLI:**
+
+```bash
+gemini mcp add whitepages https://api.whitepages.com/mcp \
+  --transport http --header "X-Api-Key: YOUR_API_KEY_HERE"
+```
+
+**Or edit** `~/.gemini/settings.json`**:**
+
+```json
+{
+  "mcpServers": {
+    "whitepages": {
+      "httpUrl": "https://api.whitepages.com/mcp",
+      "headers": {
+        "X-Api-Key": "YOUR_API_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+<Callout type="info">
+  Replace `YOUR_API_KEY_HERE` with your actual Whitepages API key.
+</Callout>
+
+Run `/mcp` inside Gemini CLI to confirm the server is connected.
 
 </Tab>
 
@@ -290,9 +353,41 @@ If you don't have an API key:
 - [Get a trial key](/documentation/getting-trial-api-key) for testing
 - [Purchase a plan](/documentation/purchasing-api) for production use
 
-## Available Tools
+## What's Available
 
-Each API endpoint is accessible through the MCP server as a tool. The available tools and their parameters will be shown in your AI assistant after connecting.
+Connecting to the MCP server gives your AI assistant two things: **tools** that call the Whitepages Pro API, and the **full corpus of documentation**.
+
+### Data tools
+
+These tools make live, metered calls to the Whitepages Pro API:
+
+- **Person search** — look up people by name, phone, or address
+- **Person by ID** — retrieve full detail for a specific person
+- **Property search** — look up properties by address
+- **Property by ID** — retrieve full detail for a specific property
+- **Account usage** — report your API usage over a date range
+
+Each tool bills identically to the equivalent REST endpoint — see [Billing](/references/billing).
+
+### Documentation
+
+The complete Whitepages Pro API documentation is available directly through the MCP server, in two forms that expose the same content:
+
+- **MCP resources** — for assistants that support resources, every document is addressable as a resource that can be browsed and attached directly.
+- **Documentation tools** — for assistants that don't support resources, the same corpus is reachable through the `list_documentation`, `search_documentation`, and `get_documentation` tools.
+
+Because both forms serve the identical corpus, no assistant is left without the documentation.
+
+<Callout type="info">
+  Some MCP clients don't currently support MCP resources — including the
+  Anthropic products **Claude Code**, **Claude Desktop**, and **Co-Work**. This
+  is a limitation of those harnesses' MCP support, not of the Whitepages MCP
+  server or its resources. On these clients, the documentation tools
+  (`list_documentation`, `search_documentation`, `get_documentation`) provide
+  the same complete corpus.
+</Callout>
+
+The exact tool names and their parameters are shown in your AI assistant after connecting.
 
 ## Usage in AI Assistants
 
