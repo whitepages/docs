@@ -58,6 +58,7 @@ All notable changes to this project will be documented in this file.
 - Audit purchasing and trial-key pages, link 429s to pricing by @lhagenWP in #52
 - Require related links when adding documentation pages by @trichardswp in #53
 - Refresh property search example response by @lhagenWP in #54
+- Expand mcp client setup and clarify tool surface by @trichardswp in #57
 
 ## Features
 
@@ -179,6 +180,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Add dev environment and CI by @trichardswp
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
