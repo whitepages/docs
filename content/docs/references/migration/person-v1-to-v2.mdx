@@ -235,10 +235,9 @@ list and linking back to the canonical Person Details URL:
 
 `displayed` is the count of items in the corresponding list on this
 response; `additional` is the count linked to the person but not
-included. Today `additional` is always `0` — V2 Search still returns
-the full upstream lists. A future release will narrow each list to a
-small kept window; `additional` will then tell you how many more
-entries are available at `details_url` (`GET /v2/person/{id}`).
+included because the list is capped (phones: 4, emails: 3, historic
+addresses: 5, owned properties: 5). The full lists are always
+available at `details_url` (`GET /v2/person/{id}`).
 
 `details_url` is `null` for the rare result that arrives without a
 canonical Whitepages person ID (e.g., an unresolved phone-owner
@@ -264,21 +263,13 @@ See the [Changelog](/changelog) for the latest release notes on
 V2 is the long-term home for the person endpoints. Two upcoming changes
 are worth knowing about while you migrate:
 
-1. **Search will behave more like search.** Today a Person Search
-   response carries every linked phone, email, historic address, and
-   owned property for each matched record — useful data, but more
-   than most Search use cases need to identify a match and decide
-   whether to drill in. A future release tunes Search to a lean,
-   ranked preview per list: the items most likely to inform the
-   match-vs-traverse decision, in priority order. Payloads shrink,
-   results are easier to scan, and Person Details (`details_url`)
-   continues to carry the full lists for callers who want everything.
-   `result_metadata.{list}.additional` is the forward-compatible
-   signal — it goes from `0` today to a non-zero count when the
-   tuning ships, telling you how many more items are available on
-   Details. The change has a 30-day customer notice window before it
-   ships; subscribe to the [Changelog](/changelog) to get the
-   heads-up.
+1. **Search returns ranked preview lists, not full lists.** Person
+   Search now caps each list per result (phones: 4, emails: 3,
+   historic addresses: 5, owned properties: 5) and surfaces the
+   overflow count in `result_metadata.{list}.additional`. Lists are
+   sorted by confidence score so the most useful entries appear first.
+   Person Details (`details_url`) continues to carry the full,
+   uncapped lists for callers who need everything.
 
 2. **No new V2-only required fields.** All current V2 fields preserve
    V1's nullability contracts. Future additive changes will follow the
