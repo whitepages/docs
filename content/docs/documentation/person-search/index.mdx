@@ -44,47 +44,60 @@ A successful request returns matching person records:
   {
     "id": "P1234567890",
     "name": "John Smith",
-    "score": 94,
     "aliases": ["Johnny Smith", "J. Smith"],
     "is_dead": false,
-    "current_addresses": [
-      { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
-    ],
-    "historic_addresses": [
-      { "id": "A1234567890", "address": "456 Oak Ave, Brooklyn, NY 11201" }
-    ],
-    "owned_properties": [
-      { "id": "R5432109876", "address": "123 Main St, New York, NY 10001" }
-    ],
-    "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
-    "emails": [{ "address": "john.smith@example.com", "score": 88 }],
+    "age": 40,
     "date_of_birth": "1985-03-15",
     "linkedin_url": "https://linkedin.com/in/johnsmith",
     "company_name": "Acme Corp",
     "job_title": "Software Engineer",
+    "match_score": 94,
+    "matched_by": ["name", "address"],
+    "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
+    "current_addresses": [
+      {
+        "address_id": "A9876543210",
+        "full_address": "123 Main St, New York, NY 10001",
+        "line1": "123 Main St",
+        "city": "New York",
+        "state": "NY",
+        "zip": "10001"
+      }
+    ],
+    "historic_addresses": [
+      {
+        "address_id": "A1234567890",
+        "full_address": "456 Oak Ave, Brooklyn, NY 11201",
+        "line1": "456 Oak Ave",
+        "city": "Brooklyn",
+        "state": "NY",
+        "zip": "11201"
+      }
+    ],
+    "owned_properties": [
+      { "id": "R5432109876", "address": "123 Main St, New York, NY 10001" }
+    ],
+    "emails": [{ "email": "john.smith@example.com", "score": 88 }],
     "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
     "result_metadata": {
       "details_url": "/v2/person/P1234567890",
-      "phones": { "displayed": 1, "additional": 0 },
+      "phones": { "displayed": 1, "additional": 3 },
       "emails": { "displayed": 1, "additional": 0 },
-      "historic_addresses": { "displayed": 1, "additional": 0 },
+      "historic_addresses": { "displayed": 1, "additional": 5 },
       "owned_properties": { "displayed": 1, "additional": 0 }
     }
   }
 ]
 ```
 
-Each record includes identifiers, addresses, phone numbers, emails, employment information, and linked property and relative records when available, plus a `result_metadata` block summarizing each list and linking back to the canonical Person Details URL.
+Each record includes identifiers, contact and employment fields, match signals, address and phone lists, and a `result_metadata` block summarizing each list and linking to the full Person Details record.
 
 <Callout type="info" title="result_metadata">
   `result_metadata.{list}.displayed` is the count of items in the list on this
-  response; `additional` is the count of items linked to the person but not
-  included. Today `additional` is always `0`. A future release will tune Person
-  Search to return a lean, ranked preview per list — the items most likely to
-  inform a match decision — with smaller payloads and more digestible results.
-  The full lists will always remain available at `details_url` (`/v2/person/{id}
-  `); `additional` is the forward-compatible signal for how many more entries
-  are there. Safe to begin parsing now.
+  response; `additional` is the count of items linked to the person that were
+  not included because the list is capped (phones: 4, emails: 3, historic
+  addresses: 5, owned properties: 5). The full lists are always available via
+  `details_url` at `/v2/person/{id}`.
 </Callout>
 
 </Step>
