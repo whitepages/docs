@@ -104,6 +104,14 @@ The response includes both current and historical addresses for each person foun
     "name": "John Smith",
     "aliases": ["Johnny Smith"],
     "is_dead": false,
+    "age": 40,
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "match_score": 92,
+    "matched_by": ["address"],
+    "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
     "current_addresses": [
       { "id": "A9876543210", "address": "123 Main St, Seattle, WA 98101" }
     ],
@@ -114,13 +122,15 @@ The response includes both current and historical addresses for each person foun
     "owned_properties": [
       { "id": "R5432109876", "address": "123 Main St, Seattle, WA 98101" }
     ],
-    "phones": [{ "number": "(206) 555-0198", "type": "mobile", "score": 92 }],
     "emails": [{ "email": "john.smith@example.com", "score": 88 }],
-    "date_of_birth": "1985-03-15",
-    "linkedin_url": "https://linkedin.com/in/johnsmith",
-    "company_name": "Acme Corp",
-    "job_title": "Software Engineer",
-    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
+    "result_metadata": {
+      "details_url": "/v2/person/P1234567890",
+      "phones": { "displayed": 1, "additional": 0 },
+      "emails": { "displayed": 1, "additional": 0 },
+      "historic_addresses": { "displayed": 2, "additional": 0 },
+      "owned_properties": { "displayed": 1, "additional": 0 }
+    }
   }
 ]
 ```

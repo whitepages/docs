@@ -36,8 +36,8 @@ metadata.
 - Update email reads from `emails[i]` (a string) to `emails[i].email`
   (an object with a confidence `score`).
 - Everything else just keeps working. Optional: start parsing
-  `match_score`, `matched_by`, and `result_metadata` to take advantage
-  of new V2 capabilities.
+  `age`, `match_score`, `matched_by`, and `result_metadata` to take
+  advantage of new V2 capabilities.
 
 ## Endpoint URLs
 
@@ -108,25 +108,26 @@ top-level `metadata` block plus a per-result `result_metadata` block:
     {
       "id": "P1234567890",
       "name": "John Smith",
-      "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
-      "emails": [{ "email": "john.smith@example.com", "score": 88 }],
-      "current_addresses": [...],
-      "historic_addresses": [...],
-      "owned_properties": [...],
-      "relatives": [...],
       "aliases": ["Johnny Smith"],
       "is_dead": false,
+      "age": 40,
       "date_of_birth": "1985-03-15",
       "linkedin_url": "https://linkedin.com/in/johnsmith",
       "company_name": "Acme Corp",
       "job_title": "Software Engineer",
       "match_score": 87,
       "matched_by": ["name", "address"],
+      "phones": [{ "number": "(212) 555-0198", "type": "mobile", "score": 92 }],
+      "current_addresses": [...],
+      "historic_addresses": [...],
+      "owned_properties": [...],
+      "emails": [{ "email": "john.smith@example.com", "score": 88 }],
+      "relatives": [...],
       "result_metadata": {
         "details_url": "/v2/person/P1234567890",
-        "phones":             { "displayed": 1, "additional": 0 },
+        "phones":             { "displayed": 4, "additional": 3 },
         "emails":             { "displayed": 1, "additional": 0 },
-        "historic_addresses": { "displayed": 1, "additional": 0 },
+        "historic_addresses": { "displayed": 5, "additional": 2 },
         "owned_properties":   { "displayed": 1, "additional": 0 }
       }
     }
@@ -168,6 +169,7 @@ meaning. Three shapes changed:
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Top-level: `[record, record, ...]`           | Top-level: `{ "results": [...], "metadata": {...} }`                                             | Search response is wrapped. Read `response.results` to get the V1-equivalent list. Pagination (`metadata.result_count`, `.page`, `.page_size`) and per-result `result_metadata` are additive. |
 | `emails: ["a@example.com", "b@example.com"]` | `emails: [{ "email": "a@example.com", "score": 95 }, { "email": "b@example.com", "score": 60 }]` | Emails are now objects with a confidence `score` (0–100). Read `.email` to recover the V1 string. The list is sorted by score descending.                                                     |
+| _(no `age`)_                                 | `age: integer \| null`                                                                           | New on both Search and Details. Computed from `date_of_birth`; year-only DOB returns a year-based approximation, missing or unparseable DOB returns `null`.                                   |
 | _(no `match_score`)_                         | `match_score: integer \| null` (1–99)                                                            | New on Search only. Higher scores indicate stronger relevance + completeness.                                                                                                                 |
 | _(no `matched_by`)_                          | `matched_by: list[string]`                                                                       | New on Search only. Names the input field types that contributed to this result (e.g., `["phone"]`, `["name", "address"]`).                                                                   |
 | _(no `result_metadata`)_                     | `result_metadata: {...}`                                                                         | New on Search only. See [result_metadata](#result_metadata) below.                                                                                                                            |
@@ -175,7 +177,10 @@ meaning. Three shapes changed:
 All other fields — `id`, `name`, `aliases`, `is_dead`, `phones[]`,
 `current_addresses[]`, `historic_addresses[]`, `owned_properties[]`,
 `relatives[]`, `date_of_birth`, `linkedin_url`, `company_name`,
-`job_title` — keep their V1 type, nullability, and semantics.
+`job_title` — keep their V1 type, nullability, and semantics. V2 also
+sorts the response's top-level keys into a scan-friendly order
+(identity → employment scalars → match signals → arrays → relatives
+last); rely on key names, not position, when parsing.
 
 ## V2-only features
 

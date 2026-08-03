@@ -18,20 +18,21 @@ Person search responses include confidence scores on three levels: the person re
 
 ## Score Types
 
-### Person Score
+### Person Match Score
 
-The top-level `score` on a person record indicates how well that record matches your search query. Higher scores reflect stronger matches across name, location, and other query parameters.
+The top-level `match_score` on a person record indicates how well that record matches your search query. Higher scores reflect stronger matches across name, location, and other query parameters. A companion `matched_by` array names which of your query inputs contributed to the match.
 
 ```json
 {
   "id": "P1234567890",
   "name": "John Smith",
-  "score": 94,
+  "match_score": 94,
+  "matched_by": ["first_name", "last_name", "address"],
   ...
 }
 ```
 
-Use this to rank or filter results when multiple people match your query.
+Use `match_score` to rank or filter results when multiple people match your query, and `matched_by` to understand which inputs were most decisive.
 
 ### Phone Score
 
