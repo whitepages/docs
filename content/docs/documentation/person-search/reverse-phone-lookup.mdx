@@ -80,6 +80,17 @@ The response includes the phone owner's information along with all associated co
     "name": "John Smith",
     "aliases": ["Johnny Smith"],
     "is_dead": false,
+    "age": 40,
+    "date_of_birth": "1985-03-15",
+    "linkedin_url": "https://linkedin.com/in/johnsmith",
+    "company_name": "Acme Corp",
+    "job_title": "Software Engineer",
+    "match_score": 95,
+    "matched_by": ["phone"],
+    "phones": [
+      { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
+      { "number": "(212) 555-0199", "type": "landline", "score": 72 }
+    ],
     "current_addresses": [
       { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
     ],
@@ -87,19 +98,25 @@ The response includes the phone owner's information along with all associated co
       { "id": "A1234567890", "address": "456 Oak Ave, Brooklyn, NY 11201" }
     ],
     "owned_properties": [],
-    "phones": [
-      { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
-      { "number": "(212) 555-0199", "type": "landline", "score": 72 }
-    ],
     "emails": [{ "email": "john.smith@example.com", "score": 88 }],
-    "date_of_birth": "1985-03-15",
-    "linkedin_url": "https://linkedin.com/in/johnsmith",
-    "company_name": "Acme Corp",
-    "job_title": "Software Engineer",
-    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }]
+    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
+    "result_metadata": {
+      "details_url": "/v2/person/P1234567890",
+      "phones": { "displayed": 2, "additional": 0 },
+      "emails": { "displayed": 1, "additional": 0 },
+      "historic_addresses": { "displayed": 1, "additional": 0 },
+      "owned_properties": { "displayed": 0, "additional": 0 }
+    }
   }
 ]
 ```
+
+<Callout type="info" title="Matched-first for phone">
+  Because the search input was a phone number, the matching phone is pinned to
+  position 0 of the `phones` list even when it ranks below other phones by
+  confidence score. This guarantees the phone the caller queried on always
+  appears above the cap.
+</Callout>
 
 <Callout type="info" title="Multiple Results">
   In rare cases, a phone number may be associated with multiple people. When

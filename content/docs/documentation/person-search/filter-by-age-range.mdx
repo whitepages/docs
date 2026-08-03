@@ -92,6 +92,14 @@ The response format remains the same as a standard person search. Age filters on
     "name": "John Smith",
     "aliases": ["Johnny Smith"],
     "is_dead": false,
+    "age": 33,
+    "date_of_birth": "1992-07-22",
+    "linkedin_url": "https://linkedin.com/in/jsmith",
+    "company_name": "Tech Solutions Inc",
+    "job_title": "Product Manager",
+    "match_score": 87,
+    "matched_by": ["first_name", "last_name"],
+    "phones": [{ "number": "(312) 555-0123", "type": "mobile", "score": 88 }],
     "current_addresses": [
       { "id": "A9876543210", "address": "456 Oak Ave, Chicago, IL 60601" }
     ],
@@ -99,13 +107,22 @@ The response format remains the same as a standard person search. Age filters on
       { "id": "A1234567890", "address": "789 Pine St, Chicago, IL 60602" }
     ],
     "owned_properties": [],
-    "phones": [{ "number": "(312) 555-0123", "type": "mobile", "score": 88 }],
     "emails": [{ "email": "jsmith@example.com", "score": 88 }],
-    "date_of_birth": "1992-07-22",
-    "linkedin_url": "https://linkedin.com/in/jsmith",
-    "company_name": "Tech Solutions Inc",
-    "job_title": "Product Manager",
-    "relatives": [{ "id": "P0987654321", "name": "Mary Smith" }]
+    "relatives": [{ "id": "P0987654321", "name": "Mary Smith" }],
+    "result_metadata": {
+      "details_url": "/v2/person/P1234567890",
+      "phones": { "displayed": 1, "additional": 0 },
+      "emails": { "displayed": 1, "additional": 0 },
+      "historic_addresses": { "displayed": 1, "additional": 0 },
+      "owned_properties": { "displayed": 0, "additional": 0 }
+    }
   }
 ]
 ```
+
+<Callout type="info" title="Age vs. min_age/max_age">
+  The `age` field on each result is derived from `date_of_birth` and reflects
+  the person's current age. The `min_age` / `max_age` request parameters filter
+  the search index by the same computed age. When only a birth year is on file,
+  `age` is a year-based approximation.
+</Callout>

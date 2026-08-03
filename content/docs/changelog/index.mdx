@@ -9,6 +9,39 @@ description: Notable changes to the Whitepages Pro API, newest first.
 
 ---
 
+## August 3, 2026
+
+### `age` field on v2 person responses
+
+Every record returned by `GET /v2/person/` and `GET /v2/person/{id}`
+now includes an `age` field alongside `date_of_birth`:
+
+```json
+{
+  "id": "P19Xrg1Zr34",
+  "name": "Jane Smith",
+  "is_dead": false,
+  "age": 68,
+  "date_of_birth": "1957-12-22",
+  "...": "..."
+}
+```
+
+`age` is computed from `date_of_birth` at response time. When only a
+birth year is on file, `age` is a year-based approximation. When the
+DOB is missing or unparseable, `age` is `null`. Existing `min_age` /
+`max_age` request parameters filter by the same computed age; there
+is no behavior change to those parameters.
+
+This change is purely additive: no existing field on Person Search or
+Person Details has changed type, nullability, or presence.
+
+Response key order was also normalized on both endpoints so identity
+fields and match signals appear before the larger array fields; rely
+on key names, not position, when parsing.
+
+---
+
 ## June 18, 2026
 
 ### `result_metadata` on v2 person search
