@@ -113,21 +113,22 @@ Each record includes identifiers, contact and employment fields, match signals, 
 
 Combine any of these parameters to refine your search:
 
-| Parameter                      | Description                                               | Example       |
-| ------------------------------ | --------------------------------------------------------- | ------------- |
-| `name`                         | Full or partial name                                      | `John Smith`  |
-| `first_name`                   | First name                                                | `John`        |
-| `middle_name`                  | Middle name                                               | `Robert`      |
-| `last_name`                    | Last name                                                 | `Smith`       |
-| `phone`                        | Phone number                                              | `2125550198`  |
-| `street`                       | Street address                                            | `123 Main St` |
-| `city`                         | City name                                                 | `New York`    |
-| `state_code`                   | Two-letter state code                                     | `NY`          |
-| `zipcode`                      | ZIP code                                                  | `10001`       |
-| `min_age`                      | Minimum age filter (18-65)                                | `25`          |
-| `max_age`                      | Maximum age filter (18-65)                                | `55`          |
-| `include_historical_locations` | Include historical addresses in search (default: `false`) | `true`        |
-| `include_fuzzy_matching`       | Enable fuzzy name matching (default: `false`)             | `true`        |
+| Parameter                      | Description                                                                                                                                                                                                                                       | Example       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `name`                         | Full or partial name                                                                                                                                                                                                                              | `John Smith`  |
+| `first_name`                   | First name                                                                                                                                                                                                                                        | `John`        |
+| `middle_name`                  | Middle name                                                                                                                                                                                                                                       | `Robert`      |
+| `last_name`                    | Last name                                                                                                                                                                                                                                         | `Smith`       |
+| `phone`                        | Phone number                                                                                                                                                                                                                                      | `2125550198`  |
+| `street`                       | Street address                                                                                                                                                                                                                                    | `123 Main St` |
+| `city`                         | City name                                                                                                                                                                                                                                         | `New York`    |
+| `state_code`                   | Two-letter state code                                                                                                                                                                                                                             | `NY`          |
+| `zipcode`                      | ZIP code                                                                                                                                                                                                                                          | `10001`       |
+| `min_age`                      | Minimum age filter (18-65)                                                                                                                                                                                                                        | `25`          |
+| `max_age`                      | Maximum age filter (18-65)                                                                                                                                                                                                                        | `55`          |
+| `include_historical_locations` | Include historical addresses in search (default: `false`)                                                                                                                                                                                         | `true`        |
+| `include_fuzzy_matching`       | Force fuzzy name matching on the first pass. When `false` (default) the API runs exact match first and falls back to fuzzy automatically if the exact pass returns no results. See [Fuzzy Matching](/documentation/person-search/fuzzy-matching). | `true`        |
+| `strict_match`                 | Suppress automatic fuzzy fallback (default: `false`). When `true`, a zero-result exact query is returned as-is instead of retrying with fuzzy matching. Cannot be combined with `include_fuzzy_matching=true`.                                    | `true`        |
 
 <Callout type="warn" title="Query Parameter Behavior">
   The API uses **AND logic**, meaning all parameters must match. For example,

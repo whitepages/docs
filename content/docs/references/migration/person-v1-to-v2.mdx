@@ -56,16 +56,16 @@ type, and accepted values:
 
 `phone`, `name`, `first_name`, `middle_name`, `last_name`, `street`,
 `city`, `state_code`, `zipcode`, `radius`, `min_age`, `max_age`,
-`include_historical_locations`.
+`include_historical_locations`, `strict_match`.
 
 V2 adds four optional parameters:
 
-| Parameter                | Type    | Default | Purpose                                                                                 |
-| ------------------------ | ------- | ------- | --------------------------------------------------------------------------------------- |
-| `email`                  | string  | —       | Search by email address. V1 has no email lookup.                                        |
-| `include_fuzzy_matching` | boolean | `false` | Broaden name matching to phonetic variants and common nicknames.                        |
-| `page`                   | integer | `1`     | Page number, 1–10. Pages 2+ are billable per the [billing policy](/references/billing). |
-| `page_size`              | integer | `15`    | Results per page, 1–15.                                                                 |
+| Parameter                | Type    | Default | Purpose                                                                                                                                                                     |
+| ------------------------ | ------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `email`                  | string  | —       | Search by email address. V1 has no email lookup.                                                                                                                            |
+| `include_fuzzy_matching` | boolean | `false` | Force fuzzy name matching on the first pass. When `false`, the API runs exact first and falls back to fuzzy automatically on a zero-result response — V1 has no equivalent. |
+| `page`                   | integer | `1`     | Page number, 1–10. Pages 2+ are billable per the [billing policy](/references/billing).                                                                                     |
+| `page_size`              | integer | `15`    | Results per page, 1–15.                                                                                                                                                     |
 
 `GET /v2/person/{id}` continues to take the person ID in the path with
 no additional parameters.
@@ -213,10 +213,12 @@ Use these to prioritize the most likely matches in your UI or pipeline.
 
 ### Fuzzy / nickname matching
 
-Set `include_fuzzy_matching=true` on Search to broaden name matching
-beyond exact spelling — phonetic variants, common nicknames, and
-typos. Useful when input names come from human entry (CRM notes,
-voicemail transcripts).
+V2 broadens name matching to phonetic variants, common nicknames,
+initials, and typos. Zero-result searches automatically fall back to
+fuzzy matching on the same request — V1 has no such fallback. Set
+`include_fuzzy_matching=true` explicitly to start with fuzzy matching
+on the first pass instead of falling back only on empty. Useful when
+input names come from human entry (CRM notes, voicemail transcripts).
 
 ### Confidence-scored emails
 
