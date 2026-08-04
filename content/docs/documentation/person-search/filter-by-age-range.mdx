@@ -76,9 +76,12 @@ curl 'https://api.whitepages.com/v2/person?first_name=Sarah&last_name=Miller&cit
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-<Callout type="info" title="Age Data Availability">
-  Age filtering relies on available data. Some records may not have age
-  information and will be excluded from filtered results.
+<Callout type="info" title="Records Without Known DOB">
+  Records for which no date of birth is on file are **included** in results when
+  `min_age` or `max_age` is set. The filter only excludes records whose known
+  DOB falls outside the requested range — so a strong name-and-address match
+  returns even when the person's age is unknown. The `age` field on such a
+  record is `null`.
 </Callout>
 
 ## Response

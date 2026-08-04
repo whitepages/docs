@@ -14,32 +14,41 @@ keywords:
   - "phonetic match"
 ---
 
-Use the `include_fuzzy_matching` parameter to enable fuzzy name matching. When enabled, the search runs additional phonetic, nickname, and common misspelling matching logic at the cost of additional latency.
+Person search matches names in two modes: **exact match** and **fuzzy match**. Fuzzy match broadens name matching to phonetic variants, common nicknames, initials, and typos. By default the API runs an exact match first and only falls back to fuzzy match if the exact pass returns no results — you get the precision of exact match when it works and the recall of fuzzy match when it doesn't. Set `include_fuzzy_matching=true` to skip the exact pass and start with fuzzy match directly.
 
 ## Basic Usage
 
-Add `include_fuzzy_matching=true` to your request:
+You do not need to set anything to benefit from fuzzy matching. If your exact-name search returns no results, the API automatically retries with fuzzy matching:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/person?name=Tomas%20O%27Brien&city=New%20York&state_code=NY' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+If no record exactly matches `Tomas O'Brien`, the API automatically retries the search as a fuzzy match, which can find records for `Thomas O'Brien`, `Tom O'Brien`, `Tomas OBrien`, and similar variants — all in a single request.
+
+To force fuzzy matching on the first pass (skip the exact pass), set `include_fuzzy_matching=true`:
 
 ```bash title="Request"
 curl 'https://api.whitepages.com/v2/person?name=John%20Doe&city=New%20York&state_code=NY&include_fuzzy_matching=true' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-Without fuzzy matching, this search may return no results if the name doesn't exactly match a record. With fuzzy matching enabled, the search can find records with phonetic variations, nicknames, and common misspellings.
-
 ## Parameters
 
-| Parameter                | Type    | Default | Description                                          |
-| ------------------------ | ------- | ------- | ---------------------------------------------------- |
-| `include_fuzzy_matching` | boolean | `false` | Enable fuzzy name matching to broaden search results |
+| Parameter                | Type    | Default | Description                                                                                                                                                                                       |
+| ------------------------ | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `include_fuzzy_matching` | boolean | `false` | When `true`, the search starts with fuzzy matching instead of exact matching. When `false` (the default), the search runs exact first and falls back to fuzzy only when exact returns no results. |
+| `strict_match`           | boolean | `false` | When `true`, the search does not fall back to fuzzy matching on a zero-result response; the exact query is authoritative. Cannot be combined with `include_fuzzy_matching=true`.                  |
 
 ## How It Works
 
-When `include_fuzzy_matching=true`, the search expands name matching to include:
+Fuzzy matching expands name matching to include:
 
 - **Phonetic variations** — names that sound similar (e.g., "Tomas" matching "Thomas")
 - **Nicknames** — common name variants (e.g., "Bob" matching "Robert")
 - **Initials** — first or middle initial matching against full names
+- **Common misspellings** — small character transpositions or omissions
 
 Exact name matches are still ranked higher than fuzzy matches, so precise results appear first in the response.
 
@@ -50,11 +59,52 @@ Exact name matches are still ranked higher than fuzzy matches, so precise result
   record.
 </Callout>
 
+<Callout type="info" title="When To Set The Parameter Explicitly">
+  Most callers do not need to set `include_fuzzy_matching`. The default behavior
+  (exact first, fuzzy fallback on zero results) gives you the precision of exact
+  matching without the empty responses on typos and nicknames. Set
+  `include_fuzzy_matching=true` only when you know the input is likely to be a
+  nickname or variant and you want the exact pass skipped — for example, when
+  the caller is a CRM export of informal names.
+</Callout>
+
+## Opting Out — `strict_match=true`
+
+If your use case treats an empty result as authoritative — for example,
+verifying a name genuinely does not exist in the dataset — set
+`strict_match=true` on the request. The API will not fall back to fuzzy
+matching or radius expansion on a zero-result response; the exact query
+runs and its result is returned as-is.
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/person?name=John%20Doe&city=New%20York&state_code=NY&strict_match=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout
+  type="warn"
+  title="Mutually Exclusive With include_fuzzy_matching=true"
+>
+  `strict_match=true` and `include_fuzzy_matching=true` are semantically
+  contradictory — one asks the API not to broaden at all, the other asks it to
+  start with the broadest name matching. Setting both on the same request
+  returns HTTP 400 with a message pointing at the conflict. Set at most one.
+</Callout>
+
+<Callout type="info" title="What strict_match Does Not Affect">
+  `strict_match` controls fuzzy/radius fallback only. It does not change how
+  `min_age` / `max_age` handles records whose date of birth is unknown (those
+  records continue to be included), and it does not change how
+  `include_historical_locations` interprets past addresses.
+</Callout>
+
 <Callout type="warn" title="Latency">
-  Fuzzy matching runs additional matching logic and may increase response time
-  compared to exact matching.
+  When the exact pass returns no results and the API falls back to fuzzy
+  matching, the response includes the extra matching work in a single round
+  trip. Requests that require the fuzzy fallback may respond slightly slower
+  than requests that succeed on the exact pass.
 </Callout>
 
 ## Response
 
-The response format remains the same as a standard person search. Fuzzy matching only affects which records are returned and their confidence scores, not the structure of the response.
+The response format is the same regardless of which match mode produced the results. Fuzzy matching only affects which records are returned and their confidence scores, not the structure of the response.

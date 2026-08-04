@@ -9,6 +9,47 @@ description: Notable changes to the Whitepages Pro API, newest first.
 
 ---
 
+## August 4, 2026
+
+### Fewer empty responses on person search
+
+Three changes to how `GET /v2/person/` and `GET /v1/person/` narrow
+results substantially reduce the number of searches that return no
+results. None of them break the response shape or require callers to
+update existing integrations.
+
+**Automatic fuzzy-match fallback on zero results.** When an exact-name
+search returns no results, the API now automatically retries the same
+request with fuzzy matching enabled (phonetic variants, nicknames,
+initials, typos) before returning. Exact-first precision is preserved
+for searches that succeed on the first pass; only zero-result searches
+trigger the fallback. The `include_fuzzy_matching` request parameter
+continues to work as documented — setting it to `true` still forces
+fuzzy matching on the first pass. Setting it to `false` (the default)
+no longer disables fuzzy matching outright; it disables it only for
+the first pass. See [Fuzzy Matching](/documentation/person-search/fuzzy-matching)
+for details.
+
+**New `strict_match` request parameter to opt out of the fallback.**
+Callers whose use case treats "no results" as authoritative (for
+example, verifying a name genuinely does not exist in the dataset) can
+now set `strict_match=true` on the request to suppress the automatic
+fuzzy fallback. A zero-result exact query is returned as-is, without
+retrying. `strict_match=true` and `include_fuzzy_matching=true` are
+semantically contradictory; setting both on the same request returns
+HTTP 400.
+
+**Age filter no longer excludes records without a known DOB.** When
+`min_age` or `max_age` is set, records for which no date of birth is on
+file are now **included** in results. The filter continues to exclude
+records whose known DOB falls outside the requested range — the
+behaviour change only affects records with a `null` `age` field. A
+strong name-and-address match now returns even when the person's age is
+unknown, where previously any age filter would drop that record. See
+[Filter by Age Range](/documentation/person-search/filter-by-age-range).
+
+---
+
 ## August 3, 2026
 
 ### `age` field on v2 person responses
