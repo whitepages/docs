@@ -61,6 +61,7 @@ All notable changes to this project will be documented in this file.
 - Expand mcp client setup and clarify tool surface by @trichardswp in #57
 - **person-search:** Update response examples for truncation + field order by @lhagenWP
 - **person-search:** Add age field, correct field order in all examples by @lhagenWP in #58
+- Reflect fuzzy-match fallback, nullable-DOB age filter, strict_match by @lhagenWP
 
 ## Features
 
@@ -189,6 +190,8 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
+- **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
 
 ## Refactor
 
