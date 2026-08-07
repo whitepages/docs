@@ -18,15 +18,35 @@ keywords:
   - "trial ran out"
   - "out of queries"
   - "quota exceeded"
+  - "usage cap exceeded"
+  - "upgrade url"
+  - "retry after"
 ---
 
 import { Callout } from "fumadocs-ui/components/callout";
 
-API usage is rate-limited to ensure system stability and fair usage across all customers.
+The API enforces two different kinds of limit, and both return `429`:
 
-## Rate Limit Behavior
+- **Rate limits** bound how _fast_ requests arrive. They clear on their own.
+- **Usage caps** bound how _much_ you consume in a billing period. They persist until the period resets or you buy more queries.
 
-When you exceed the rate limit, the API returns a `429 Too Many Requests` status code with retry information.
+Telling them apart matters, because retrying only helps for one of them.
+
+## Which 429 did I get?
+
+Three responses share the `429` status — one rate limit and two usage caps. Each is identified by a single field in the body:
+
+| Identifying field                | Kind       | Meaning                             | What to do                     |
+| -------------------------------- | ---------- | ----------------------------------- | ------------------------------ |
+| `"message": "Too Many Requests"` | Rate limit | Too many requests per second        | Back off and retry             |
+| `"message": "Limit Exceeded"`    | Usage cap  | Gateway quota for the period is out | Wait for the reset, or upgrade |
+| `"error": "usage_cap_exceeded"`  | Usage cap  | Your plan's query allowance is out  | Upgrade, or wait for the reset |
+
+Only the third sets `error`, so branching on its presence is the reliable check. The first two carry `message` and nothing else; the third carries the full set of fields below.
+
+## Rate limits
+
+When you send requests too quickly, the API returns:
 
 ```json
 {
@@ -35,31 +55,63 @@ When you exceed the rate limit, the API returns a `429 Too Many Requests` status
 ```
 
 <Callout type="info">
-  When you receive a 429 response, wait before retrying your request. Implement
-  exponential backoff in your application for best results. Rate limits vary by
-  plan; higher limits can be requested through
+  Wait before retrying, and implement exponential backoff in your application.
+  Rate limits vary by plan; higher limits can be requested through
   [support](mailto:api@whitepages.com).
 </Callout>
 
-## Monthly Query Limits & Trial Exhaustion
+## Usage caps
 
-Your API plan includes a monthly query limit, and trial keys include a fixed trial allowance. When you exhaust either, the API returns:
+Every plan includes a query allowance for its billing period, and trial keys include a fixed trial allowance. When you exhaust it, the API returns a `429` with a structured body:
 
 ```json
 {
-  "message": "Limit Exceeded"
+  "error": "usage_cap_exceeded",
+  "error_instance_id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",
+  "message": "Query cap reached for this billing cycle. To restore access before it resets, upgrade to a plan with more included queries: https://www.whitepages.com/billing/manage-plan/pro-api",
+  "limit": 1000,
+  "used": 1000,
+  "reset_at": "2026-09-01T00:00:00+00:00",
+  "upgrade_url": "https://www.whitepages.com/billing/manage-plan/pro-api"
 }
 ```
 
-This `Limit Exceeded` response means you have used up your monthly query limit or your trial allowance. It is distinct from the `429 Too Many Requests` response above: `429` is short-term throttling that clears on its own, while `Limit Exceeded` persists until your quota resets or you upgrade. You can either:
+| Field         | Meaning                                                       |
+| ------------- | ------------------------------------------------------------- |
+| `limit`       | Billable queries your allowance covers for the current period |
+| `used`        | Billable queries consumed so far in the period                |
+| `reset_at`    | When the allowance resets                                     |
+| `upgrade_url` | Where to restore access without waiting for the reset         |
 
-- Wait until the next month, when a plan's monthly limit resets
-- [Purchase a plan or additional queries](/documentation/purchasing-api), or contact support at api@whitepages.com
-- If you are on a trial, [purchase a plan](/documentation/purchasing-api) to keep going once your trial allowance is exhausted
+`upgrade_url` differs by account type: paid subscribers are sent to their plan management page to move to a larger plan, and trials are sent to the pricing page to choose their first one.
+
+<Callout type="warn">
+  Retrying will not clear a usage cap. Your allowance is spent until `reset_at`,
+  or until you move to a plan with more included queries.
+</Callout>
+
+### Response headers
+
+`usage_cap_exceeded` responses carry the same numbers as headers, so you can react without parsing the body. The two gateway 429s do not set them:
+
+| Header              | Meaning                                |
+| ------------------- | -------------------------------------- |
+| `Retry-After`       | Seconds until it is worth trying again |
+| `X-RateLimit-Limit` | Same as `limit`                        |
+| `X-RateLimit-Used`  | Same as `used`                         |
+| `X-RateLimit-Reset` | Same as `reset_at`                     |
+
+<Callout type="info">
+  `Retry-After` is a re-check interval, not the time until your allowance
+  returns. Access resumes once you have credit again — because the period reset,
+  because you upgraded, or because support granted extra queries — and
+  re-checking at that interval is how your key picks that up.
+</Callout>
 
 ## Best Practices
 
-- **Implement retry logic** with exponential backoff for 429 responses
+- **Implement retry logic** with exponential backoff for rate-limit 429s
+- **Branch on `error`** so your integration does not retry a usage cap in a loop
 - **Cache responses** when appropriate to reduce API calls
 - **Monitor usage** via the [Account Usage](/references/account/get_account_usage_data) endpoint
 - **Batch requests** where possible to optimize your quota
