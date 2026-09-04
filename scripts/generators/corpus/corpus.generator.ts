@@ -4,12 +4,13 @@ import { join } from "node:path";
 import {
   assertCorpusInvariants,
   buildCatalog,
-  isNavShell,
   parseDoc,
   renderRelated,
   resolveRelated,
   rewriteBody,
+  selectCorpusDocs,
   serializeCatalog,
+  slugIndex,
   withRelated,
 } from "./corpus.core";
 import type { ParsedDoc } from "./corpus.types";
@@ -23,7 +24,7 @@ async function readDoc(relativePath: string): Promise<ParsedDoc> {
 }
 
 function linkDocs(docs: readonly ParsedDoc[]): readonly ParsedDoc[] {
-  const slugToId = new Map(docs.map((doc) => [doc.slug, doc.id]));
+  const slugToId = slugIndex(docs);
   const idToTitle = new Map(docs.map((doc) => [doc.id, doc.entry.title]));
 
   return docs.map((doc) => {
@@ -45,9 +46,7 @@ function linkDocs(docs: readonly ParsedDoc[]): readonly ParsedDoc[] {
 async function main(): Promise<void> {
   const relativePaths = [...new Glob("**/*.mdx").scanSync(CONTENT_DIR)].sort();
   const parsed = await Promise.all(relativePaths.map(readDoc));
-  const kept = parsed.filter((doc) => !isNavShell(doc.slug));
-
-  const docs = linkDocs(kept);
+  const docs = linkDocs(selectCorpusDocs(parsed));
 
   assertCorpusInvariants(docs.map((doc) => doc.id));
 
@@ -64,7 +63,7 @@ async function main(): Promise<void> {
 
   console.log(
     `Wrote ${docs.length} docs + catalog.json to ${OUTPUT_DIR} ` +
-      `(dropped ${parsed.length - kept.length} nav-shell pages)`,
+      `(dropped ${parsed.length - docs.length} nav-shell pages)`,
   );
 }
 

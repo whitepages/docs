@@ -18,6 +18,11 @@ export const NAV_SHELL_SLUGS: readonly string[] = [
   "references",
   "documentation/guides",
 ];
+export const LINKABLE_NON_CORPUS_SLUGS: readonly string[] = [
+  ...NAV_SHELL_SLUGS,
+  "llms.txt",
+  "llms-full.txt",
+];
 
 const DESCRIPTION_MAX_LENGTH = 200;
 
@@ -214,18 +219,49 @@ export function parseEndpoint(slug: string, rawBody: string): EndpointFacet {
   return { operationId, path: match[1], method: match[2].toLowerCase() };
 }
 
-export function resolveInternalPath(
-  target: string,
-  slugToId: ReadonlyMap<string, string>,
-): string | null {
+export function targetToSlug(target: string): string | null {
   const withoutAnchor = target.split("#")[0] ?? "";
 
   if (!withoutAnchor.startsWith("/")) {
     return null;
   }
 
-  const slug = withoutAnchor.replace(/^\/+/, "").replace(/\/+$/, "");
-  return slugToId.get(slug) ?? null;
+  return withoutAnchor.replace(/^\/+/, "").replace(/\/+$/, "");
+}
+
+export function resolveInternalPath(
+  target: string,
+  slugToId: ReadonlyMap<string, string>,
+): string | null {
+  const slug = targetToSlug(target);
+  return slug === null ? null : (slugToId.get(slug) ?? null);
+}
+
+export function isLinkableTarget(
+  target: string,
+  slugToId: ReadonlyMap<string, string>,
+): boolean {
+  const slug = targetToSlug(target);
+
+  if (slug === null) {
+    return false;
+  }
+
+  return slugToId.has(slug) || LINKABLE_NON_CORPUS_SLUGS.includes(slug);
+}
+
+export function findUnresolvedBodyLinks(
+  body: string,
+  slugToId: ReadonlyMap<string, string>,
+): readonly string[] {
+  const targets = [
+    ...[...body.matchAll(MARKDOWN_LINK)].map((match) => match[1]),
+    ...[...body.matchAll(JSX_HREF)].map((match) => match[2]),
+  ];
+
+  return [
+    ...new Set(targets.filter((target) => !isLinkableTarget(target, slugToId))),
+  ].sort();
 }
 
 export function rewriteBody(
@@ -337,6 +373,32 @@ export function toCatalogEntry(input: {
     edges: [],
     endpoint: isEndpoint ? parseEndpoint(slug, rawBody) : null,
   };
+}
+
+export function slugIndex(docs: readonly ParsedDoc[]): Map<string, string> {
+  return new Map(docs.map((doc) => [doc.slug, doc.id]));
+}
+
+export function assertBodyLinksResolve(docs: readonly ParsedDoc[]): void {
+  const slugToId = slugIndex(docs);
+  const broken = docs.flatMap((doc) =>
+    findUnresolvedBodyLinks(doc.body, slugToId).map(
+      (target) => `${doc.slug || "index"} links to unresolvable "${target}"`,
+    ),
+  );
+
+  if (broken.length > 0) {
+    throw new Error(
+      `Unresolvable internal links:\n  ${broken.sort().join("\n  ")}`,
+    );
+  }
+}
+
+export function selectCorpusDocs(
+  parsed: readonly ParsedDoc[],
+): readonly ParsedDoc[] {
+  assertBodyLinksResolve(parsed);
+  return parsed.filter((doc) => !isNavShell(doc.slug));
 }
 
 export function assertCorpusInvariants(ids: readonly string[]): void {
