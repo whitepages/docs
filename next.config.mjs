@@ -28,6 +28,11 @@ const config = {
         destination: "/documentation/getting-started",
         permanent: false,
       },
+      {
+        source: "/documentation",
+        destination: "/documentation/getting-started",
+        statusCode: 301,
+      },
     ];
   },
 };

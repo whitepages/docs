@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  assertBodyLinksResolve,
   assertCorpusInvariants,
   buildCatalog,
   buildTaxonomy,
@@ -8,7 +9,9 @@ import {
   deriveId,
   deriveKind,
   fileToSlug,
+  findUnresolvedBodyLinks,
   hasApiPage,
+  isLinkableTarget,
   isNavShell,
   parseDoc,
   parseEndpoint,
@@ -17,9 +20,12 @@ import {
   resolveInternalPath,
   resolveRelated,
   rewriteBody,
+  selectCorpusDocs,
   serializeCatalog,
+  slugIndex,
   splitFrontmatter,
   summarize,
+  targetToSlug,
   toBody,
   toCatalogEntry,
   topicForPath,
@@ -256,6 +262,113 @@ describe("resolveInternalPath", () => {
 
   test("returns null for an internal path with no matching doc", () => {
     expect(resolveInternalPath("/references", slugToId)).toBe(null);
+  });
+});
+
+describe("targetToSlug", () => {
+  test("strips the leading slash and any anchor", () => {
+    expect(targetToSlug("/references/authentication#keys")).toBe(
+      "references/authentication",
+    );
+  });
+
+  test("strips a trailing slash", () => {
+    expect(targetToSlug("/documentation/")).toBe("documentation");
+  });
+
+  test("returns null for a target that is not site-relative", () => {
+    expect(targetToSlug("https://example.com/docs")).toBe(null);
+  });
+});
+
+describe("isLinkableTarget", () => {
+  const slugToId = new Map([
+    ["references/regions/list_states", "references-regions-list-states"],
+  ]);
+
+  test("accepts a link to a doc in the corpus", () => {
+    expect(isLinkableTarget("/references/regions/list_states", slugToId)).toBe(
+      true,
+    );
+  });
+
+  test("accepts a nav-shell route that has no corpus doc", () => {
+    expect(isLinkableTarget("/references", slugToId)).toBe(true);
+  });
+
+  test("accepts a generated text route that has no corpus doc", () => {
+    expect(isLinkableTarget("/llms.txt", slugToId)).toBe(true);
+  });
+
+  test("rejects an index-less folder route", () => {
+    expect(isLinkableTarget("/references/regions", slugToId)).toBe(false);
+  });
+
+  test("rejects an external link", () => {
+    expect(isLinkableTarget("https://example.com", slugToId)).toBe(false);
+  });
+});
+
+describe("findUnresolvedBodyLinks", () => {
+  const slugToId = new Map([
+    ["references/regions/list_states", "references-regions-list-states"],
+    ["references/events/search_deed_events", "references-events-search-deed"],
+  ]);
+
+  test("reports a markdown link to an index-less folder", () => {
+    const body =
+      "To find valid regions, see the [Regions API](/references/regions).";
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([
+      "/references/regions",
+    ]);
+  });
+
+  test("reports a JSX href to an index-less folder", () => {
+    const body = '<Card href="/references/events" title="Events" />';
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([
+      "/references/events",
+    ]);
+  });
+
+  test("accepts links that resolve, including anchors and nav shells", () => {
+    const body = [
+      "See [states](/references/regions/list_states#response) and",
+      "[deeds](/references/events/search_deed_events) and the",
+      "[routes index](/references).",
+    ].join("\n");
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([]);
+  });
+
+  test("ignores external links and bare paths that are not link syntax", () => {
+    const body =
+      "Call `GET /v1/events/deed` or read the [spec](https://example.com/spec).";
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([]);
+  });
+
+  test("checks links inside fenced code blocks", () => {
+    const body = ["```markdown", "[Regions](/references/regions)", "```"].join(
+      "\n",
+    );
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([
+      "/references/regions",
+    ]);
+  });
+
+  test("deduplicates and sorts repeated broken targets", () => {
+    const body = [
+      "[a](/references/zebra) and [b](/references/events)",
+      "and [c](/references/zebra)",
+    ].join("\n");
+
+    expect(findUnresolvedBodyLinks(body, slugToId)).toEqual([
+      "/references/events",
+      "/references/zebra",
+    ]);
   });
 });
 
@@ -520,6 +633,104 @@ description: Find a person.
       "/references/billing",
       "/references/rate-limits",
     ]);
+  });
+});
+
+describe("slugIndex", () => {
+  test("maps each doc slug to its id", () => {
+    const docs = [
+      parseDoc("references/authentication.mdx", "---\ntitle: Auth\n---\n"),
+      parseDoc("index.mdx", "---\ntitle: Documentation\n---\n"),
+    ];
+
+    expect([...slugIndex(docs).entries()]).toEqual([
+      ["references/authentication", "references-authentication"],
+      ["", "index"],
+    ]);
+  });
+});
+
+describe("assertBodyLinksResolve", () => {
+  const authentication = parseDoc(
+    "references/authentication.mdx",
+    "---\ntitle: Auth\n---\n",
+  );
+
+  function docWith(relativePath: string, bodyMarkdown: string) {
+    return parseDoc(relativePath, `---\ntitle: Page\n---\n\n${bodyMarkdown}`);
+  }
+
+  test("passes when every body link resolves", () => {
+    const page = docWith(
+      "documentation/getting-started.mdx",
+      "See [auth](/references/authentication).",
+    );
+
+    expect(() => assertBodyLinksResolve([authentication, page])).not.toThrow();
+  });
+
+  test("checks nav-shell pages, which are dropped from the corpus", () => {
+    const navShell = docWith(
+      "references/index.mdx",
+      "See [regions](/references/regions).",
+    );
+
+    expect(() => assertBodyLinksResolve([authentication, navShell])).toThrow(
+      /references links to unresolvable "\/references\/regions"/,
+    );
+  });
+
+  test("names the root index doc, whose slug is empty", () => {
+    const rootIndex = docWith("index.mdx", "See [gone](/documentation/gone).");
+
+    expect(() => assertBodyLinksResolve([rootIndex])).toThrow(
+      /index links to unresolvable "\/documentation\/gone"/,
+    );
+  });
+
+  test("reports every broken link, sorted", () => {
+    const page = docWith(
+      "documentation/getting-started.mdx",
+      "[b](/documentation/zebra) and [a](/documentation/apple)",
+    );
+
+    expect(() => assertBodyLinksResolve([page])).toThrow(/apple[\s\S]*zebra/);
+  });
+
+  test("accepts a link to a nav-shell route with no corpus doc", () => {
+    const page = docWith(
+      "documentation/getting-started.mdx",
+      "See the [routes index](/references).",
+    );
+
+    expect(() => assertBodyLinksResolve([page])).not.toThrow();
+  });
+});
+
+describe("selectCorpusDocs", () => {
+  function docWith(relativePath: string, bodyMarkdown: string) {
+    return parseDoc(relativePath, `---\ntitle: Page\n---\n\n${bodyMarkdown}`);
+  }
+
+  test("drops nav-shell docs from the returned set", () => {
+    const navShell = docWith("references/index.mdx", "No links here.");
+    const page = docWith("references/authentication.mdx", "No links here.");
+
+    expect(selectCorpusDocs([navShell, page]).map((doc) => doc.slug)).toEqual([
+      "references/authentication",
+    ]);
+  });
+
+  test("still link-checks the nav-shell docs it drops", () => {
+    const navShell = docWith(
+      "references/index.mdx",
+      "See [regions](/references/regions).",
+    );
+    const page = docWith("references/authentication.mdx", "No links here.");
+
+    expect(() => selectCorpusDocs([navShell, page])).toThrow(
+      /references links to unresolvable "\/references\/regions"/,
+    );
   });
 });
 
