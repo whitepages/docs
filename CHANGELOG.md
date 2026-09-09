@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - Correct Claude Code and Cursor MCP install steps by @trichardswp in #46
 - **docs:** Flatten optional anyOf in OpenAPI for cleaner type labels by @lhagenWP
 - **docs:** Strip Pydantic auto-titles so renderer shows real types by @lhagenWP in #50
+- Resolve /documentation and two dead reference links by @lhagenWP in #61
 
 ## Documentation
 
@@ -193,6 +194,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 
