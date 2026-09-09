@@ -194,6 +194,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
 - Update changelog by @github-actions[bot]
+- Update changelog by @github-actions[bot]
 
 ## Refactor
 
@@ -211,6 +212,7 @@ All notable changes to this project will be documented in this file.
 ## Build
 
 - Add Nix flake for the corpus build and dev shell by @trichardswp
+- Pin bun2nix to a cached build to unbreak CI by @lhagenWP in #62
 
 ## Ci
 
