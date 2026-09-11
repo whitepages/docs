@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - **person-search:** Add age field, correct field order in all examples by @lhagenWP in #58
 - Reflect fuzzy-match fallback, nullable-DOB age filter, strict_match by @lhagenWP
 - **references:** Document the three 429s and upgrade_url by @lhagenWP in #60
+- Replace exact DOB days with 00 in example payloads by @lhagenWP in #63
 
 ## Features
 
@@ -194,6 +195,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
