@@ -1,4 +1,5 @@
 import { source } from "@/lib/source";
+import { absoluteDocsUrl } from "@/lib/site-url";
 
 export const revalidate = false;
 
@@ -6,7 +7,7 @@ export async function GET() {
   const pages = source.getPages();
 
   const lines = pages.map((page) => {
-    const url = page.url;
+    const url = absoluteDocsUrl(page.url);
     const title = page.data.title;
     const description = page.data.description || "";
 
@@ -21,7 +22,7 @@ ${lines.join("\n")}
 
 ## Full Documentation
 
-- [/llms-full.txt](/llms-full.txt): Complete documentation content
+- [llms-full.txt](${absoluteDocsUrl("/llms-full.txt")}): Complete documentation content
 `;
 
   return new Response(content);
