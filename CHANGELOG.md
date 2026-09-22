@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - **docs:** Flatten optional anyOf in OpenAPI for cleaner type labels by @lhagenWP
 - **docs:** Strip Pydantic auto-titles so renderer shows real types by @lhagenWP in #50
 - Resolve /documentation and two dead reference links by @lhagenWP in #61
+- Emit absolute URLs in llms.txt, llms-full.txt, sitemap by @lhagenWP in #64
 
 ## Documentation
 
@@ -195,6 +196,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
