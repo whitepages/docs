@@ -138,8 +138,10 @@ recognizable from V1:
           "id": "P1234567890",
           "name": "John Smith",
           "current_addresses": [...],
-          "phones": [{ "number": "(206) 555-0100", "type": "landline" }],
-          "emails": [{ "email": "john.smith@example.com" }]
+          "phones": [
+            { "number": "(206) 555-0100", "type": "landline", "score": 70 }
+          ],
+          "emails": [{ "email": "john.smith@example.com", "score": 88 }]
         }
       ]
     },
@@ -175,7 +177,7 @@ ownership history, and vacancy signals:
     "heating_fuel": "natural-gas",
     "condition": "average",
     "build_quality": "average",
-    "owner_occupied": "owner",
+    "owner_occupied": "OwnerOccupied",
     "is_vacant": false,
     "assessed_info": {
       "assessed_value": 950000,
@@ -199,19 +201,19 @@ physical-characteristics / tax / mortgage data.
 
 ### Search
 
-| V1                              | V2                                                                                 | What changed                                                                                                                                                                 |
-| ------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Top-level: `record` (or `null`) | Top-level: `{ "result": {...} }`                                                   | Search response is wrapped. Read `response.result` to get the V1-equivalent record. `null` (no match) is now expressed as `{ "result": null }`.                              |
-| `id`                            | `result.property_id`                                                               | Renamed for clarity. Same prefix (`R`) + 10 alphanumeric characters.                                                                                                         |
-| `property_address.id`           | `result.property_address.address_id`                                               | Renamed. Same value.                                                                                                                                                         |
-| `property_address.full_address` | `result.property_address.full_address` plus `.city` / `.state` / `.line1` / `.zip` | Same value, plus a structured breakdown of the components for easier downstream use. The breakdown fields are populated for any well-formed address.                         |
-| `owners[]`                      | `result.ownership_info.person_owners[]` (+ `business_owners[]`)                    | Owners are now split into person vs. business under an `ownership_info` umbrella. The person-owner object's shape (id, name, current_addresses, phones, emails) is the same. |
-| `owners[].emails: ["a@..."]`    | `result.ownership_info.person_owners[].emails: [{ "email": "a@..." }]`             | Emails on owner records are now objects (no confidence score on this surface yet — just the address).                                                                        |
-| `owners[].phones[].score`       | `result.ownership_info.person_owners[].phones[]` (no `score`)                      | Owner-record phone confidence is not surfaced on V2 Search owner objects. Use Person Search/Details if you need confidence-scored phones.                                    |
-| `residents[]`                   | `result.residents[]`                                                               | Same shape and semantics. Email shape change matches owners (string → object).                                                                                               |
-| _(not present)_                 | `result.apn`                                                                       | New. Assessor's Parcel Number.                                                                                                                                               |
-| _(not present)_                 | `result.mailing_address`                                                           | New. Populated when the owner's mailing address differs from the property address (absentee owners).                                                                         |
-| _(not present)_                 | `result.geolocation`                                                               | New. `{ "lat": float, "lng": float }`.                                                                                                                                       |
+| V1                              | V2                                                                                  | What changed                                                                                                                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Top-level: `record` (or `null`) | Top-level: `{ "result": {...} }`                                                    | Search response is wrapped. Read `response.result` to get the V1-equivalent record. `null` (no match) is now expressed as `{ "result": null }`.                              |
+| `id`                            | `result.property_id`                                                                | Renamed for clarity. Same prefix (`R`) + 10 alphanumeric characters.                                                                                                         |
+| `property_address.id`           | `result.property_address.address_id`                                                | Renamed. Same value.                                                                                                                                                         |
+| `property_address.full_address` | `result.property_address.full_address` plus `.city` / `.state` / `.line1` / `.zip`  | Same value, plus a structured breakdown of the components for easier downstream use. The breakdown fields are populated for any well-formed address.                         |
+| `owners[]`                      | `result.ownership_info.person_owners[]` (+ `business_owners[]`)                     | Owners are now split into person vs. business under an `ownership_info` umbrella. The person-owner object's shape (id, name, current_addresses, phones, emails) is the same. |
+| `owners[].emails: ["a@..."]`    | `result.ownership_info.person_owners[].emails: [{ "email": "a@...", "score": 88 }]` | Emails on owner records are now objects carrying a confidence score.                                                                                                         |
+| `owners[].phones[].score`       | `result.ownership_info.person_owners[].phones[].score`                              | Retained. Owner and resident phones carry a confidence score, and phone `type` and `number` use the same vocabulary and format as the person endpoints.                      |
+| `residents[]`                   | `result.residents[]`                                                                | Same shape and semantics. Email shape change matches owners (string → object).                                                                                               |
+| _(not present)_                 | `result.apn`                                                                        | New. Assessor's Parcel Number.                                                                                                                                               |
+| _(not present)_                 | `result.mailing_address`                                                            | New. Populated when the owner's mailing address differs from the property address (absentee owners).                                                                         |
+| _(not present)_                 | `result.geolocation`                                                                | New. `{ "lat": float, "lng": float }`.                                                                                                                                       |
 
 ### Details (new in V2)
 
@@ -263,15 +265,15 @@ to parse the formatted string to extract components.
 
 ## Behavioral differences
 
-| Behavior                       | V1                                          | V2                                                                                                                                                     |
-| ------------------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Search response shape          | Bare record or `null`.                      | `{ "result": record \| null }`.                                                                                                                        |
-| Address-based no-match         | `null` body, HTTP 200.                      | `{ "result": null }`, HTTP 200. Same billability.                                                                                                      |
-| Details by property ID         | _(not available)_                           | New endpoint; `404` when the ID doesn't resolve. Property-ID `404` is billable.                                                                        |
-| Details by address ID          | _(not available)_                           | Same endpoint as property-ID lookup; address IDs are resolved transparently. Address-ID `404` (no property data for that address) is **not** billable. |
-| ZIP code format                | 5- or 9-digit ZIP accepted.                 | 5-digit ZIP only.                                                                                                                                      |
-| Missing required parameters    | `MissingLocationParameterError` (HTTP 400). | `MissingSearchParametersError` (HTTP 400). Message format and field names differ; error code shape is the same envelope.                               |
-| `result_metadata` on responses | _(not present)_                             | _(not present — `result_metadata` is exclusive to Person Search)._                                                                                     |
+| Behavior                       | V1                                          | V2                                                                                                                                                                                                                                  |
+| ------------------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Search response shape          | Bare record or `null`.                      | `{ "result": record \| null }`.                                                                                                                                                                                                     |
+| Address-based no-match         | `null` body, HTTP 200.                      | `{ "result": null }`, HTTP 200. Same billability.                                                                                                                                                                                   |
+| Details by property ID         | _(not available)_                           | New endpoint; `404` when the ID doesn't resolve. Property-ID `404` is billable.                                                                                                                                                     |
+| Details by address ID          | _(not available)_                           | Same endpoint as property-ID lookup; address IDs are resolved transparently. Address-ID `404` (no property data for that address) is **not** billable.                                                                              |
+| ZIP code format                | 5- or 9-digit ZIP accepted.                 | 5-digit ZIP only.                                                                                                                                                                                                                   |
+| Missing required parameters    | `MissingLocationParameterError` (HTTP 400). | `MissingSearchParametersError` (HTTP 400). Message format and field names differ; error code shape is the same envelope.                                                                                                            |
+| `result_metadata` on responses | _(not present)_                             | Owners carry `person_owner_metadata` and residents carry `resident_metadata`, reporting display limits and counts of records held back. The response also carries a top-level `property_metadata` describing address match quality. |
 
 ## Call translation examples
 

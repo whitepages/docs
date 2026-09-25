@@ -9,6 +9,95 @@ description: Notable changes to the Whitepages Pro API, newest first.
 
 ---
 
+## September 25, 2026
+
+### Property search reports whether it found your address
+
+`GET /v2/property/` ranks properties by how closely they match the
+address text you send, so the closest match to an address that does not
+exist could be a different property on the same street — and nothing in
+the response said so. Every response now carries a `property_metadata`
+block naming what you got:
+
+```json
+"property_metadata": {
+  "confidence_score": 100,
+  "match_type": "exact",
+  "details_url": "/v2/property/RSAMPLE0001"
+}
+```
+
+`match_type` is `exact` when the property is the address you searched
+for and `best match` when it is the closest thing found.
+`confidence_score` grades that 0–100: `100` for the address itself, `90`
+for a different unit in the same building, `50` for the closest match at
+a different address, and `25` when the address you searched for is not
+deliverable. Both are `null` when the address could not be checked,
+which happens when the request carries no `street`, or a `street` with
+neither a `city` nor a `zipcode` to place it. The property is still
+returned. See [Property Search](/documentation/property-search#match-confidence).
+
+**New `strict_match` request parameter.** Set `strict_match=true` to
+receive only the address you searched for or an address in the same
+building; anything else returns `404`, as does a result the API cannot
+verify. The parameter needs a `street` to compare against, so a request
+without one returns `400`.
+
+### Owner and resident records gain scores, age, and employment
+
+Owners and residents on `GET /v2/property/` and
+`GET /v2/property/{property_id}` now carry `age`, `company_name` and
+`job_title`, and their phones and emails each carry a confidence
+`score` (0–100), matching the person endpoints. See [Confidence
+Scores](/documentation/person-search/confidence-scores).
+
+**Contact lists are now capped.** Each person returns at most 4 phone
+numbers and 3 email addresses, highest score first, with a
+`person_owner_metadata` block on owners and a `resident_metadata` block
+on residents reporting what was held back:
+
+```json
+"person_owner_metadata": {
+  "details_url": "/v2/person/PSAMPLE0001",
+  "phones": { "displayed": 2, "additional": 5 },
+  "emails": { "displayed": 2, "additional": 1 },
+  "owned_properties": { "displayed": 1, "additional": 3 }
+}
+```
+
+Follow `details_url` to Person Details for the complete lists. If you
+relied on property search returning every phone and email for a person,
+read them from `/v2/person/{id}` instead.
+
+### Phone shape on property records now matches the person endpoints
+
+Phone `type` and `number` on property owners and residents did not match
+the same fields on `GET /v2/person/`, so one phone number looked
+different depending on which endpoint returned it. Both endpoints now
+use one vocabulary and one format:
+
+```json
+// before
+{ "number": "12065550142", "type": "Mobile" }
+// now
+{ "number": "(206) 555-0142", "type": "mobile" }
+```
+
+`type` is lower case (`mobile`, `landline`, `voip`, `tollfree`,
+`unknown`) and `number` is nationally formatted. If you match phone
+values across the property and person endpoints, they now compare
+directly; if you parse either field from property responses, update that
+parsing.
+
+### New property fields
+
+`GET /v2/property/` now returns `address_id`, `property_purpose`,
+`owner_occupied`, `is_vacant` and `ownership_info.sale_date`.
+`owner_occupied` is one of `OwnerOccupied`, `AbsenteeOwner` or
+`Unknown`, or `null` when occupancy is not on file.
+
+---
+
 ## August 4, 2026
 
 ### Fewer empty responses on person search

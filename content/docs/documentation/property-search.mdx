@@ -45,6 +45,7 @@ A successful request returns property details with owner and resident informatio
 {
   "result": {
     "property_id": "RSAMPLE0001",
+    "address_id": "ASAMPLE0001",
     "apn": "197500-0015",
     "property_address": {
       "full_address": "123 Main Street, Seattle, WA 98101",
@@ -68,12 +69,16 @@ A successful request returns property details with owner and resident informatio
       "street_type": null,
       "county": "King"
     },
+    "property_purpose": "SingleFamilyOrTownhouse",
+    "owner_occupied": "OwnerOccupied",
+    "is_vacant": false,
     "geolocation": {
       "lat": 47.60621,
       "lng": -122.33207
     },
     "ownership_info": {
       "owner_type": "individual",
+      "sale_date": "2014-06-25",
       "business_owners": [
         { "name": "Acme Holdings LLC" },
         { "name": "Sample Trust" }
@@ -82,6 +87,7 @@ A successful request returns property details with owner and resident informatio
         {
           "id": "PSAMPLE0001",
           "name": "John Smith",
+          "age": 54,
           "current_addresses": [
             {
               "address_id": "ASAMPLE0001",
@@ -93,17 +99,26 @@ A successful request returns property details with owner and resident informatio
             }
           ],
           "phones": [
-            { "number": "(206) 555-0142", "type": "Mobile" },
-            { "number": "(425) 555-0188", "type": "Landline" }
+            { "number": "(206) 555-0142", "type": "mobile", "score": 95 },
+            { "number": "(425) 555-0188", "type": "landline", "score": 68 }
           ],
           "emails": [
-            { "email": "john.smith@example.com" },
-            { "email": "j.smith@example.org" }
-          ]
+            { "email": "john.smith@example.com", "score": 88 },
+            { "email": "j.smith@example.org", "score": 52 }
+          ],
+          "company_name": "Acme Holdings LLC",
+          "job_title": "Operations Manager",
+          "person_owner_metadata": {
+            "details_url": "/v2/person/PSAMPLE0001",
+            "phones": { "displayed": 2, "additional": 5 },
+            "emails": { "displayed": 2, "additional": 1 },
+            "owned_properties": { "displayed": 1, "additional": 3 }
+          }
         },
         {
           "id": "PSAMPLE0011",
           "name": "Jane Smith",
+          "age": 51,
           "current_addresses": [
             {
               "address_id": "ASAMPLE0001",
@@ -114,8 +129,18 @@ A successful request returns property details with owner and resident informatio
               "zip": "98101"
             }
           ],
-          "phones": [{ "number": "(206) 555-0143", "type": "Mobile" }],
-          "emails": [{ "email": "jane.smith@example.com" }]
+          "phones": [
+            { "number": "(206) 555-0143", "type": "mobile", "score": 91 }
+          ],
+          "emails": [{ "email": "jane.smith@example.com", "score": 76 }],
+          "company_name": null,
+          "job_title": null,
+          "person_owner_metadata": {
+            "details_url": "/v2/person/PSAMPLE0011",
+            "phones": { "displayed": 1, "additional": 0 },
+            "emails": { "displayed": 1, "additional": 0 },
+            "owned_properties": { "displayed": 1, "additional": 0 }
+          }
         }
       ]
     },
@@ -123,6 +148,7 @@ A successful request returns property details with owner and resident informatio
       {
         "id": "PSAMPLE0001",
         "name": "John Smith",
+        "age": 54,
         "current_addresses": [
           {
             "address_id": "ASAMPLE0001",
@@ -134,33 +160,26 @@ A successful request returns property details with owner and resident informatio
           }
         ],
         "phones": [
-          { "number": "(206) 555-0142", "type": "Mobile" },
-          { "number": "(425) 555-0188", "type": "Landline" }
+          { "number": "(206) 555-0142", "type": "mobile", "score": 95 },
+          { "number": "(425) 555-0188", "type": "landline", "score": 68 }
         ],
         "emails": [
-          { "email": "john.smith@example.com" },
-          { "email": "j.smith@example.org" }
-        ]
-      },
-      {
-        "id": "PSAMPLE0011",
-        "name": "Jane Smith",
-        "current_addresses": [
-          {
-            "address_id": "ASAMPLE0001",
-            "full_address": "123 Main Street, Seattle, WA 98101",
-            "line1": "123 Main Street",
-            "city": "Seattle",
-            "state": "WA",
-            "zip": "98101"
-          }
+          { "email": "john.smith@example.com", "score": 88 },
+          { "email": "j.smith@example.org", "score": 52 }
         ],
-        "phones": [{ "number": "(206) 555-0143", "type": "Mobile" }],
-        "emails": [{ "email": "jane.smith@example.com" }]
+        "company_name": "Acme Holdings LLC",
+        "job_title": "Operations Manager",
+        "resident_metadata": {
+          "details_url": "/v2/person/PSAMPLE0001",
+          "phones": { "displayed": 2, "additional": 5 },
+          "emails": { "displayed": 2, "additional": 1 },
+          "owned_properties": { "displayed": 1, "additional": 3 }
+        }
       },
       {
         "id": "PSAMPLE0013",
         "name": "Emily Smith",
+        "age": 23,
         "current_addresses": [
           {
             "address_id": "ASAMPLE0001",
@@ -171,27 +190,124 @@ A successful request returns property details with owner and resident informatio
             "zip": "98101"
           }
         ],
-        "phones": [{ "number": "(206) 555-0144", "type": "Mobile" }],
-        "emails": [{ "email": "emily.smith@example.com" }]
+        "phones": [
+          { "number": "(206) 555-0144", "type": "mobile", "score": 84 }
+        ],
+        "emails": [{ "email": "emily.smith@example.com", "score": 71 }],
+        "company_name": null,
+        "job_title": null,
+        "resident_metadata": {
+          "details_url": "/v2/person/PSAMPLE0013",
+          "phones": { "displayed": 1, "additional": 0 },
+          "emails": { "displayed": 1, "additional": 0 },
+          "owned_properties": { "displayed": 0, "additional": 0 }
+        }
       }
-    ]
+    ],
+    "property_metadata": {
+      "confidence_score": 100,
+      "match_type": "exact",
+      "details_url": "/v2/property/RSAMPLE0001"
+    }
   }
 }
 ```
 
-The response includes the verified property with geolocation, property owners, and current residents.
+The response includes the matched property with geolocation, property owners, and current residents, plus a `property_metadata` block describing how well the property matches the address you searched for.
 
 </Step>
 </Steps>
 
+## Match Confidence
+
+Search ranks properties by how closely they match the address text you send, so
+the closest match to an address that does not exist can be a different property
+on the same street. Every response carries a `property_metadata` block saying
+what you actually got.
+
+```json
+"property_metadata": {
+  "confidence_score": 100,
+  "match_type": "exact",
+  "details_url": "/v2/property/RSAMPLE0001"
+}
+```
+
+`match_type` is `exact` when the property is the address you searched for, and
+`best match` when it is the closest thing found. `confidence_score` grades that
+0–100:
+
+| Score  | Meaning                                                   |
+| ------ | --------------------------------------------------------- |
+| `100`  | The property is the address you searched for              |
+| `90`   | A different unit in the same building                     |
+| `50`   | The closest match found, at a different address           |
+| `25`   | The address you searched for is not a deliverable address |
+| `null` | The address could not be checked                          |
+
+The score compares standardized addresses rather than measuring search
+relevance, so it answers "is this the property I asked for" rather than "how
+well did this rank".
+
+<Callout type="info">
+  `confidence_score` and `match_type` are `null` when the address cannot be
+  standardized — most often because the request carried no `street`, or carried
+  a street with neither a `city` nor a `zipcode` to place it. The property is
+  still returned.
+</Callout>
+
+## Returning Only Exact Matches — `strict_match=true`
+
+If a wrong property is worse than no property — an automated pipeline, say, or
+address verification — set `strict_match=true`. The API returns the address you
+searched for or an address in the same building, and `404` when it finds
+neither.
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/property/?street=123%20Main%20Street&city=Seattle&state_code=WA&strict_match=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+A result the API cannot verify is also dropped, because strict matching promises
+nothing approximate comes back. `strict_match` needs a `street` to compare
+against; a request without one returns `400`.
+
+## Contact Limits on Owners and Residents
+
+Each owner and resident carries up to **4 phone numbers** and **3 email
+addresses**, highest confidence first. A metadata block on each person reports
+what was held back and where the rest lives:
+
+```json
+"person_owner_metadata": {
+  "details_url": "/v2/person/PSAMPLE0001",
+  "phones": { "displayed": 2, "additional": 5 },
+  "emails": { "displayed": 2, "additional": 1 },
+  "owned_properties": { "displayed": 1, "additional": 3 }
+}
+```
+
+`displayed` is how many came back on this response; `additional` is how many
+more are linked to that person. Follow `details_url` to
+[Person Details](/references/person-v2/get_person_by_id_v2) for the complete
+lists. Owners carry `person_owner_metadata` and residents carry
+`resident_metadata`; the contents are identical.
+
+<Callout type="info">
+  `owned_properties.additional` counts other properties the person owns, bounded
+  by how many the search can retrieve at once. A person who owns a large
+  portfolio reports fewer than they hold. Phone and email counts are exact.
+</Callout>
+
 ## Request Parameters
 
-| Parameter    | Required | Description           | Example           |
-| ------------ | -------- | --------------------- | ----------------- |
-| `street`     | No\*     | Street address        | `123 Main Street` |
-| `city`       | No\*     | City name             | `Seattle`         |
-| `state_code` | No\*     | Two-letter state code | `WA`              |
-| `zipcode`    | No\*     | ZIP code              | `98101`           |
+| Parameter      | Required | Description                                                  | Example           |
+| -------------- | -------- | ------------------------------------------------------------ | ----------------- |
+| `street`       | No\*     | Street address                                               | `123 Main Street` |
+| `city`         | No\*     | City name                                                    | `Seattle`         |
+| `state_code`   | No\*     | Two-letter state code                                        | `WA`              |
+| `zipcode`      | No\*     | ZIP code                                                     | `98101`           |
+| `strict_match` | No       | Return only the address supplied or one in the same building | `true`            |
 
 <Callout>
   At least one parameter is required. Include multiple parameters for more
@@ -228,6 +344,12 @@ https://api.whitepages.com/v2/property/{property_id_or_address_id}
 ## Address Standardization
 
 Property addresses (both physical and mailing) are **not** processed through CASS certification. Property address data is sourced directly from county assessor and recorder records and is stored as-received without USPS standardization.
+
+The address **you search with** is standardized, so that the response can tell
+you whether the property returned is the one you asked for. That standardized
+form is used only for the comparison behind `property_metadata` and
+`strict_match` — it never changes the address values in the response, which
+remain as the county recorded them.
 
 <Callout type="info">
   For person address standardization details, see [Search by
