@@ -39,7 +39,10 @@ These are not interchangeable. The embedded form in particular carries far less 
 
 <Callout type="info">
   **Reduced forms carry an `id`.** When you get a person embedded in a property
-  response and need the full record, hydrate it with `GET /v2/person/{id}`.
+  response and need the full record, hydrate it with `GET /v2/person/{id}`. Each
+  embedded person also carries a metadata block naming how many phones and
+  emails were held back and a `details_url` pointing at that same record, so you
+  can tell whether hydrating is worth a request.
 </Callout>
 
 ## Addresses also differ by context
