@@ -9,6 +9,9 @@ export interface Facets {
 
 const DIRECTORY_TOPICS: Record<string, Topic> = {
   "person-v2": "person",
+  // A phone lookup returns people and businesses, so it belongs to the
+  // person topic rather than a facet value of its own.
+  "phone-v2": "person",
   "property-v2": "property",
   events: "deed-events",
   webhooks: "webhooks",
@@ -16,6 +19,14 @@ const DIRECTORY_TOPICS: Record<string, Topic> = {
 };
 
 const FILE_KEYWORDS: Record<string, string[]> = {
+  "phone-v2/get_phone_by_number_v2.mdx": [
+    "reverse phone lookup",
+    "phone lookup",
+    "who owns this number",
+    "phone line type",
+    "phone carrier",
+    "business behind a phone number",
+  ],
   "person-v2/search_person_by_name_phone_or_address_v2.mdx": [
     "reverse phone lookup",
     "phone search",
@@ -76,10 +87,18 @@ const FILE_KEYWORDS: Record<string, string[]> = {
 };
 
 const FILE_RELATED: Record<string, string[]> = {
+  "phone-v2/get_phone_by_number_v2.mdx": [
+    "/documentation/person-search/reverse-phone-lookup",
+    "/documentation/agentic-guidance/capability-map",
+    "/references/person-v2/search_person_by_name_phone_or_address_v2",
+    "/references/authentication",
+    "/references/rate-limits",
+  ],
   "person-v2/search_person_by_name_phone_or_address_v2.mdx": [
     "/documentation/person-search",
     "/documentation/agentic-guidance/capability-map",
     "/references/person-v2/get_person_by_id_v2",
+    "/references/phone-v2/get_phone_by_number_v2",
     "/references/authentication",
     "/references/rate-limits",
   ],

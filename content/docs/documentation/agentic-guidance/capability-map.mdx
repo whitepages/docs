@@ -25,23 +25,36 @@ import { Callout } from "fumadocs-ui/components/callout";
 Start here. This table maps what you are trying to do to the endpoint and parameters that do it. Match the intent, copy the parameters, then read the [type document](/references) for that endpoint before writing your types.
 
 <Callout type="warn">
-  **Person search is one endpoint.** Reverse phone lookup, address lookup, and
-  name search are all the same `GET /v2/person/` call with different parameters.
-  There is no separate "phone lookup" endpoint — pass `phone=` to person search.
+  **Person search is one endpoint.** Address lookup and name search are the same
+  `GET /v2/person/` call with different parameters. It also accepts `phone=`,
+  which ranks people against a number.
+
+A phone number has its own endpoint as well. `GET /v2/phone/{phone}` answers
+what a number is — line type, carrier, and the people _and businesses_
+associated with it — rather than which people rank against it. Pick by the
+question you are asking; the row below says which.
+
 </Callout>
 
 ## People
 
-| You want to…                             | Endpoint              | Key parameters                                                                                            |
-| ---------------------------------------- | --------------------- | --------------------------------------------------------------------------------------------------------- |
-| Reverse phone lookup (who owns a number) | `GET /v2/person/`     | `phone=`                                                                                                  |
-| Find who lives at an address             | `GET /v2/person/`     | `street`, `city`, `state_code`, `zipcode`                                                                 |
-| Find a person by name                    | `GET /v2/person/`     | `name`, or `first_name` / `middle_name` / `last_name` (+ location)                                        |
-| Narrow a person search                   | `GET /v2/person/`     | `min_age` / `max_age`, `include_fuzzy_matching`, `strict_match`, `include_historical_locations`, `radius` |
-| Page through person results              | `GET /v2/person/`     | `page`, `page_size`                                                                                       |
-| Get full detail for a known person       | `GET /v2/person/{id}` | path `id` (the `id` from any person object)                                                               |
+| You want to…                       | Endpoint                | Key parameters                                                                                            |
+| ---------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------- |
+| Find out what a phone number is    | `GET /v2/phone/{phone}` | path `phone` (any common spelling)                                                                        |
+| Rank people against a phone number | `GET /v2/person/`       | `phone=`, optionally with `name` or location to narrow                                                    |
+| Find who lives at an address       | `GET /v2/person/`       | `street`, `city`, `state_code`, `zipcode`                                                                 |
+| Find a person by name              | `GET /v2/person/`       | `name`, or `first_name` / `middle_name` / `last_name` (+ location)                                        |
+| Narrow a person search             | `GET /v2/person/`       | `min_age` / `max_age`, `include_fuzzy_matching`, `strict_match`, `include_historical_locations`, `radius` |
+| Page through person results        | `GET /v2/person/`       | `page`, `page_size`                                                                                       |
+| Get full detail for a known person | `GET /v2/person/{id}`   | path `id` (the `id` from any person object)                                                               |
 
 A person search returns results scored by `match_score` (1–99). See [Entity Shapes](/documentation/agentic-guidance/entity-shapes) for how a person's shape differs by context.
+
+Choosing between the two phone rows: `GET /v2/phone/{phone}` returns the
+number's own facts even when no party is associated with it, and is the only
+one that returns businesses. `GET /v2/person/` with `phone=` is the one to use
+when you want person records ranked, or when you are combining the number with
+a name or a location to verify a match.
 
 ## Property
 

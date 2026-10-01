@@ -13,12 +13,12 @@ export function ChangelogBanner() {
 
   return (
     <Banner
-      id="changelog-sep-2026"
+      id="changelog-oct-2026"
       variant="normal"
       className="!bg-fd-primary !text-fd-primary-foreground"
     >
       <Link href="/changelog">
-        New: match confidence on property search, strict matching, and more.{" "}
+        New: look up a phone number on its own endpoint, businesses included.{" "}
         <span className="font-semibold underline underline-offset-2">
           See what&apos;s changed &rarr;
         </span>
