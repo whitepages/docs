@@ -9,6 +9,67 @@ description: Notable changes to the Whitepages Pro API, newest first.
 
 ---
 
+## October 1, 2026
+
+### New endpoint: `GET /v2/phone/{phone}`
+
+A phone number now has an endpoint of its own. Person search still accepts
+`phone=` and is unchanged; the new endpoint answers a different question —
+what is this number — rather than which people rank against it.
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/phone/12065550142' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```json title="Response"
+{
+  "phone": {
+    "e164": "+12065550142",
+    "national_format": "(206) 555-0142",
+    "line_type": "mobile",
+    "carrier": "Example Wireless",
+    "primary_owner": "person",
+    "returned_people": 1,
+    "people_limit": 10,
+    "people_truncated": false,
+    "returned_businesses": 0
+  },
+  "people": [{ "name": "John Smith", "...": "..." }],
+  "businesses": []
+}
+```
+
+**The number's own facts come back even when nobody is associated with it.**
+`line_type` and `carrier` are resolved by lookup rather than derived from the
+numbering plan, so a number with no owner on file still tells you whether it
+is a mobile, a landline, or toll-free. A lookup that finds no parties is a
+successful answer, not an error.
+
+**Businesses are returned.** Person search never had anywhere to put them, so
+a number belonging to a company came back as the people who had listed it, or
+as nothing at all. `businesses` carries the business name, its street address
+where one is known, and otherwise the region it is placed within.
+
+**`primary_owner` says which list to read first** — `person`, `business`, or
+`unknown`. It classifies the line rather than indexing a list: a switchboard
+collects everyone who ever listed it, so a number can report `business` while
+`people` is long. Read it as a kind, not as a pointer.
+
+**Several spellings address one number.** `12065550142`, `2065550142`,
+`(206) 555-0142`, and `+1-206-555-0142` all resolve to the same resource and
+return the same body. The canonical form comes back in the `Content-Location`
+header and is itself callable.
+
+The endpoint covers the North American Numbering Plan. A number outside it is
+refused with HTTP 400 rather than searched. Each successful lookup bills one
+unit, whether or not it found anyone.
+
+See [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup)
+for when to use this endpoint and when person search is still the better fit.
+
+---
+
 ## September 25, 2026
 
 ### Property search reports whether it found your address

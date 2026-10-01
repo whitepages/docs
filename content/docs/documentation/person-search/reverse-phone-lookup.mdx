@@ -1,11 +1,12 @@
 ---
 related:
+  - /references/phone-v2/get_phone_by_number_v2
   - /documentation/agentic-guidance/capability-map
   - /documentation/person-search
   - /references/person-v2/search_person_by_name_phone_or_address_v2
   - /documentation/person-search/search-by-address
 title: Reverse Phone Lookup
-description: Find the owner of a phone number
+description: Find out what a phone number is and who it belongs to
 lifecycle: current
 topic: person
 keywords:
@@ -13,112 +14,204 @@ keywords:
   - "phone search"
   - "who owns this number"
   - "find owner of a phone number"
+  - "phone line type"
+  - "phone carrier"
 ---
 
-Use the `phone` parameter to perform a reverse phone lookup and identify who owns a phone number. This returns person records associated with the phone number, including their name, address, and other contact information.
+import { Callout } from "fumadocs-ui/components/callout";
 
-## Basic Usage
+Two endpoints take a phone number, and they answer different questions.
 
-Look up a phone number:
+`GET /v2/phone/{phone}` answers **what is this number** — its line type and
+carrier, and the people and businesses associated with it. Use it when the
+number is the subject of your question.
+
+`GET /v2/person/` with `phone=` answers **which people match this number**,
+ranked, and lets you combine the number with a name or a location. Use it when
+a person is the subject and the number is one of your criteria.
+
+## Look up a number
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v2/person?phone=2065550198' \
+curl 'https://api.whitepages.com/v2/phone/12065550142' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
-
-This returns person records associated with the phone number.
-
-## Parameters
-
-| Parameter | Type   | Description             |
-| --------- | ------ | ----------------------- |
-| `phone`   | string | Phone number to look up |
-
-## Examples
-
-### Basic Phone Lookup
-
-Find who owns a phone number:
-
-```bash
-curl 'https://api.whitepages.com/v2/person?phone=2125550198' \
-  --header 'X-Api-Key: YOUR_API_KEY'
-```
-
-### Combine with Name for Verification
-
-Verify that a phone number belongs to a specific person:
-
-```bash
-curl 'https://api.whitepages.com/v2/person?phone=2125550198&name=John%20Smith' \
-  --header 'X-Api-Key: YOUR_API_KEY'
-```
-
-### Combine with Location
-
-Narrow results by adding location filters:
-
-```bash
-curl 'https://api.whitepages.com/v2/person?phone=2125550198&state_code=NY' \
-  --header 'X-Api-Key: YOUR_API_KEY'
-```
-
-<Callout type="tip" title="Use Cases">
-  Reverse phone lookup is useful for verifying caller identity, confirming
-  contact information accuracy, and enriching customer records with additional
-  details.
-</Callout>
-
-## Response
-
-The response includes the phone owner's information along with all associated contact details:
 
 ```json title="Response"
-[
-  {
-    "id": "P1234567890",
-    "name": "John Smith",
-    "aliases": ["Johnny Smith"],
-    "is_dead": false,
-    "age": 40,
-    "date_of_birth": "1985-03-00",
-    "linkedin_url": "https://linkedin.com/in/johnsmith",
-    "company_name": "Acme Corp",
-    "job_title": "Software Engineer",
-    "match_score": 95,
-    "matched_by": ["phone"],
-    "phones": [
-      { "number": "(212) 555-0198", "type": "mobile", "score": 95 },
-      { "number": "(212) 555-0199", "type": "landline", "score": 72 }
-    ],
-    "current_addresses": [
-      { "id": "A9876543210", "address": "123 Main St, New York, NY 10001" }
-    ],
-    "historic_addresses": [
-      { "id": "A1234567890", "address": "456 Oak Ave, Brooklyn, NY 11201" }
-    ],
-    "owned_properties": [],
-    "emails": [{ "email": "john.smith@example.com", "score": 88 }],
-    "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
-    "result_metadata": {
-      "details_url": "/v2/person/P1234567890",
-      "phones": { "displayed": 2, "additional": 0 },
-      "emails": { "displayed": 1, "additional": 0 },
-      "historic_addresses": { "displayed": 1, "additional": 0 },
-      "owned_properties": { "displayed": 0, "additional": 0 }
+{
+  "phone": {
+    "e164": "+12065550142",
+    "national_format": "(206) 555-0142",
+    "line_type": "mobile",
+    "carrier": "Example Wireless",
+    "primary_owner": "person",
+    "returned_people": 1,
+    "people_limit": 10,
+    "people_truncated": false,
+    "returned_businesses": 0
+  },
+  "people": [
+    {
+      "id": "P1234567890",
+      "name": "John Smith",
+      "age": 40,
+      "is_dead": false,
+      "match_score": null,
+      "matched_by": ["phone"],
+      "phones": [{ "number": "(206) 555-0142", "type": "mobile", "score": 95 }],
+      "current_addresses": [
+        { "id": "A9876543210", "address": "123 Main St, Seattle, WA 98101" }
+      ],
+      "...": "..."
     }
-  }
-]
+  ],
+  "businesses": []
+}
+```
+
+<Callout type="info" title="Example data">
+  Every value on this page is fictitious. Phone numbers come from the `555-01xx`
+  range reserved for documentation, and the identifiers are placeholders.
+</Callout>
+
+### A number that belongs to a business
+
+A business is often known only by the region it sits in rather than by a street
+address. Those come back in `approximate_locations`, not `addresses`:
+
+```json title="Response"
+{
+  "phone": {
+    "e164": "+12065550188",
+    "national_format": "(206) 555-0188",
+    "line_type": "landline",
+    "carrier": "Example Telecom",
+    "primary_owner": "business",
+    "returned_people": 0,
+    "people_limit": 10,
+    "people_truncated": false,
+    "returned_businesses": 1
+  },
+  "people": [],
+  "businesses": [
+    {
+      "name": "Acme Plumbing",
+      "addresses": [],
+      "approximate_locations": [
+        {
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101",
+          "plus4": null,
+          "country": null,
+          "latlong": { "lat": 47.6062, "lng": -122.3321 },
+          "is_historical": false,
+          "precision": "zip"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Spellings
+
+Any common spelling addresses the same number. These four are one resource and
+return one body:
+
+```
+/v2/phone/12065550142
+/v2/phone/2065550142
+/v2/phone/(206)%20555-0142
+/v2/phone/%2B1-206-555-0142
+```
+
+The canonical form comes back in the `Content-Location` response header and is
+itself callable, so a client that normalises on its own side can follow it
+instead of writing its own rules.
+
+The endpoint covers the North American Numbering Plan. A number outside it is
+refused with HTTP 400 rather than searched.
+
+## Reading the response
+
+### `phone` — the number's own facts
+
+Present on every successful response, including one where nothing is
+associated with the number. `line_type` and `carrier` are resolved by lookup
+rather than derived from the numbering plan, so an unlisted number still tells
+you whether it is a mobile, a landline, or toll-free. Toll-free numbers resolve
+without a carrier and carry `null`.
+
+A lookup that finds no parties is an answer, not an error — you still learn
+what kind of line it is.
+
+### `primary_owner` — which list to read first
+
+`person`, `business`, or `unknown`.
+
+<Callout type="info" title="A kind, not a pointer">
+  `primary_owner` classifies the line, and `business` can appear alongside a
+  long `people` list or an empty `businesses` list. A switchboard collects
+  everyone who ever listed it, so people count is a poor signal of ownership.
+  Read it as a kind and use both lists.
+</Callout>
+
+### `businesses`
+
+A business carries its name and, where one is known, its street address. Where
+no street address is known it carries `approximate_locations` instead: the
+postal code or city the business is placed within, with `precision` naming how
+closely. The two lists do not overlap — a location is an address or it is
+approximate.
+
+### `people`
+
+Person records in the same shape person search returns. `match_score` and
+`matched_by` appear on every record and are inert here: there is no query for a
+result to be relevant to.
+
+`returned_people` is how many this response carries, `people_limit` is the
+ceiling that applied, and `people_truncated` says the ceiling was reached.
+Truncated with ten returned means at least ten are associated and the true
+figure is unknown.
+
+## Ranking people against a number
+
+When you want person records ranked, or want to combine the number with other
+criteria, use person search.
+
+Verify that a number belongs to a particular person:
+
+```bash
+curl 'https://api.whitepages.com/v2/person/?phone=2125550198&name=John%20Smith' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Narrow by location:
+
+```bash
+curl 'https://api.whitepages.com/v2/person/?phone=2125550198&state_code=NY' \
+  --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
 <Callout type="info" title="Matched-first for phone">
   Because the search input was a phone number, the matching phone is pinned to
-  position 0 of the `phones` list even when it ranks below other phones by
-  confidence score. This guarantees the phone the caller queried on always
-  appears above the cap.
+  position 0 of each record's `phones` list even when it ranks below other
+  phones by confidence score. The phone you queried on always appears above the
+  cap.
 </Callout>
 
-<Callout type="info" title="Multiple Results">
-  In rare cases, a phone number may be associated with multiple people. When
-  this occurs, the response includes all matching records sorted by relevance.
-</Callout>
+## Choosing between them
+
+| If you want to…                                              | Use                     |
+| ------------------------------------------------------------ | ----------------------- |
+| Know the line type or carrier                                | `GET /v2/phone/{phone}` |
+| Find the business behind a number                            | `GET /v2/phone/{phone}` |
+| Get an answer even when nobody is associated with the number | `GET /v2/phone/{phone}` |
+| Rank people against the number                               | `GET /v2/person/`       |
+| Confirm a number belongs to a named person                   | `GET /v2/person/`       |
+| Combine the number with an address or age filter             | `GET /v2/person/`       |
+
+Each successful lookup bills one unit on either endpoint, whether or not it
+found anyone.
