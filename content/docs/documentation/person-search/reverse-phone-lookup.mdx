@@ -33,36 +33,158 @@ a person is the subject and the number is one of your criteria.
 ## Look up a number
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v2/phone/12069052100' \
+curl 'https://api.whitepages.com/v2/phone/12065550142' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
 ```json title="Response"
 {
   "phone": {
-    "e164": "+12069052100",
-    "national_format": "(206) 905-2100",
+    "e164": "+12065550142",
+    "national_format": "(206) 555-0142",
+    "line_type": "mobile",
+    "carrier": "Example Wireless",
+    "primary_owner": "person",
+    "returned_people": 1,
+    "people_limit": 10,
+    "people_truncated": false,
+    "returned_businesses": 0
+  },
+  "people": [
+    {
+      "id": "P1234567890",
+      "name": "John Smith",
+      "aliases": ["Jonathan Smith", "Jon Smith"],
+      "is_dead": false,
+      "age": 40,
+      "date_of_birth": "1985-03-00",
+      "linkedin_url": "https://www.linkedin.com/in/example-john-smith",
+      "company_name": "Acme Corp",
+      "job_title": "Software Engineer",
+      "match_score": null,
+      "matched_by": ["phone"],
+      "phones": [
+        { "number": "(206) 555-0142", "type": "mobile", "score": 95 },
+        { "number": "(206) 555-0177", "type": "landline", "score": 72 }
+      ],
+      "current_addresses": [
+        {
+          "address_id": "A9876543210",
+          "full_address": "123 Main St Seattle, WA 98101",
+          "line1": "123 Main St",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101"
+        }
+      ],
+      "historic_addresses": [
+        {
+          "address_id": "A1234567890",
+          "full_address": "456 Oak Ave Portland, OR 97204",
+          "line1": "456 Oak Ave",
+          "city": "Portland",
+          "state": "OR",
+          "zip": "97204"
+        }
+      ],
+      "owned_properties": [
+        { "id": "R1234567890", "address": "123 Main St Seattle, WA 98101" }
+      ],
+      "emails": [
+        { "email": "john.smith@example.com", "score": 92 },
+        { "email": "jsmith@example.net", "score": 68 }
+      ],
+      "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
+      "result_metadata": {
+        "details_url": "/v2/person/P1234567890",
+        "phones": { "displayed": 2, "additional": 1 },
+        "emails": { "displayed": 2, "additional": 0 },
+        "historic_addresses": { "displayed": 1, "additional": 3 },
+        "owned_properties": { "displayed": 1, "additional": 0 }
+      }
+    }
+  ],
+  "businesses": []
+}
+```
+
+<Callout type="info" title="Example data">
+  Every value on this page is fictitious. Phone numbers come from the `555-01xx`
+  range reserved for documentation, and the identifiers are placeholders.
+</Callout>
+
+### A switchboard
+
+A company line collects everyone who has ever listed it, so `people` can be
+long while the number belongs to the business. This is the case
+`primary_owner` exists for: it reports `business` even though ten person
+records came back.
+
+```json title="Response"
+{
+  "phone": {
+    "e164": "+12065550188",
+    "national_format": "(206) 555-0188",
     "line_type": "landline",
-    "carrier": "Onvoy, LLC",
+    "carrier": "Example Telecom",
     "primary_owner": "business",
     "returned_people": 10,
     "people_limit": 10,
     "people_truncated": true,
     "returned_businesses": 1
   },
-  "people": [{ "...": "..." }],
+  "people": [
+    {
+      "id": "P2345678901",
+      "name": "Maria Chen",
+      "aliases": [],
+      "is_dead": false,
+      "age": 34,
+      "date_of_birth": "1992-07-00",
+      "linkedin_url": null,
+      "company_name": "Acme Plumbing",
+      "job_title": "Dispatcher",
+      "match_score": null,
+      "matched_by": ["phone"],
+      "phones": [
+        { "number": "(206) 555-0188", "type": "landline", "score": 61 },
+        { "number": "(206) 555-0131", "type": "mobile", "score": 88 }
+      ],
+      "current_addresses": [
+        {
+          "address_id": "A2345678901",
+          "full_address": "77 Cedar Ln Seattle, WA 98101",
+          "line1": "77 Cedar Ln",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101"
+        }
+      ],
+      "historic_addresses": [],
+      "owned_properties": [],
+      "emails": [{ "email": "m.chen@example.com", "score": 74 }],
+      "relatives": [],
+      "result_metadata": {
+        "details_url": "/v2/person/P2345678901",
+        "phones": { "displayed": 2, "additional": 0 },
+        "emails": { "displayed": 1, "additional": 0 },
+        "historic_addresses": { "displayed": 0, "additional": 0 },
+        "owned_properties": { "displayed": 0, "additional": 0 }
+      }
+    }
+  ],
   "businesses": [
     {
-      "name": "Space Needle",
+      "name": "Acme Plumbing",
       "addresses": [],
       "approximate_locations": [
         {
           "city": "Seattle",
           "state": "WA",
-          "zip": "98040",
+          "zip": "98101",
           "plus4": null,
           "country": null,
-          "latlong": { "lat": 47.6079, "lng": -122.3317 },
+          "latlong": { "lat": 47.6062, "lng": -122.3321 },
           "is_historical": false,
           "precision": "zip"
         }
@@ -72,16 +194,21 @@ curl 'https://api.whitepages.com/v2/phone/12069052100' \
 }
 ```
 
+`people` is shown with one record for length; the response carries ten, and
+`people_truncated` says the ceiling was reached. Note the phone the query
+matched is pinned first in each record's `phones` even where another scores
+higher — `(206) 555-0188` scores 61 against the mobile's 88.
+
 ### Spellings
 
 Any common spelling addresses the same number. These four are one resource and
 return one body:
 
 ```
-/v2/phone/12069052100
-/v2/phone/2069052100
-/v2/phone/(206)%20905-2100
-/v2/phone/%2B1-206-905-2100
+/v2/phone/12065550142
+/v2/phone/2065550142
+/v2/phone/(206)%20555-0142
+/v2/phone/%2B1-206-555-0142
 ```
 
 The canonical form comes back in the `Content-Location` response header and is
