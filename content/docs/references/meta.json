@@ -12,6 +12,7 @@
     "versioning",
     "migration",
     "person-v2",
+    "phone-v2",
     "webhooks",
     "events",
     "property-v2",

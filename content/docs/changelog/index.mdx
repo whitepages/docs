@@ -18,25 +18,25 @@ A phone number now has an endpoint of its own. Person search still accepts
 what is this number — rather than which people rank against it.
 
 ```bash title="Request"
-curl 'https://api.whitepages.com/v2/phone/12069052100' \
+curl 'https://api.whitepages.com/v2/phone/12065550142' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
 ```json title="Response"
 {
   "phone": {
-    "e164": "+12069052100",
-    "national_format": "(206) 905-2100",
-    "line_type": "landline",
-    "carrier": "Onvoy, LLC",
-    "primary_owner": "business",
-    "returned_people": 10,
+    "e164": "+12065550142",
+    "national_format": "(206) 555-0142",
+    "line_type": "mobile",
+    "carrier": "Example Wireless",
+    "primary_owner": "person",
+    "returned_people": 1,
     "people_limit": 10,
-    "people_truncated": true,
-    "returned_businesses": 1
+    "people_truncated": false,
+    "returned_businesses": 0
   },
-  "people": [{ "...": "..." }],
-  "businesses": [{ "name": "Space Needle", "...": "..." }]
+  "people": [{ "name": "John Smith", "...": "..." }],
+  "businesses": []
 }
 ```
 
@@ -56,8 +56,8 @@ where one is known, and otherwise the region it is placed within.
 collects everyone who ever listed it, so a number can report `business` while
 `people` is long. Read it as a kind, not as a pointer.
 
-**Several spellings address one number.** `12069052100`, `2069052100`,
-`(206) 905-2100`, and `+1-206-905-2100` all resolve to the same resource and
+**Several spellings address one number.** `12065550142`, `2065550142`,
+`(206) 555-0142`, and `+1-206-555-0142` all resolve to the same resource and
 return the same body. The canonical form comes back in the `Content-Location`
 header and is itself callable.
 
