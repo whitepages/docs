@@ -69,6 +69,8 @@ All notable changes to this project will be documented in this file.
 - Describe the property v2 match, limit and score changes by @lhagenWP
 - Point the changelog banner at the current release by @lhagenWP in #65
 - Document the phone lookup endpoint by @lhagenWP in #66
+- Use fictitious data and make the phone reference reachable by @lhagenWP
+- Regenerate reference pages from the cleaned spec by @lhagenWP in #67
 
 ## Features
 
@@ -199,6 +201,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
