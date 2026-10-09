@@ -17,9 +17,10 @@ const webApiNode = {
   "@type": "WebAPI",
   "@id": WEBAPI_ID,
   name: "Whitepages Pro API",
-  // Matches the visible description on /documentation/getting-started, the
-  // page that most directly represents the product as a whole.
-  description: "Get started with the Whitepages Pro API",
+  // Matches the About copy on /documentation/getting-started and in the
+  // repo README — all three surfaces are kept in sync deliberately.
+  description:
+    "The Whitepages Pro API is a U.S. people and property data API. It returns phone numbers, email addresses, current and historical addresses, property ownership, and residents. The data comes from public and legal records. Coverage is United States only, and coverage varies by record. The API is not an FCRA-regulated product and is not intended for credit, underwriting, employment, housing, or insurance decisions.",
   provider: { "@id": ORGANIZATION_ID },
   documentation: "https://api.whitepages.com/docs",
   termsOfService: "https://www.whitepages.com/terms",
