@@ -88,6 +88,7 @@ const FILE_KEYWORDS: Record<string, string[]> = {
 
 const FILE_RELATED: Record<string, string[]> = {
   "phone-v2/get_phone_by_number_v2.mdx": [
+    "/documentation/phone-search",
     "/documentation/person-search/reverse-phone-lookup",
     "/documentation/agentic-guidance/capability-map",
     "/references/person-v2/search_person_by_name_phone_or_address_v2",

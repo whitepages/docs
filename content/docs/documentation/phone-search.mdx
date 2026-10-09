@@ -1,0 +1,226 @@
+---
+related:
+  - /references/phone-v2/get_phone_by_number_v2
+  - /documentation/person-search/reverse-phone-lookup
+  - /documentation/agentic-guidance/capability-map
+  - /references/person-v2/search_person_by_name_phone_or_address_v2
+title: Phone Search
+description: Look up a phone number's own facts and the people or businesses behind it
+icon: Phone
+lifecycle: current
+topic: person
+keywords:
+  - "phone search"
+  - "phone lookup"
+  - "phone line type"
+  - "phone carrier"
+  - "business behind a phone number"
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+`GET /v2/phone/{phone}` answers **what is this number** — its line type and
+carrier, and the people and businesses associated with it. Use it when the
+number itself is the subject of your question.
+
+<Callout type="info" title="Looking to rank people instead?">
+  If a person is the subject and the number is one of your search criteria, use
+  [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup)
+  instead. That guide ranks person records against a number; this one answers
+  what the number is.
+</Callout>
+
+## Look up a number
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v2/phone/12065550142' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```json title="Response"
+{
+  "phone": {
+    "e164": "+12065550142",
+    "national_format": "(206) 555-0142",
+    "line_type": "mobile",
+    "carrier": "Example Wireless",
+    "primary_owner": "person",
+    "returned_people": 1,
+    "people_limit": 10,
+    "people_truncated": false,
+    "returned_businesses": 0
+  },
+  "people": [
+    {
+      "id": "P1234567890",
+      "name": "John Smith",
+      "aliases": ["Jonathan Smith", "Jon Smith"],
+      "is_dead": false,
+      "age": 40,
+      "date_of_birth": "1985-03-00",
+      "linkedin_url": "https://www.linkedin.com/in/example-john-smith",
+      "company_name": "Acme Corp",
+      "job_title": "Software Engineer",
+      "match_score": null,
+      "matched_by": ["phone"],
+      "phones": [
+        { "number": "(206) 555-0142", "type": "mobile", "score": 95 },
+        { "number": "(206) 555-0177", "type": "landline", "score": 72 }
+      ],
+      "current_addresses": [
+        {
+          "address_id": "A9876543210",
+          "full_address": "123 Main St Seattle, WA 98101",
+          "line1": "123 Main St",
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101"
+        }
+      ],
+      "historic_addresses": [],
+      "owned_properties": [
+        { "id": "R1234567890", "address": "123 Main St Seattle, WA 98101" }
+      ],
+      "emails": [
+        { "email": "john.smith@example.com", "score": 92 },
+        { "email": "jsmith@example.net", "score": 68 }
+      ],
+      "relatives": [{ "id": "P0987654321", "name": "Jane Smith" }],
+      "result_metadata": {
+        "details_url": "/v2/person/P1234567890",
+        "phones": { "displayed": 2, "additional": 1 },
+        "emails": { "displayed": 2, "additional": 0 },
+        "historic_addresses": { "displayed": 0, "additional": 0 },
+        "owned_properties": { "displayed": 1, "additional": 0 }
+      }
+    }
+  ],
+  "businesses": []
+}
+```
+
+### A switchboard
+
+A company line collects everyone who has ever listed it, so `people` can be
+long while the number belongs to the business. This is the case
+`primary_owner` exists for: it reports `business` even though ten person
+records came back.
+
+```json title="Response"
+{
+  "phone": {
+    "e164": "+12065550188",
+    "national_format": "(206) 555-0188",
+    "line_type": "landline",
+    "carrier": "Example Telecom",
+    "primary_owner": "business",
+    "returned_people": 10,
+    "people_limit": 10,
+    "people_truncated": true,
+    "returned_businesses": 1
+  },
+  "people": [{ "...": "..." }],
+  "businesses": [
+    {
+      "name": "Acme Plumbing",
+      "addresses": [],
+      "approximate_locations": [
+        {
+          "city": "Seattle",
+          "state": "WA",
+          "zip": "98101",
+          "plus4": null,
+          "country": null,
+          "latlong": { "lat": 47.6062, "lng": -122.3321 },
+          "is_historical": false,
+          "precision": "zip"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Spellings
+
+Any common spelling addresses the same number. These four are one resource and
+return one body:
+
+```
+/v2/phone/12065550142
+/v2/phone/2065550142
+/v2/phone/(206)%20555-0142
+/v2/phone/%2B1-206-555-0142
+```
+
+The canonical form comes back in the `Content-Location` response header and is
+itself callable, so a client that normalises on its own side can follow it
+instead of writing its own rules.
+
+The endpoint covers the North American Numbering Plan: an area code and
+exchange starting with 2-9, followed by four digits. A number that doesn't
+fit that shape is refused with HTTP 400 rather than searched. A number that
+fits the shape but isn't a real assigned line — a reserved code like
+`911` or `411` used as an area code or exchange, for instance — is
+searched like any other and comes back with `primary_owner: "unknown"`
+and empty `people` and `businesses`, the same as any other number nobody
+is associated with. Each successful lookup bills one unit, whether or not
+it found anyone.
+
+## Reading the response
+
+### `phone` — the number's own facts
+
+Present on every successful response, including one where nothing is
+associated with the number. `line_type` is one of `mobile`, `landline`,
+`voip`, `tollfree`, or `unknown` when it can't be determined. `carrier` is
+resolved by lookup where one is on file, and comes back `null` wherever
+the provider has none — that isn't limited to toll-free numbers, so don't
+assume a `null` carrier means toll-free.
+
+A lookup that finds no parties is an answer, not an error — the `phone`
+block is still populated.
+
+### `primary_owner` — which list to read first
+
+`person`, `business`, or `unknown`.
+
+<Callout type="info" title="A kind, not a pointer">
+  `primary_owner` classifies the line, and `business` can appear alongside a
+  long `people` list or an empty `businesses` list. A switchboard collects
+  everyone who ever listed it, so people count is a poor signal of ownership.
+  Read it as a kind and use both lists.
+</Callout>
+
+### `businesses`
+
+A business carries its name and, where one is known, its street address. Where
+no street address is known it carries `approximate_locations` instead: the
+postal code or city the business is placed within, with `precision` naming how
+closely. The two lists do not overlap — a location is an address or it is
+approximate.
+
+### `people`
+
+Person records in the same shape person search returns. `match_score` and
+`matched_by` appear on every record and are inert here: there is no query for a
+result to be relevant to.
+
+`returned_people` is how many this response carries, `people_limit` is the
+ceiling that applied, and `people_truncated` says the ceiling was reached.
+Truncated with ten returned means at least ten are associated and the true
+figure is unknown.
+
+## Choosing between them
+
+| If you want to…                                              | Use                                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Know the line type or carrier                                | Phone Search                                                              |
+| Find the business behind a number                            | Phone Search                                                              |
+| Get an answer even when nobody is associated with the number | Phone Search                                                              |
+| Rank people against the number                               | [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup) |
+| Confirm a number belongs to a named person                   | [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup) |
+| Combine the number with an address or age filter             | [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup) |
+
+Each successful lookup bills one unit on either endpoint, whether or not it
+found anyone.
