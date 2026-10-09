@@ -12,11 +12,11 @@
     "versioning",
     "migration",
     "person-v2",
-    "phone-v2",
-    "webhooks",
-    "events",
     "property-v2",
-    "account",
-    "regions"
+    "phone-v2",
+    "events",
+    "webhooks",
+    "regions",
+    "account"
   ]
 }
