@@ -43,6 +43,7 @@ question you are asking; the row below says which.
 | ---------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------- |
 | Find out what a phone number is    | `GET /v2/phone/{phone}` | path `phone` (any common spelling)                                                                        |
 | Rank people against a phone number | `GET /v2/person/`       | `phone=`, optionally with `name` or location to narrow                                                    |
+| Find a person by email             | `GET /v2/person/`       | `email=`, optionally with `name` or location to narrow                                                    |
 | Find who lives at an address       | `GET /v2/person/`       | `street`, `city`, `state_code`, `zipcode`                                                                 |
 | Find a person by name              | `GET /v2/person/`       | `name`, or `first_name` / `middle_name` / `last_name` (+ location)                                        |
 | Narrow a person search             | `GET /v2/person/`       | `min_age` / `max_age`, `include_fuzzy_matching`, `strict_match`, `include_historical_locations`, `radius` |
