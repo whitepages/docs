@@ -17,16 +17,7 @@ export const metadata: Metadata = {
     template: "%s | Whitepages Pro API",
   },
   description:
-    "Official documentation for the Whitepages Pro API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
-  keywords: [
-    "Whitepages",
-    "API",
-    "documentation",
-    "person search",
-    "property search",
-    "identity verification",
-    "data enrichment",
-  ],
+    "Official documentation for the Whitepages Pro API. Access person and property data for identity verification, customer enrichment, and research.",
   authors: [{ name: "Whitepages" }],
   creator: "Whitepages",
   publisher: "Whitepages",
@@ -34,16 +25,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Whitepages Pro API Documentation",
+    siteName: "Whitepages Pro API",
     title: "Whitepages Pro API Documentation",
     description:
-      "Official documentation for the Whitepages Pro API. Access comprehensive person and property data for identity verification, customer enrichment, and research.",
+      "Official documentation for the Whitepages Pro API. Access person and property data for identity verification, customer enrichment, and research.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Whitepages Pro API Documentation",
-    description:
-      "Official documentation for the Whitepages Pro API. Access comprehensive person and property data.",
   },
   icons: {
     icon: "/docs/favicon.ico",

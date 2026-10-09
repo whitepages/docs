@@ -9,7 +9,7 @@ description: List and filter your webhook subscriptions
 
 Use the `GET /v1/webhooks/` endpoint to retrieve all of your webhook subscriptions. You can filter by status or event type.
 
-## Basic Usage
+## Basic usage
 
 List all webhook subscriptions:
 
@@ -18,14 +18,14 @@ curl 'https://api.whitepages.com/v1/webhooks/' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Query Parameters
+## Query parameters
 
 | Parameter    | Type   | Required | Description                              |
 | ------------ | ------ | -------- | ---------------------------------------- |
 | `status`     | string | No       | Filter by status: `active` or `inactive` |
 | `event_type` | string | No       | Filter by subscribed event type          |
 
-## Filter by Status
+## Filter by status
 
 List only active subscriptions:
 
@@ -34,7 +34,7 @@ curl 'https://api.whitepages.com/v1/webhooks/?status=active' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Filter by Event Type
+## Filter by event type
 
 List subscriptions for a specific event type:
 
@@ -74,7 +74,7 @@ The response includes an array of all matching webhook subscriptions:
 }
 ```
 
-## Get a Single Webhook
+## Get a single webhook
 
 Retrieve a specific subscription by its ID:
 

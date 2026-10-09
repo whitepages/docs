@@ -15,7 +15,7 @@ keywords:
 
 When you only have partial name information, use the individual name parameters (`first_name`, `middle_name`, `last_name`) to search more precisely than using the combined `name` parameter.
 
-## When to Use Partial Name Search
+## When to use partial name search
 
 Use individual name parameters when:
 
@@ -23,7 +23,7 @@ Use individual name parameters when:
 - You need to search across variations of a name
 - You want more control over which parts of a name to match
 
-## Search by Last Name Only
+## Search by last name only
 
 Find all people with a specific last name in a location:
 
@@ -32,7 +32,7 @@ curl 'https://api.whitepages.com/v2/person?last_name=Smith&city=Seattle&state_co
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Search by First and Last Name
+## Search by first and last name
 
 When you know both first and last name but want to match regardless of middle name:
 
@@ -41,7 +41,7 @@ curl 'https://api.whitepages.com/v2/person?first_name=John&last_name=Smith&state
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Include Middle Name for Precision
+## Include middle name for precision
 
 For more precise matching when you have complete name information:
 
@@ -50,7 +50,7 @@ curl 'https://api.whitepages.com/v2/person?first_name=John&middle_name=Robert&la
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Combining with Location Parameters
+## Combining with location parameters
 
 For best results, always include at least one location parameter:
 
@@ -60,7 +60,7 @@ For best results, always include at least one location parameter:
 | `last_name` + `city` + `state_code`    | City-level search           |
 | `first_name` + `last_name` + `zipcode` | Precise local search        |
 
-## Name Parameter vs Individual Parameters
+## Name parameter vs individual parameters
 
 | Parameter                  | Behavior                                               |
 | -------------------------- | ------------------------------------------------------ |

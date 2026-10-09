@@ -26,7 +26,7 @@ API usage is tracked and billed based on successful requests.
   2026-06-01](/references/billing-prior-to-2026-06-01).
 </Callout>
 
-## Billing Rules
+## Billing rules
 
 | Response Type      | Billable                                     |
 | ------------------ | -------------------------------------------- |
@@ -42,14 +42,14 @@ API usage is tracked and billed based on successful requests.
   and v2). Account, Regions, Events, and Webhooks endpoints are not billable.
 </Callout>
 
-## Billable Requests
+## Billable requests
 
 The following responses from Person and Property endpoints, in any API version, are charged to your account:
 
 - All `2xx` (success) responses
 - `404` (not found) responses, except on `GET /v2/property/{property_id}`
 
-## Non-Billable Requests
+## Non-billable requests
 
 The following responses are **not** charged:
 
@@ -63,11 +63,11 @@ The following responses are **not** charged:
 
 `GET /v2/property/{property_id}` accepts either a Whitepages property ID (`R` prefix) or an address ID (`A` prefix). Not every address ID has full property details, so these lookups may return `404`. Because `404` responses on this endpoint are never billed, you can optimistically look up property details for the address IDs you encounter throughout other API responses.
 
-## Billing Period
+## Billing period
 
 Usage is calculated from the start of the month in UTC time. Your billing cycle resets on the 1st of each month at 00:00 UTC.
 
-## Usage Reports
+## Usage reports
 
 Detailed usage reports are available through the [Account Usage](/references/account/get_account_usage_data) endpoint. You can query:
 

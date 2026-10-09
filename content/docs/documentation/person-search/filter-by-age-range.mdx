@@ -15,7 +15,7 @@ keywords:
 
 Use the `min_age` and `max_age` parameters to filter person search results by age range. This is useful when you need to find individuals within a specific age bracket.
 
-## Basic Usage
+## Basic usage
 
 Add `min_age` and/or `max_age` to your request to filter results:
 
@@ -40,7 +40,7 @@ This returns only records for individuals between 25 and 45 years old.
 
 ## Examples
 
-### Filter by Minimum Age
+### Filter by minimum age
 
 Filter for individuals 21 years or older:
 
@@ -49,7 +49,7 @@ curl 'https://api.whitepages.com/v2/person?name=Jane%20Doe&city=Chicago&state_co
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Filter by Maximum Age
+### Filter by maximum age
 
 Filter for individuals 40 or younger:
 
@@ -58,7 +58,7 @@ curl 'https://api.whitepages.com/v2/person?last_name=Johnson&state_code=FL&max_a
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Filter by Age Range
+### Filter by age range
 
 Filter for individuals between 25 and 55:
 
@@ -67,7 +67,7 @@ curl 'https://api.whitepages.com/v2/person?name=Michael%20Williams&zipcode=90210
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-## Combining with Other Filters
+## Combining with other filters
 
 Age filters work alongside all other person search parameters:
 

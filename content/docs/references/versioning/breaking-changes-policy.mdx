@@ -21,7 +21,7 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 We avoid breaking changes at nearly all cost. Backward compatibility is a top priority, and our goal is to minimize disruption to your integrations.
 
-## Our Commitments
+## Our commitments
 
 - **Breaking changes are always introduced in a new API version.** Your existing integration continues to work on the current version.
 - **No unannounced breaking changes.** Every breaking change is communicated in advance.
@@ -30,7 +30,7 @@ We avoid breaking changes at nearly all cost. Backward compatibility is a top pr
 - **Deprecation notices** are communicated via email and changelog before anything is removed.
 - **Version support** — when a new version introduces breaking changes, the previous version remains available for at least 3 months after the new version is released.
 
-## What We Consider a Breaking Change
+## What we consider a breaking change
 
 - Removing or renaming an endpoint or data tool you call
 - Removing or renaming a field from a response body
@@ -39,7 +39,7 @@ We avoid breaking changes at nearly all cost. Backward compatibility is a top pr
 - Changing authentication or authorization behavior
 - Modifying error response formats
 
-## What We Do Not Consider a Breaking Change
+## What we do not consider a breaking change
 
 - Adding a new optional request parameter
 - Adding a new tool to the MCP server
@@ -56,11 +56,11 @@ We avoid breaking changes at nearly all cost. Backward compatibility is a top pr
 
 The same policy applies wherever we expose the API. What it means in practice depends on the surface you use.
 
-## REST / HTTP Endpoints
+## REST / HTTP endpoints
 
 Breaking changes ship in a new API version at a new path (for example, `/v2/`), so your current integration keeps working untouched. We announce the change with the notice and support windows above. Within a version, an endpoint's type signature — the parameters it accepts and the fields it returns — only grows: we may add new optional parameters and new response fields, but we do not remove, rename, or change the type of those already there.
 
-## MCP Server & Tools
+## MCP server & tools
 
 Our Breaking Changes policy covers only the [MCP server's](/documentation/mcp) **data tools**. Data tools fetch live data or change your account and **require your API key to run** — person search, property lookup, account usage, and the like.
 

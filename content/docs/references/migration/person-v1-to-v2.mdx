@@ -70,7 +70,7 @@ V2 adds four optional parameters:
 `GET /v2/person/{id}` continues to take the person ID in the path with
 no additional parameters.
 
-## Response shape (Search)
+## Response shape (search)
 
 ### V1
 
@@ -140,7 +140,7 @@ top-level `metadata` block plus a per-result `result_metadata` block:
 }
 ```
 
-## Response shape (Details)
+## Response shape (details)
 
 `GET /v2/person/{id}` returns a single record wrapped in `result`,
 matching the existing pattern for V2 detail endpoints:
@@ -225,7 +225,7 @@ input names come from human entry (CRM notes, voicemail transcripts).
 V2 emails are objects with a `score` (0–100) so you can prioritize the
 most likely-current address for outreach.
 
-### `result_metadata` on every Search result
+### `result_metadata` on every search result
 
 Every Search result carries a `result_metadata` object summarizing each
 list and linking back to the canonical Person Details URL:
@@ -333,7 +333,7 @@ inside are a superset of V1 (no removals, no nullability changes).
 
 ## Code translation snippets
 
-### JavaScript (Search)
+### JavaScript (search)
 
 ```js title="V1"
 const response = await fetch(
@@ -367,7 +367,7 @@ for (const person of results) {
 console.log(`Total matches across all pages: ${metadata.result_count}`);
 ```
 
-### Python (Details)
+### Python (details)
 
 ```python title="V1 and V2"
 import requests

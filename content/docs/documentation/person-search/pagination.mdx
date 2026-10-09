@@ -16,7 +16,7 @@ keywords:
 
 Person search returns up to 15 results per request by default. Use the `page` and `page_size` parameters to retrieve additional results when a query matches more records than a single page can return.
 
-## Basic Usage
+## Basic usage
 
 Add `page=2` to retrieve the second page of results for the same query:
 
@@ -62,7 +62,7 @@ Each response includes a `metadata` object alongside the results:
 
 Use `result_count` to determine whether additional pages are available. If `result_count` is greater than `page × page_size`, there are more results on the next page.
 
-## Iterating Through Pages
+## Iterating through pages
 
 ```bash title="Iterate through all pages"
 PAGE=1
