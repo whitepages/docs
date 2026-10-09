@@ -1,5 +1,5 @@
 {
-  "title": "Person Search",
+  "title": "Person Search API",
   "icon": "User",
   "pages": [
     "partial-name-search",

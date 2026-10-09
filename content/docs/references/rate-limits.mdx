@@ -108,7 +108,7 @@ Every plan includes a query allowance for its billing period, and trial keys inc
   re-checking at that interval is how your key picks that up.
 </Callout>
 
-## Best Practices
+## Best practices
 
 - **Implement retry logic** with exponential backoff for rate-limit 429s
 - **Branch on `error`** so your integration does not retry a usage cap in a loop
@@ -116,6 +116,6 @@ Every plan includes a query allowance for its billing period, and trial keys inc
 - **Monitor usage** via the [Account Usage](/references/account/get_account_usage_data) endpoint
 - **Batch requests** where possible to optimize your quota
 
-## Rate Limit Increases
+## Rate limit increases
 
 For rate limit increases or quota adjustments, please contact our team at api@whitepages.com.

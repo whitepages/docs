@@ -17,7 +17,7 @@ keywords:
 
 Use address parameters to find people associated with a specific location. By default, searches match only current addresses. Enable `include_historical_locations` to also search historical addresses.
 
-## Basic Usage
+## Basic usage
 
 Search for people at a specific address:
 
@@ -28,7 +28,7 @@ curl 'https://api.whitepages.com/v2/person?street=123%20Main%20St&city=Seattle&s
 
 This returns people whose **current address** matches the search criteria.
 
-## Include Historical Addresses
+## Include historical addresses
 
 To search both current and historical addresses, set `include_historical_locations=true`:
 
@@ -51,7 +51,7 @@ This returns people who currently live at the address **or** have previously liv
 
 ## Examples
 
-### Search by ZIP Code Only
+### Search by ZIP code only
 
 Find people in a specific ZIP code:
 
@@ -60,7 +60,7 @@ curl 'https://api.whitepages.com/v2/person?zipcode=98101' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Search by City and State
+### Search by city and state
 
 Find people in a specific city:
 
@@ -69,7 +69,7 @@ curl 'https://api.whitepages.com/v2/person?city=Portland&state_code=OR' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Find Previous Residents
+### Find previous residents
 
 Find anyone who has ever lived at an address:
 
@@ -78,7 +78,7 @@ curl 'https://api.whitepages.com/v2/person?street=456%20Oak%20Ave&city=Denver&st
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Combine with Name Search
+### Combine with name search
 
 Find a specific person at an address:
 
@@ -141,7 +141,7 @@ The response includes both current and historical addresses for each person foun
   both fields regardless of the search setting.
 </Callout>
 
-## Address Standardization (CASS)
+## Address standardization (CASS)
 
 Person addresses in the Whitepages dataset are processed through **CASS certification** (Coding Accuracy Support System), the USPS address standardization program. All addresses are run through SmartyStreets to normalize formatting and assign a validity status before being stored.
 
@@ -150,7 +150,7 @@ This means:
 - Addresses are in a **consistent format** regardless of how they were originally recorded
 - Every address has a **validity status** indicating how well it was verified
 
-### Validity Status
+### Validity status
 
 | Status              | Description                                                  |
 | ------------------- | ------------------------------------------------------------ |

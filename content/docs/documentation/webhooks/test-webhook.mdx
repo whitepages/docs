@@ -9,7 +9,7 @@ description: Send a mock event payload to verify your webhook endpoint
 
 Use the `POST /v1/webhooks/{webhook_id}/test` endpoint to send a mock event payload to your webhook's URL. This lets you verify that your server receives and processes deliveries correctly without waiting for a real event.
 
-## Basic Usage
+## Basic usage
 
 Send a test delivery to a webhook:
 
@@ -55,7 +55,7 @@ The response tells you whether your endpoint received the delivery successfully:
 
 The `payload` field shows what was sent to your endpoint. This is a lightweight notification containing the event type and a link to retrieve the full event details using the [Events API](/documentation/events/get-event).
 
-## What Your Endpoint Receives
+## What your endpoint receives
 
 Your webhook URL receives a POST request with the following payload:
 
@@ -86,7 +86,7 @@ Each entry in `links` contains a `version` string and a `url` pointing to the fu
   linked event data is synthetic.
 </Callout>
 
-## Diagnosing Failures
+## Diagnosing failures
 
 If `success` is `false`, check the `delivery.status_code` to diagnose the issue:
 

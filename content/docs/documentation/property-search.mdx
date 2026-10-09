@@ -4,7 +4,7 @@ related:
   - /references/property-v2/get_property_by_id_v2
   - /documentation/agentic-guidance/capability-map
   - /documentation/person-search/search-by-address
-title: Property Search
+title: Property Search API
 description: Get ownership and resident data for any property
 icon: House
 lifecycle: current
@@ -19,11 +19,11 @@ keywords:
 
 The Property Search API returns ownership and resident information for a given property. Use it to identify property owners, find current residents, or verify property details.
 
-## Make Your First Request
+## Make your first request
 
 <Steps>
 <Step>
-### Send a Request
+### Send a request
 
 Search for property details by address:
 
@@ -37,7 +37,7 @@ Replace `YOUR_API_KEY` with your actual API key, and replace `STREET_ADDRESS`, `
 </Step>
 
 <Step>
-### Review the Response
+### Review the response
 
 A successful request returns property details with owner and resident information:
 
@@ -224,7 +224,7 @@ The response includes the matched property with geolocation, property owners, an
 </Step>
 </Steps>
 
-## Match Confidence
+## Match confidence
 
 Search ranks properties by how closely they match the address text you send, so
 the closest match to an address that does not exist can be a different property
@@ -262,7 +262,7 @@ well did this rank".
   still returned.
 </Callout>
 
-## Returning Only Exact Matches — `strict_match=true`
+## Returning only exact matches — `strict_match=true`
 
 If a wrong property is worse than no property — an automated pipeline, say, or
 address verification — set `strict_match=true`. The API returns the address you
@@ -278,7 +278,7 @@ A result the API cannot verify is also dropped, because strict matching promises
 nothing approximate comes back. `strict_match` needs a `street` to compare
 against; a request without one returns `400`.
 
-## Contact Limits on Owners and Residents
+## Contact limits on owners and residents
 
 Each owner and resident carries up to **4 phone numbers** and **3 email
 addresses**, highest confidence first. A metadata block on each person reports
@@ -305,7 +305,7 @@ residents carry `resident_metadata`; the contents are identical.
   portfolio reports fewer than they hold. Phone and email counts are exact.
 </Callout>
 
-## Request Parameters
+## Request parameters
 
 | Parameter      | Required | Description                                                  | Example           |
 | -------------- | -------- | ------------------------------------------------------------ | ----------------- |
@@ -332,7 +332,7 @@ https://api.whitepages.com/v2/property/?street=123%20Main%20Street&zipcode=98101
 https://api.whitepages.com/v2/property/RSAMPLE0001
 ```
 
-## Property Details by ID
+## Property details by ID
 
 The property details endpoint accepts either a Whitepages property ID (`R` prefix) or an address ID (`A` prefix). Address IDs are resolved to the associated property before lookup, so you can pass the address IDs found throughout other API responses directly:
 
@@ -347,7 +347,7 @@ https://api.whitepages.com/v2/property/{property_id_or_address_id}
   details for any address ID you encounter.
 </Callout>
 
-## Address Standardization
+## Address standardization
 
 Property addresses (both physical and mailing) are **not** processed through CASS certification. Property address data is sourced directly from county assessor and recorder records and is stored as-received without USPS standardization.
 
@@ -362,6 +362,6 @@ remain as the county recorded them.
   Address](/documentation/person-search/search-by-address#address-standardization-cass).
 </Callout>
 
-## What's Next
+## What's next
 
 You've completed the getting started tutorials. Explore the [References](/references) section for complete API documentation.

@@ -9,7 +9,7 @@ description: Modify an existing webhook subscription
 
 Use the `PATCH /v1/webhooks/{webhook_id}` endpoint to update a webhook subscription. All fields are optional — only include the fields you want to change.
 
-## Basic Usage
+## Basic usage
 
 Update the delivery URL for a webhook:
 
@@ -31,7 +31,7 @@ curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
 | `region`     | string | No       | New region filter in `type:value` format                   |
 | `name`       | string | No       | New human-readable label (max 255 chars)                   |
 
-## Rename a Webhook
+## Rename a webhook
 
 ```bash title="Request"
 curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
@@ -42,7 +42,7 @@ curl -X PATCH 'https://api.whitepages.com/v1/webhooks/wh_abc123' \
   }'
 ```
 
-## Change the Region
+## Change the region
 
 Move a subscription to a different region:
 

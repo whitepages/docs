@@ -10,7 +10,7 @@ description: Register a new webhook subscription to receive property event notif
 
 Use the `POST /v1/webhooks/` endpoint to create a webhook subscription. When a matching property event occurs in your subscribed region, a notification is delivered to your HTTPS endpoint containing the event type and a link to retrieve the full event details.
 
-## Basic Usage
+## Basic usage
 
 Create a webhook that listens for all deed events in Dallas County, TX:
 
@@ -44,7 +44,7 @@ curl -X POST 'https://api.whitepages.com/v1/webhooks/' \
   and filter by webhook support on the [Regions page](/documentation/regions).
 </Callout>
 
-## Add a Name for Easy Identification
+## Add a name for easy identification
 
 Assigning a name makes it easier to manage multiple subscriptions:
 

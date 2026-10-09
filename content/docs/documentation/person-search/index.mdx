@@ -4,7 +4,9 @@ related:
   - /documentation/agentic-guidance/capability-map
   - /documentation/person-search/reverse-phone-lookup
   - /documentation/person-search/search-by-address
-title: Person Search
+  - /documentation/person-search/search-by-radius
+  - /documentation/person-search/pagination
+title: Person Search API
 description: Look up individuals by name, phone, or address
 lifecycle: current
 topic: person
@@ -17,11 +19,11 @@ keywords:
 
 The Person Search API finds matching records in the Whitepages dataset based on name, location, phone number, or address. Use it to verify identities, find contact information, or enrich customer data.
 
-## Make Your First Request
+## Make your first request
 
 <Steps>
 <Step>
-### Send a Request
+### Send a request
 
 Search for a person by name and location:
 
@@ -35,7 +37,7 @@ Replace `YOUR_API_KEY` with your actual API key.
 </Step>
 
 <Step>
-### Review the Response
+### Review the response
 
 A successful request returns matching person records:
 
@@ -109,7 +111,7 @@ Each record includes identifiers, contact and employment fields, match signals, 
   Scores](/documentation/person-search/confidence-scores) for details.
 </Callout>
 
-## Request Parameters
+## Request parameters
 
 Combine any of these parameters to refine your search:
 
@@ -143,7 +145,7 @@ Combine any of these parameters to refine your search:
 https://api.whitepages.com/v2/person?name=John%20Smith&zipcode=10001
 ```
 
-## Response Codes
+## Response codes
 
 | Status                  | Description                   | Billable |
 | ----------------------- | ----------------------------- | -------- |
@@ -160,6 +162,6 @@ https://api.whitepages.com/v2/person?name=John%20Smith&zipcode=10001
   records were returned.
 </Callout>
 
-## Next Steps
+## Next steps
 
-Learn how to look up property ownership and resident data in the [Property Search](/documentation/property-search) tutorial.
+Learn how to look up property ownership and resident data in the [Property Search API](/documentation/property-search) tutorial.

@@ -32,7 +32,7 @@ full event object shown below.
 
 </Callout>
 
-## Top-Level Fields
+## Top-level fields
 
 | Field        | Type   | Description                                                                   |
 | ------------ | ------ | ----------------------------------------------------------------------------- |
@@ -90,7 +90,7 @@ The `property` object contains details about the property involved in the deed e
 | `lot_sqft`          | integer | Lot size in square feet            |
 | `property_purpose`  | string  | Property type                      |
 
-### Address Fields
+### Address fields
 
 | Field    | Type   | Description           |
 | -------- | ------ | --------------------- |
@@ -100,14 +100,14 @@ The `property` object contains details about the property involved in the deed e
 | `zip`    | string | ZIP code              |
 | `county` | string | County name           |
 
-### Geolocation Fields
+### Geolocation fields
 
 | Field | Type   | Description |
 | ----- | ------ | ----------- |
 | `lat` | number | Latitude    |
 | `lng` | number | Longitude   |
 
-### Legal Description Fields
+### Legal description fields
 
 | Field  | Type   | Description                        |
 | ------ | ------ | ---------------------------------- |
@@ -154,7 +154,7 @@ The `parties` array lists individuals or entities involved in the deed transacti
 | `person_id` | string | No       | Whitepages person ID, if resolved                     |
 | `addresses` | array  | No       | Associated addresses                                  |
 
-### Party Address Fields
+### Party address fields
 
 | Field          | Type   | Required | Description            |
 | -------------- | ------ | -------- | ---------------------- |
@@ -193,14 +193,14 @@ The `detail` object contains transaction-specific information from the deed reco
 | `consideration`      | number | Transaction amount in USD             |
 | `transaction_reason` | object | Transaction classification            |
 
-### Document Type Fields
+### Document type fields
 
 | Field      | Type   | Description          |
 | ---------- | ------ | -------------------- |
 | `category` | string | Normalized category  |
 | `text`     | string | Human-readable label |
 
-### Transaction Reason Fields
+### Transaction reason fields
 
 | Field      | Type   | Description          |
 | ---------- | ------ | -------------------- |
@@ -225,7 +225,7 @@ The `detail` object contains transaction-specific information from the deed reco
 }
 ```
 
-## Full Example
+## Full example
 
 ```json title="Complete event response"
 {

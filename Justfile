@@ -56,5 +56,9 @@ lint:
     bun run lint
     rg --files -g '*.nix' -g '!.*' -g '!bun.nix' | xargs -L 1 statix check --
 
+# Check heading case in content/docs/ (house style is sentence case)
+check-heading-case:
+    bun run scripts/check-heading-case.ts
+
 # Run all validation checks. `check-types` pulls in `build` as a dependency.
-validate: check-types check-format lint test check-corpus check-bun-nix
+validate: check-types check-format lint test check-corpus check-bun-nix check-heading-case

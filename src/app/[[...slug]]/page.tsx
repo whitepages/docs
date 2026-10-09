@@ -1,4 +1,5 @@
 import { getPageImage, source } from "@/lib/source";
+import { absoluteDocsUrl } from "@/lib/site-url";
 import {
   DocsBody,
   DocsDescription,
@@ -60,10 +61,20 @@ export async function generateMetadata(
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
+  const url = absoluteDocsUrl(page.url);
+
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      url,
+      type: "website",
+      siteName: "Whitepages Pro API",
       images: getPageImage(page).url,
     },
   };

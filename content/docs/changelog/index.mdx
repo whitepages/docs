@@ -65,7 +65,7 @@ The endpoint covers the North American Numbering Plan. A number outside it is
 refused with HTTP 400 rather than searched. Each successful lookup bills one
 unit, whether or not it found anyone.
 
-See [Reverse Phone Lookup](/documentation/person-search/reverse-phone-lookup)
+See [Reverse Phone Lookup API](/documentation/person-search/reverse-phone-lookup)
 for when to use this endpoint and when person search is still the better fit.
 
 ---
@@ -96,7 +96,7 @@ a different address, and `25` when the address you searched for is not
 deliverable. Both are `null` when the address could not be checked,
 which happens when the request carries no `street`, or a `street` with
 neither a `city` nor a `zipcode` to place it. The property is still
-returned. See [Property Search](/documentation/property-search#match-confidence).
+returned. See [Property Search API](/documentation/property-search#match-confidence).
 
 **New `strict_match` request parameter.** Set `strict_match=true` to
 receive only the address you searched for or an address in the same

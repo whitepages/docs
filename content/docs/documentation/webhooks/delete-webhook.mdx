@@ -9,7 +9,7 @@ description: Permanently remove a webhook subscription
 
 Use the `DELETE /v1/webhooks/{webhook_id}` endpoint to permanently remove a webhook subscription. Once deleted, no further events will be delivered to the endpoint.
 
-## Basic Usage
+## Basic usage
 
 Delete a webhook subscription:
 
@@ -26,7 +26,7 @@ A successful deletion returns a `204 No Content` response with no body.
   staging endpoint instead.
 </Callout>
 
-## Verify Deletion
+## Verify deletion
 
 After deleting, you can confirm the webhook no longer exists by listing your subscriptions:
 

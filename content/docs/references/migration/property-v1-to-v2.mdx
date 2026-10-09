@@ -82,7 +82,7 @@ directly into Property Details without a separate resolution step.
 Lookups by address ID where the property has no details return `404`
 (not billable).
 
-## Response shape (Search)
+## Response shape (search)
 
 ### V1
 
@@ -150,7 +150,7 @@ recognizable from V1:
 }
 ```
 
-## Response shape (Details — new in V2)
+## Response shape (details — new in v2)
 
 `GET /v2/property/{property_id}` returns everything Search returns plus
 ~25 additional fields covering physical characteristics, tax assessment,
@@ -215,7 +215,7 @@ physical-characteristics / tax / mortgage data.
 | _(not present)_                 | `result.mailing_address`                                                            | New. Populated when the owner's mailing address differs from the property address (absentee owners).                                                                                                                                     |
 | _(not present)_                 | `result.geolocation`                                                                | New. `{ "lat": float, "lng": float }`.                                                                                                                                                                                                   |
 
-### Details (new in V2)
+### Details (new in v2)
 
 Details adds the physical-characteristics / tax / mortgage fields shown
 in the response shape section above. V1 had no equivalent surface; the
@@ -318,7 +318,7 @@ curl 'https://api.whitepages.com/v2/property/A9876543210' \
 
 ## Code translation snippets
 
-### JavaScript (Search)
+### JavaScript (search)
 
 ```js title="V1"
 const response = await fetch(
@@ -345,7 +345,7 @@ if (result) {
 }
 ```
 
-### Python (Details — new flow)
+### Python (details — new flow)
 
 ```python title="V2 Details by property ID"
 import requests

@@ -16,7 +16,7 @@ keywords:
 
 Person search matches names in two modes: **exact match** and **fuzzy match**. Fuzzy match broadens name matching to phonetic variants, common nicknames, initials, and typos. By default the API runs an exact match first and only falls back to fuzzy match if the exact pass returns no results — you get the precision of exact match when it works and the recall of fuzzy match when it doesn't. Set `include_fuzzy_matching=true` to skip the exact pass and start with fuzzy match directly.
 
-## Basic Usage
+## Basic usage
 
 You do not need to set anything to benefit from fuzzy matching. If your exact-name search returns no results, the API automatically retries with fuzzy matching:
 
@@ -41,7 +41,7 @@ curl 'https://api.whitepages.com/v2/person?name=John%20Doe&city=New%20York&state
 | `include_fuzzy_matching` | boolean | `false` | When `true`, the search starts with fuzzy matching instead of exact matching. When `false` (the default), the search runs exact first and falls back to fuzzy only when exact returns no results. |
 | `strict_match`           | boolean | `false` | When `true`, the search does not fall back to fuzzy matching on a zero-result response; the exact query is authoritative. Cannot be combined with `include_fuzzy_matching=true`.                  |
 
-## How It Works
+## How it works
 
 Fuzzy matching expands name matching to include:
 
@@ -68,7 +68,7 @@ Exact name matches are still ranked higher than fuzzy matches, so precise result
   the caller is a CRM export of informal names.
 </Callout>
 
-## Opting Out — `strict_match=true`
+## Opting out — `strict_match=true`
 
 If your use case treats an empty result as authoritative — for example,
 verifying a name genuinely does not exist in the dataset — set

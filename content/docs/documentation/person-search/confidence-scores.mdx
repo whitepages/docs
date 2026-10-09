@@ -16,9 +16,9 @@ keywords:
 
 Person search responses include confidence scores on three levels: the person record itself, each phone number, and each email address. All scores range from **0 to 100** and represent relative confidence — a higher score means stronger evidence of association.
 
-## Score Types
+## Score types
 
-### Person Match Score
+### Person match score
 
 The top-level `match_score` on a person record indicates how well that record matches your search query. Higher scores reflect stronger matches across name, location, and other query parameters. A companion `matched_by` array names which of your query inputs contributed to the match.
 
@@ -34,7 +34,7 @@ The top-level `match_score` on a person record indicates how well that record ma
 
 Use `match_score` to rank or filter results when multiple people match your query, and `matched_by` to understand which inputs were most decisive.
 
-### Phone Score
+### Phone score
 
 Each phone number includes a `score` indicating confidence that the number is actively associated with this person.
 
@@ -47,7 +47,7 @@ Each phone number includes a `score` indicating confidence that the number is ac
 
 A higher score means the number is more likely to be current and correctly attributed. A low score may indicate the number is outdated or only loosely associated.
 
-### Email Score
+### Email score
 
 Each email address includes a `score` indicating confidence that the address belongs to this person.
 
@@ -58,7 +58,7 @@ Each email address includes a `score` indicating confidence that the address bel
 ]
 ```
 
-## Interpreting Scores
+## Interpreting scores
 
 Scores are **relative**, not absolute thresholds. There is no fixed cutoff for "good" vs "bad" — the right threshold depends on your use case:
 
