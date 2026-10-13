@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - Emit absolute URLs in llms.txt, llms-full.txt, sitemap by @lhagenWP in #64
 - Untangle page titles from internal anchor text and metadata by @lhagenWP
 - Patch fumadocs-openapi's invalid <div> nested in <p> by @lhagenWP
+- Bump fumadocs-core/ui/openapi to fix a hydration bug by @lhagenWP in #69
 
 ## Documentation
 
@@ -208,6 +209,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
