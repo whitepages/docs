@@ -29,6 +29,8 @@ All notable changes to this project will be documented in this file.
 - **docs:** Strip Pydantic auto-titles so renderer shows real types by @lhagenWP in #50
 - Resolve /documentation and two dead reference links by @lhagenWP in #61
 - Emit absolute URLs in llms.txt, llms-full.txt, sitemap by @lhagenWP in #64
+- Untangle page titles from internal anchor text and metadata by @lhagenWP
+- Patch fumadocs-openapi's invalid <div> nested in <p> by @lhagenWP
 
 ## Documentation
 
@@ -71,6 +73,10 @@ All notable changes to this project will be documented in this file.
 - Document the phone lookup endpoint by @lhagenWP in #66
 - Use fictitious data and make the phone reference reachable by @lhagenWP
 - Regenerate reference pages from the cleaned spec by @lhagenWP in #67
+- Name the product in the README and add an About section by @lhagenWP
+- Reorder the left rail by usage priority by @lhagenWP
+- Add a Phone Search guide, separate from Reverse Phone Lookup by @lhagenWP
+- Add missing email, radius, and pagination parameters by @lhagenWP in #68
 
 ## Features
 
@@ -112,6 +118,7 @@ All notable changes to this project will be documented in this file.
 - Emit a taxonomy block in the corpus catalog by @trichardswp
 - Prefill API key in onboarding tester from ?token= URL param by @lhagenWP in #55
 - Refresh header logo and product name to Whitepages Pro API by @lhagenWP in #56
+- Add JSON-LD structured data to the docs layout by @lhagenWP
 
 ## Miscellaneous
 
@@ -201,6 +208,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
