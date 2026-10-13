@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import type { BaseLayoutProps } from "@/components/layout/shared";
 import { WhitepagesLogoLink } from "@/components/layout/whitepages-logo-link";
 
 export function baseOptions(): BaseLayoutProps {
