@@ -1,0 +1,283 @@
+---
+related:
+  - /documentation/property-search
+  - /documentation/property-search/find-the-owner
+  - /references/billing
+  - /references/versioning/breaking-changes-policy
+  - /references/property-v3/search_properties_v3
+title: Property V2 → V3
+description: Field mapping and behavior changes when moving from /v2/property to /v3/property.
+lifecycle: current
+topic: property
+keywords:
+  - "v2 to v3"
+  - "property v3"
+  - "property migration"
+  - "upgrade property api"
+---
+
+V3 reorganizes the property namespace around three endpoints instead of two, returns the full property record from search, and stops charging for responses that carry no property.
+
+## TL;DR
+
+- Swap `/v2/property/` for `/v3/property/`. Address parameters keep their names.
+- Read `results[]` instead of `result`. Search now returns a paginated list.
+- Drop the second call to `/v2/property/{id}`. A search result already carries characteristics, assessments, and sale history.
+- Move `property_metadata.match_type` and `property_metadata.confidence_score` to the top level of each result.
+- Use `GET /v3/property/owners` where you only need ownership.
+- Expect `404` and `409` to cost nothing.
+
+## Endpoint URLs
+
+| Purpose                  | V2                               | V3                               |
+| ------------------------ | -------------------------------- | -------------------------------- |
+| Address search           | `GET /v2/property/`              | `GET /v3/property/`              |
+| Details by property ID   | `GET /v2/property/{property_id}` | `GET /v3/property/{property_id}` |
+| Details by address ID    | `GET /v2/property/{address_id}`  | `GET /v3/property/{address_id}`  |
+| Details by parcel number | _(not available)_                | `GET /v3/property/{apn}`         |
+| Owners only              | _(not available)_                | `GET /v3/property/owners`        |
+
+## Request parameters
+
+### Search
+
+| V2             | V3                     | Notes                                              |
+| -------------- | ---------------------- | -------------------------------------------------- |
+| `street`       | `street`               | Unchanged                                          |
+| `city`         | `city`                 | Unchanged                                          |
+| `state_code`   | `state_code`           | Unchanged                                          |
+| `zipcode`      | `zipcode`              | Unchanged                                          |
+| `strict_match` | `strict_match`         | Same meaning, now applied over a fixed window      |
+| —              | `apn`                  | Search by parcel number                            |
+| —              | `fips`                 | Narrow a parcel number or an address to one county |
+| —              | `lat`, `lng`, `radius` | Radius search, up to 50 miles                      |
+| —              | `page`, `page_size`    | Paging, up to 25 results per page                  |
+
+### Details
+
+The path accepts what it did in V2, plus a parcel number. A Whitepages identifier is 11 characters; anything else is read as a parcel number.
+
+## Response shape
+
+### V2 search
+
+One property in a `result` wrapper, carrying enough to identify the property and who is attached to it:
+
+```json title="V2 /v2/property/ response"
+{
+  "result": {
+    "property_id": "RSAMPLE0001",
+    "address_id": "ASAMPLE0001",
+    "apn": "197500-0015",
+    "property_address": { "...": "..." },
+    "mailing_address": { "...": "..." },
+    "geolocation": { "lat": 47.60621, "lng": -122.33207 },
+    "property_purpose": "SingleFamily",
+    "owner_occupied": "OwnerOccupied",
+    "is_vacant": false,
+    "ownership_info": { "...": "..." },
+    "residents": [],
+    "property_metadata": {
+      "match_type": "exact",
+      "confidence_score": 100,
+      "details_url": "/v2/property/RSAMPLE0001"
+    }
+  }
+}
+```
+
+### V3 search
+
+A list in a `results` array with paging metadata beside it. Every result carries the property, its owners and its residents, leaving `assessed_info` and `ownership_info.mortgages` for a details lookup:
+
+```json title="V3 /v3/property/ response"
+{
+  "results": [
+    {
+      "property_id": "RSAMPLE0001",
+      "address_id": "ASAMPLE0001",
+      "apn": "197500-0015",
+      "property_address": { "...": "..." },
+      "mailing_address": null,
+      "geolocation": { "lat": 47.60621, "lng": -122.33207 },
+      "property_purpose": "SingleFamily",
+      "owner_occupied": "OwnerOccupied",
+      "is_vacant": false,
+      "year_built": 1947,
+      "living_sqft": 2140,
+      "lot_sqft": 5000,
+      "stories": 2,
+      "assessed_info": null,
+      "ownership_info": { "...": "..." },
+      "residents": [],
+      "match_score": 94,
+      "match_type": "exact",
+      "confidence_score": 100,
+      "result_metadata": {
+        "details_url": "/v3/property/RSAMPLE0001",
+        "residents": { "displayed": 1, "additional": 0 },
+        "person_owners": { "displayed": 1, "additional": 0 },
+        "business_owners": { "displayed": 0, "additional": 0 }
+      }
+    }
+  ],
+  "metadata": { "result_count": 1, "page": 1, "page_size": 10 }
+}
+```
+
+## Field-by-field mapping
+
+| V2 location                          | V3 location                   | Notes                                |
+| ------------------------------------ | ----------------------------- | ------------------------------------ |
+| `result`                             | `results[]`                   | Now a list                           |
+| `property_metadata.match_type`       | `match_type`                  | Moved to the top level of the result |
+| `property_metadata.confidence_score` | `confidence_score`            | Moved to the top level of the result |
+| `property_metadata.details_url`      | `result_metadata.details_url` | Renamed block                        |
+| Everything else on `result`          | Same name on `results[]`      | Unchanged                            |
+
+Search results gain the fields that used to require a details call: `year_built`, `effective_year_built`, `living_sqft`, `lot_sqft`, `ground_floor_sqft`, `basement_sqft`, `basement_type`, `stories`, `bedrooms`, `bathrooms`, `has_pool`, `garage_type`, `roof_covering`, `heating_fuel`, `condition`, and `build_quality`. `assessed_info` and `ownership_info.mortgages` are not among them: both stay `null` on a search and need a details lookup.
+
+They also gain `match_score`, a ranking of the result against the whole query, and `distance_miles` on a radius search.
+
+## V3-only features
+
+### An owners endpoint
+
+`GET /v3/property/owners` answers one question — who owns this property — without returning the rest of the record. It takes a property ID, an address, or a parcel number.
+
+It also reports which parcel the answer came from. One address can carry several parcels, and `result_metadata.parcel_resolution` says how many matched, which one answered, and whether the count was complete. See [Find the Owner](/documentation/property-search/find-the-owner).
+
+### Parcel numbers
+
+`apn` works as a search parameter and as a path identifier. A parcel number is unique within a county rather than nationally, so one naming several properties returns `409` with the candidates on the owners and details endpoints, and returns them as ordinary results from search.
+
+`fips` names the county. It narrows an address as readily as a parcel number.
+
+### Paging and radius search
+
+Search takes `page` and `page_size` up to 25, and reports `result_count` beside the results. It also takes a `lat`/`lng` pair with a `radius` up to 50 miles, ordering results nearest first with `distance_miles` on each.
+
+## Behavioral differences
+
+### A response with no property is free
+
+This is the change most worth acting on. In V2, a `404` from `GET /v2/property/` is billed. In V3, every endpoint bills on `200` and nothing else:
+
+| Response                       | V2                 | V3     |
+| ------------------------------ | ------------------ | ------ |
+| `200` with results             | Billed             | Billed |
+| `404`, nothing matched         | Billed on search   | Free   |
+| `409`, parcel number ambiguous | _(not applicable)_ | Free   |
+| `400`, `403`, `429`, `5xx`     | Free               | Free   |
+
+Speculative lookups become cheap. You can probe an address you are unsure about, or resolve a parcel number through a `409`, and pay only for the call that returns a property. See [Billing](/references/billing).
+
+### A miss returns the same envelope
+
+A V3 search matching nothing returns `404` carrying `results: []` and a `metadata` block, the same shape a match uses. Parse one shape and read `results` for the outcome.
+
+### Strict matching works over a window
+
+`strict_match=true` decides which results belong in the set, so V3 applies it across a fixed 200-candidate window rather than page by page. Every page of one query then describes the same set in the same order. Under `strict_match`, `result_count` is the number of matches within that window rather than a dataset-wide total.
+
+### Match fields can be null
+
+`match_type` and `confidence_score` are `null` when there is no address comparison to make, and they are absent from the details response, which supplies no input address. Null means not assessed — not a weak match.
+
+## Call translation examples
+
+### Search by full address
+
+```bash title="V2"
+curl 'https://api.whitepages.com/v2/property/?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```bash title="V3"
+curl 'https://api.whitepages.com/v3/property/?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Read `results[0]` where you read `result`.
+
+### Get owners without the rest of the record
+
+```bash title="V2 — search, then read ownership_info"
+curl 'https://api.whitepages.com/v2/property/?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```bash title="V3 — ask for owners"
+curl 'https://api.whitepages.com/v3/property/owners?street=123+Main+St&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Drop the second call for full details
+
+```bash title="V2 — two requests, two charges"
+curl 'https://api.whitepages.com/v2/property/?street=123+Main+St&city=Seattle' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+curl 'https://api.whitepages.com/v2/property/RSAMPLE0001' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```bash title="V3 — one request"
+curl 'https://api.whitepages.com/v3/property/?street=123+Main+St&city=Seattle' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Look a property up by parcel number
+
+```bash title="V3 — new in this version"
+curl 'https://api.whitepages.com/v3/property/197500-0015' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## Code translation snippets
+
+### JavaScript (search)
+
+```js title="V2"
+const response = await fetch(
+  `https://api.whitepages.com/v2/property/?street=${street}&city=${city}&state_code=${state}`,
+  { headers: { "X-Api-Key": apiKey } },
+);
+const { result } = await response.json();
+const owners = result.ownership_info.person_owners;
+```
+
+```js title="V3"
+const response = await fetch(
+  `https://api.whitepages.com/v3/property/?street=${street}&city=${city}&state_code=${state}`,
+  { headers: { "X-Api-Key": apiKey } },
+);
+const { results, metadata } = await response.json();
+const owners = results[0]?.ownership_info.person_owners ?? [];
+// results is empty on a 404, which is not billed
+```
+
+### Python (owners)
+
+```python title="V3"
+import requests
+
+response = requests.get(
+    "https://api.whitepages.com/v3/property/owners",
+    params={"street": street, "city": city, "state_code": state},
+    headers={"X-Api-Key": api_key},
+)
+
+if response.status_code == 409:
+    # A parcel number named several properties; pick one and retry by id.
+    candidates = response.json()["error"]["meta"]["candidates"]
+elif response.ok:
+    body = response.json()
+    owners = body["result"]["person_owners"]
+    resolution = body["result_metadata"]["parcel_resolution"]
+    if resolution["ambiguous"]:
+        ...  # several parcels share this address
+```
+
+## Need help?
+
+Ask us through [support](/references/support-and-incident-response), or read the [Breaking Changes Policy](/references/versioning/breaking-changes-policy) for how long V2 stays available.

@@ -1,0 +1,8 @@
+{
+  "title": "Property",
+  "pages": [
+    "search_properties_v3",
+    "get_property_owners_v3",
+    "get_property_by_id_v3"
+  ]
+}

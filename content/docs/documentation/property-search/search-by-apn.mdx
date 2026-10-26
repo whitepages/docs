@@ -1,0 +1,114 @@
+---
+related:
+  - /references/migration/property-v2-to-v3
+  - /documentation/property-search
+  - /documentation/property-search/find-the-owner
+  - /references/billing
+  - /references/property-v3/get_property_by_id_v3
+title: Search by Parcel Number
+description: Look up a property by its assessor parcel number and resolve a number used in more than one county
+lifecycle: current
+topic: property
+keywords:
+  - "apn"
+  - "parcel number"
+  - "assessor parcel number"
+  - "search by apn"
+  - "fips code"
+---
+
+An assessor parcel number (APN) is the identifier a county assigns to a parcel of land. Every property endpoint accepts one through the `apn` parameter.
+
+```bash title="Search by parcel number"
+curl 'https://api.whitepages.com/v3/property/?apn=197500-0015' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+## A parcel number is not unique nationally
+
+Counties assign parcel numbers independently, so the same string can name a parcel in Maryland, another in California, and a third in Georgia. A parcel number identifies a property only once you know which county issued it.
+
+The `fips` parameter supplies that county. A FIPS code is the five-digit federal identifier for a US county — `53033` is King County, Washington, and `24510` is Baltimore City, Maryland.
+
+```bash title="Parcel number narrowed to one county"
+curl 'https://api.whitepages.com/v3/property/owners?apn=0342-021&fips=24510' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+### Without a county
+
+Each endpoint handles the ambiguity in the way that fits its job.
+
+| Endpoint                  | A parcel number naming several properties |
+| ------------------------- | ----------------------------------------- |
+| `GET /v3/property/`       | Returns every match as ordinary results   |
+| `GET /v3/property/owners` | Returns `409` with the candidates         |
+| `GET /v3/property/{id}`   | Returns `409` with the candidates         |
+
+Search returns a list because a list is what a search is for. The other two answer about one property, so they stop and hand back the candidates instead of guessing:
+
+```json title="409 Conflict"
+{
+  "error": {
+    "code": 409,
+    "message": "APN 0342-021 matches 3 properties",
+    "long_message": "An APN is unique within a county rather than nationally. Choose one of the candidates and look it up by its property_id.",
+    "meta": {
+      "apn": "0342-021",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "property_id": "RSAMPLE0001",
+          "address_id": "ASAMPLE0001",
+          "full_address": "1708 Eutaw Pl, Baltimore, MD 21217",
+          "details_url": "/v3/property/RSAMPLE0001"
+        },
+        {
+          "property_id": "RSAMPLE0002",
+          "address_id": "ASAMPLE0002",
+          "full_address": "990 Market St, San Francisco, CA 94102",
+          "details_url": "/v3/property/RSAMPLE0002"
+        }
+      ]
+    }
+  }
+}
+```
+
+Resolve it either way: add `fips` and repeat the call, or take the `property_id` of the candidate you want and look it up directly.
+
+<Callout type="info" title="A 409 costs nothing">
+  Conflict responses are not billable, so disambiguating a parcel number takes
+  two requests and bills one. See [Billing](/references/billing).
+</Callout>
+
+## Narrowing an address
+
+`fips` is not only for parcel numbers. It narrows an address search to one county too, which matters where a street name repeats across county lines:
+
+```bash title="Address narrowed to King County"
+curl 'https://api.whitepages.com/v3/property/?street=123%20Main%20Street&city=Seattle&fips=53033' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+A county that does not contain the address matches nothing, rather than falling back to the address on its own.
+
+## Combining parameters
+
+A parcel number and an address are two ways of naming the same thing, so the API does not accept both at once. Sending `apn` together with `street`, `city`, or `zipcode` returns `400`, as does sending `apn` with a `lat`/`lng` pair.
+
+`fips` and `state_code` are the exceptions. Both describe where to look rather than which property to find, so either can accompany a parcel number.
+
+| Combination                       | Result                          |
+| --------------------------------- | ------------------------------- |
+| `apn` + `fips`                    | Parcel number within one county |
+| `apn` + `state_code`              | Parcel number within one state  |
+| `apn` + `street`/`city`/`zipcode` | `400 Bad Request`               |
+| `apn` + `lat`/`lng`               | `400 Bad Request`               |
+
+<Callout type="info" title="strict_match does not apply to a parcel number">
+  `strict_match` filters results against the address you supplied. A parcel
+  number search supplies no address, so the parameter has nothing to compare and
+  is ignored. See [Find Sets of
+  Properties](/documentation/property-search/find-sets-of-properties).
+</Callout>

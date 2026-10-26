@@ -4,7 +4,7 @@ related:
   - /documentation/agentic-guidance/entity-shapes
   - /documentation/phone-search
   - /references/person-v2/search_person_by_name_phone_or_address_v2
-  - /references/property-v2/search_property_v2
+  - /references/property-v3/search_properties_v3
 title: Capability Map
 description: Map a user's intent to the exact endpoint and parameters that answer it.
 icon: Compass
@@ -60,11 +60,15 @@ a name or a location to verify a match.
 
 ## Property
 
-| You want to…                         | Endpoint                | Key parameters                                                    |
-| ------------------------------------ | ----------------------- | ----------------------------------------------------------------- |
-| Find who owns a property             | `GET /v2/property/`     | `street`, `city`, `state_code`, `zipcode` → read `ownership_info` |
-| Find current residents of a property | `GET /v2/property/`     | same address params → read `residents`                            |
-| Get property detail by id            | `GET /v2/property/{id}` | path id (`R`-prefixed property id or `A`-prefixed address id)     |
+| You want to…                                  | Endpoint                  | Key parameters                                                   |
+| --------------------------------------------- | ------------------------- | ---------------------------------------------------------------- |
+| Find who owns a property                      | `GET /v3/property/owners` | `street`, `city`, `state_code`, `zipcode` → read `person_owners` |
+| Know whether that owner is the only candidate | `GET /v3/property/owners` | read `result_metadata.parcel_resolution` → `ambiguous`           |
+| Find current residents of a property          | `GET /v3/property/`       | same address params → read `residents`                           |
+| Find every parcel at one address              | `GET /v3/property/`       | address params plus `strict_match=true`                          |
+| Find properties near a point                  | `GET /v3/property/`       | `lat`, `lng`, `radius` → read `distance_miles`                   |
+| Look a property up by parcel number           | `GET /v3/property/{apn}`  | path parcel number, or `apn` with `fips` on search               |
+| Get property detail by id                     | `GET /v3/property/{id}`   | path id (`R`-prefixed property id or `A`-prefixed address id)    |
 
 <Callout type="info">
   Owners and residents come back as **summary** person objects that carry an
@@ -72,6 +76,18 @@ a name or a location to verify a match.
   `GET /v2/person/{id}` with that `id` — see [Entity
   Shapes](/documentation/agentic-guidance/entity-shapes).
 </Callout>
+
+<Callout type="info" title="Property misses are free">
+  Every `/v3/property` endpoint bills on `200` alone. A `404` and a `409` cost
+  nothing, so a speculative lookup is safe to attempt. `GET /v2/property/` bills
+  its `404`s — prefer V3. See [Billing](/references/billing).
+</Callout>
+
+One address can carry several parcels, so an owners answer names the parcel it
+came from. Treat `parcel_resolution.ambiguous` as `true` or `null` meaning
+"check the other parcels before acting"; only `false` promises the parcel was
+unique. `match_type` and `confidence_score` do not answer this — they compare
+addresses, not parcels.
 
 ## Events and account
 

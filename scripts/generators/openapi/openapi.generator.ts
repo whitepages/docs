@@ -3,6 +3,7 @@ import { createOpenAPI } from "fumadocs-openapi/server";
 import type { OpenAPISpec } from "./openapi.types";
 import {
   EXCLUDED_TAGS,
+  UNLISTED_TAGS,
   extractTagGroups,
   tagToDirectoryName,
   tagToDisplayName,
@@ -49,7 +50,9 @@ async function generateApiEndpointDocs(): Promise<void> {
 }
 
 async function generateRoutesPage(openApiSpec: OpenAPISpec): Promise<void> {
-  const tagGroups = extractTagGroups(openApiSpec);
+  const tagGroups = extractTagGroups(openApiSpec).filter(
+    (tagGroup) => !UNLISTED_TAGS.includes(tagGroup.name),
+  );
   const routesContent = generateRoutesPageMarkdown(tagGroups);
 
   const routesPath = `${OUTPUT_DIR}/index.mdx`;

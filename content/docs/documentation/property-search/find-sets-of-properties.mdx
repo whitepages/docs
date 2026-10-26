@@ -1,0 +1,130 @@
+---
+related:
+  - /references/rate-limits
+  - /documentation/property-search
+  - /documentation/property-search/find-the-owner
+  - /documentation/property-search/match-confidence
+  - /references/billing
+  - /references/property-v3/search_properties_v3
+title: Find Sets of Properties
+description: Page through property search results, filter them, and search a radius around a point
+lifecycle: current
+topic: property
+keywords:
+  - "property pagination"
+  - "page through properties"
+  - "properties near a location"
+  - "radius search"
+  - "strict match"
+---
+
+`GET /v3/property/` returns every property matching your query, a page at a time. Use it to enumerate the parcels at a shared address, sweep a neighborhood, or work through a county.
+
+## Paging
+
+```bash title="Page 2, 25 results per page"
+curl 'https://api.whitepages.com/v3/property/?city=Seattle&state_code=WA&page=2&page_size=25' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+| Parameter   | Type    | Default | Range | Description            |
+| ----------- | ------- | ------- | ----- | ---------------------- |
+| `page`      | integer | `1`     | 1+    | Page number, 1-indexed |
+| `page_size` | integer | `10`    | 1–25  | Results per page       |
+
+Keep every other parameter identical across pages. Changing the query mid-sweep changes the ordering, and results shift between pages.
+
+Each response carries a `metadata` block beside the results:
+
+```json
+{
+  "results": [...],
+  "metadata": {
+    "result_count": 2305,
+    "page": 2,
+    "page_size": 25
+  }
+}
+```
+
+Compare `result_count` against `page × page_size` to know whether another page exists.
+
+<Callout type="warn" title="Every page is a billable request">
+  Pages 1 through 5 count as five billable requests. Raise `page_size` to 25
+  rather than taking more pages at the default of 10. See
+  [Billing](/references/billing).
+</Callout>
+
+<Callout type="info" title="Results stop at 10,000">
+  Paging reaches the first 10,000 results of a query. Past that, pages come back
+  empty. Narrow with `city`, `zipcode`, or `fips` rather than paging deeper.
+</Callout>
+
+## Filtering to real matches
+
+A search widens on purpose. Ask for `123 Main Street, Seattle` and you also get near matches that share a street name or number, ranked below the exact ones. `strict_match=true` drops everything that does not match the address you supplied:
+
+```bash title="Exact matches only"
+curl 'https://api.whitepages.com/v3/property/?street=123%20Main%20Street&city=Seattle&state_code=WA&strict_match=true' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+This is how you enumerate the parcels at one address. A condominium or commercial building shares a street address across several parcels, and a strict search returns exactly those.
+
+`result_count` means something different under `strict_match`:
+
+| `strict_match` | `result_count` counts                                    |
+| -------------- | -------------------------------------------------------- |
+| `false`        | Every property the query matched, to a maximum of 10,000 |
+| `true`         | The matches found within a 200-candidate window          |
+
+Strict matching decides membership, so the API examines a fixed window of 200 candidates and reports the matches inside it. Every page of one query describes the same set in the same order, and pages past the window come back empty.
+
+<Callout type="info" title="strict_match is ignored for a parcel number">
+  The filter compares results against a supplied address. A parcel number search
+  supplies none, so the parameter has nothing to act on.
+</Callout>
+
+## Searching a radius
+
+Give a point and a distance to find properties around it:
+
+```bash title="Within 2 miles of a point"
+curl 'https://api.whitepages.com/v3/property/?lat=47.60621&lng=-122.33207&radius=2' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+| Parameter | Range          | Description                               |
+| --------- | -------------- | ----------------------------------------- |
+| `lat`     | −90 to 90      | Latitude of the center point              |
+| `lng`     | −180 to 180    | Longitude of the center point             |
+| `radius`  | up to 50 miles | Distance from the center point, default 1 |
+
+Supply `lat` and `lng` together. One without the other returns `400`.
+
+Omit `radius` and the search covers one mile.
+
+Address components narrow a radius search rather than competing with it. Adding `city` or `zipcode` to a `lat`/`lng` query filters the results within the circle.
+
+Each result carries `distance_miles`, its distance from the center point, and results are ordered nearest first. As with strict matching, a radius search ranks a 200-candidate window, so every page of one query draws from the same set.
+
+A parcel number and a geopoint cannot combine. Each names a property a different way, and sending both returns `400`.
+
+## When nothing matches
+
+A query matching no property returns `404` carrying the same envelope a match would:
+
+```json title="404 Not Found"
+{
+  "results": [],
+  "metadata": { "result_count": 0, "page": 1, "page_size": 10 }
+}
+```
+
+One parser handles both outcomes — read `results`, and an empty array means no matches.
+
+<Callout type="info" title="An empty result is free">
+  `404` is not billable on any `/v3/property` endpoint. Sweeping a wide area
+  costs you only the pages that return properties. See
+  [Billing](/references/billing).
+</Callout>

@@ -1,6 +1,8 @@
 ---
 related:
   - /references/rate-limits
+  - /documentation/property-search
+  - /references/migration/property-v2-to-v3
   - /references/account/get_account_usage_data
   - /documentation/purchasing-api
   - /references/billing-prior-to-2026-06-01
@@ -28,26 +30,47 @@ API usage is tracked and billed based on successful requests.
 
 ## Billing rules
 
-| Response Type      | Billable                                     |
-| ------------------ | -------------------------------------------- |
-| 2xx (Success)      | Yes                                          |
-| 404 (Not Found)    | Yes, except `GET /v2/property/{property_id}` |
-| 400 (Bad Request)  | No                                           |
-| 403 (Forbidden)    | No                                           |
-| 429 (Rate Limit)   | No                                           |
-| 5xx (Server Error) | No                                           |
+| Response Type      | Billable                                                           |
+| ------------------ | ------------------------------------------------------------------ |
+| 2xx (Success)      | Yes                                                                |
+| 404 (Not Found)    | Yes, except on `/v3/property` and `GET /v2/property/{property_id}` |
+| 409 (Conflict)     | No                                                                 |
+| 400 (Bad Request)  | No                                                                 |
+| 403 (Forbidden)    | No                                                                 |
+| 429 (Rate Limit)   | No                                                                 |
+| 5xx (Server Error) | No                                                                 |
 
 <Callout type="info">
-  All Person and Property endpoints are billable, across every API version (v1
-  and v2). Account, Regions, Events, and Webhooks endpoints are not billable.
+  All Person, Phone, and Property endpoints are billable, across every API
+  version. Account, Regions, Events, and Webhooks endpoints are not billable.
 </Callout>
+
+### Property V3 bills only on a result
+
+Every endpoint under `/v3/property` charges for `200` and nothing else:
+
+| Endpoint                        | `200`  | `404` | `409`            |
+| ------------------------------- | ------ | ----- | ---------------- |
+| `GET /v3/property/`             | Billed | Free  | _(not returned)_ |
+| `GET /v3/property/owners`       | Billed | Free  | Free             |
+| `GET /v3/property/{identifier}` | Billed | Free  | Free             |
+
+A search that matches nothing, an identifier with no property behind it, and a
+parcel number that names several properties all cost nothing. You can probe an
+uncertain address, try an address ID you are not sure about, or resolve a
+parcel number through a `409` and pay only for the call that returns a
+property.
+
+This differs from V2, where a `404` from `GET /v2/property/` is billed. See
+[Property V2 → V3](/references/migration/property-v2-to-v3).
 
 ## Billable requests
 
 The following responses from Person and Property endpoints, in any API version, are charged to your account:
 
 - All `2xx` (success) responses
-- `404` (not found) responses, except on `GET /v2/property/{property_id}`
+- `404` (not found) responses, except on any `/v3/property` endpoint and on
+  `GET /v2/property/{property_id}`
 
 ## Non-billable requests
 
@@ -55,13 +78,15 @@ The following responses are **not** charged:
 
 - `400` (bad request) responses - missing or invalid parameters
 - `403` (forbidden) responses - even when an API key is provided
-- `404` (not found) responses on `GET /v2/property/{property_id}`
+- `404` (not found) responses on any `/v3/property` endpoint and on
+  `GET /v2/property/{property_id}`
+- `409` (conflict) responses - a parcel number naming several properties
 - `429` (rate limit) responses - when you've exceeded rate limits
 - `5xx` (server error) responses - issues on our end
 
 ### Property details lookups and 404s
 
-`GET /v2/property/{property_id}` accepts either a Whitepages property ID (`R` prefix) or an address ID (`A` prefix). Not every address ID has full property details, so these lookups may return `404`. Because `404` responses on this endpoint are never billed, you can optimistically look up property details for the address IDs you encounter throughout other API responses.
+`GET /v3/property/{identifier}` and `GET /v2/property/{property_id}` both accept a Whitepages property ID (`R` prefix) or an address ID (`A` prefix); the V3 route also accepts a parcel number. Not every address ID has full property details, so these lookups may return `404`. Because `404` responses on these endpoints are never billed, you can optimistically look up property details for the address IDs you encounter throughout other API responses.
 
 ## Billing period
 

@@ -1,0 +1,271 @@
+---
+related:
+  - /references/migration/property-v2-to-v3
+  - /references/billing
+  - /references/authentication
+  - /documentation/agentic-guidance/capability-map
+  - /documentation/person-search/search-by-address
+  - /references/property-v3/search_properties_v3
+title: Property Search
+description: Look up property records, ownership, and residents by address or parcel number
+icon: House
+lifecycle: current
+topic: property
+keywords:
+  - "property search"
+  - "who owns this property"
+  - "property owner"
+  - "ownership data"
+  - "residents at a property"
+  - "parcel number"
+---
+
+The Property API returns property records sourced from county assessor and recorder data, along with the owners and residents associated with each one. Use it to identify an owner, pull the full record for a property you already know, or find every property matching an address, a parcel number, or a map radius.
+
+## Owner details or property details?
+
+Start from what you want back. Looking for the owner, use `owners`. Looking
+for the property, use a search or a details lookup.
+
+<Cards>
+  <Card
+    title="Who owns this?"
+    href="/documentation/property-search/find-the-owner"
+    description="GET /v3/property/owners returns the people and businesses on record as owners"
+  />
+  <Card
+    title="Tell me about this property"
+    href="/documentation/property-search/property-details"
+    description="GET /v3/property/{id} returns characteristics, assessment, sale history, and residents"
+  />
+</Cards>
+
+`owners` accepts an address, a parcel number, or a property ID, so when
+ownership is the question you rarely need a lookup first.
+
+| Endpoint                  | Answers                                          | Returns                                                       |
+| ------------------------- | ------------------------------------------------ | ------------------------------------------------------------- |
+| `GET /v3/property/owners` | Who owns this property                           | Owner lists, how complete they are, and which parcel answered |
+| `GET /v3/property/{id}`   | Everything on record for a property you can name | The full property record, ownership among it                  |
+| `GET /v3/property/`       | Which properties match this query                | A ranked page of property records                             |
+
+A property record carries an `ownership_info` block, so a search or a details
+lookup names the owner too. The difference is what each one reports about that
+answer. `owners` tells you whether the owner list is whole, through a
+`complete` flag on each list, and which parcel it resolved to when an address
+covers more than one. Neither of the other two reports either, and a search
+result trims its owner and resident lists to five apiece.
+
+Going the other way, `owners` returns only enough of the property to identify
+it — address, parcel number, identifiers, and the match fields. For square
+footage, ask for the property. For assessed value or mortgage history, ask for
+it by identifier: a search leaves those two blocks `null`.
+
+## Make your first request
+
+<Steps>
+<Step>
+### Send a request
+
+Search for a property by address:
+
+```bash title="Request"
+curl 'https://api.whitepages.com/v3/property/?street=123%20Main%20Street&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+Replace `YOUR_API_KEY` with your API key, and the address parts with the property you want. URL-encode any spaces.
+
+</Step>
+
+<Step>
+### Review the response
+
+Results arrive in an envelope carrying the matches and a count:
+
+```json title="Response"
+{
+  "results": [
+    {
+      "property_id": "RSAMPLE0001",
+      "address_id": "ASAMPLE0001",
+      "apn": "197500-0015",
+      "property_address": {
+        "full_address": "123 Main Street, Seattle, WA 98101",
+        "line1": "123 Main Street",
+        "city": "Seattle",
+        "state": "WA",
+        "zip": "98101",
+        "house": "123",
+        "street": "Main",
+        "street_type": "Street",
+        "county": "King"
+      },
+      "geolocation": { "lat": 47.60621, "lng": -122.33207 },
+      "property_purpose": "SingleFamily",
+      "owner_occupied": "OwnerOccupied",
+      "year_built": 1947,
+      "living_sqft": 2140,
+      "lot_sqft": 5000,
+      "stories": 2,
+      "ownership_info": {
+        "owner_type": "Individual",
+        "person_owners": [
+          {
+            "id": "PSAMPLE0001",
+            "name": "John Smith",
+            "age": 54,
+            "current_addresses": [
+              {
+                "address_id": "ASAMPLE0001",
+                "full_address": "123 Main Street, Seattle, WA 98101",
+                "line1": "123 Main Street",
+                "city": "Seattle",
+                "state": "WA",
+                "zip": "98101"
+              }
+            ],
+            "phones": [
+              { "number": "(206) 555-0142", "type": "mobile", "score": 99 }
+            ],
+            "emails": [{ "email": "j.smith@example.com", "score": 99 }],
+            "company_name": null,
+            "job_title": null,
+            "result_metadata": {
+              "details_url": "/v2/person/PSAMPLE0001",
+              "phones": { "displayed": 1, "additional": 3 },
+              "emails": { "displayed": 1, "additional": 2 }
+            }
+          }
+        ],
+        "business_owners": [],
+        "sale_date": "2016-04-22",
+        "last_sale_amount": 712000,
+        "mortgages": null
+      },
+      "residents": [
+        {
+          "id": "PSAMPLE0001",
+          "name": "John Smith",
+          "age": 54,
+          "current_addresses": [
+            {
+              "address_id": "ASAMPLE0001",
+              "full_address": "123 Main Street, Seattle, WA 98101",
+              "line1": "123 Main Street",
+              "city": "Seattle",
+              "state": "WA",
+              "zip": "98101"
+            }
+          ],
+          "phones": [
+            { "number": "(206) 555-0142", "type": "mobile", "score": 99 }
+          ],
+          "emails": [{ "email": "j.smith@example.com", "score": 99 }],
+          "company_name": null,
+          "job_title": null,
+          "result_metadata": {
+            "details_url": "/v2/person/PSAMPLE0001",
+            "phones": { "displayed": 1, "additional": 3 },
+            "emails": { "displayed": 1, "additional": 2 }
+          }
+        }
+      ],
+      "assessed_info": null,
+      "match_score": 25,
+      "match_type": "exact",
+      "confidence_score": 100,
+      "distance_miles": null,
+      "result_metadata": {
+        "details_url": "/v3/property/RSAMPLE0001",
+        "residents": { "displayed": 1, "additional": 0 },
+        "person_owners": { "displayed": 1, "additional": 0 },
+        "business_owners": { "displayed": 0, "additional": 0 }
+      }
+    }
+  ],
+  "metadata": {
+    "result_count": 1,
+    "page": 1,
+    "page_size": 10
+  }
+}
+```
+
+Each result carries the property's characteristics, its owners, and its
+residents in full, so most questions are answered in one call.
+
+Two blocks are the exception. `assessed_info` and `ownership_info.mortgages`
+come back `null` on every search result and are populated only by a details
+lookup. For assessed value, tax, or mortgage history, follow `details_url`.
+
+</Step>
+</Steps>
+
+<Callout type="info" title="result_metadata">
+  Owner and resident lists on a search result are capped. `displayed` is how
+  many came back; `additional` is how many more are attached to the property.
+  Follow `details_url` to read the full lists.
+</Callout>
+
+## Request parameters
+
+| Parameter      | Description                                              | Example           |
+| -------------- | -------------------------------------------------------- | ----------------- |
+| `street`       | Street address including number and name                 | `123 Main Street` |
+| `city`         | City name                                                | `Seattle`         |
+| `state_code`   | Two-letter state code                                    | `WA`              |
+| `zipcode`      | ZIP code                                                 | `98101`           |
+| `apn`          | Assessor parcel number                                   | `197500-0015`     |
+| `fips`         | Five-digit county FIPS code                              | `53033`           |
+| `lat` / `lng`  | Center point for a radius search                         | `47.60621`        |
+| `radius`       | Radius in miles around `lat`/`lng`, up to 50 (default 1) | `2`               |
+| `strict_match` | Return only results that match the address you supplied  | `true`            |
+| `page`         | Page number, starting at 1                               | `2`               |
+| `page_size`    | Results per page, up to 25 (default 10)                  | `25`              |
+
+A search needs something to search on: a parcel number, at least one of `street`, `city`, or `zipcode`, or a `lat`/`lng` pair. `state_code` and `fips` narrow a search rather than defining one, so neither works on its own. Parameters combine with AND logic, so each one you add narrows the result set.
+
+## Guides
+
+- [Find the Owner](/documentation/property-search/find-the-owner) — who owns one property, and which parcel answered
+- [Search by Parcel Number](/documentation/property-search/search-by-apn) — look a property up by APN, and resolve a number used in more than one county
+- [Find Sets of Properties](/documentation/property-search/find-sets-of-properties) — page through matches, filter them, and search a radius
+- [Property Details](/documentation/property-search/property-details) — pull the full record by property ID or address ID
+- [Match Type and Confidence](/documentation/property-search/match-confidence) — what the match fields do and do not tell you
+
+## Response codes
+
+| Status                  | Description                                                       | Billable |
+| ----------------------- | ----------------------------------------------------------------- | -------- |
+| `200 OK`                | Request successful                                                | Yes      |
+| `400 Bad Request`       | Missing or invalid parameters                                     | No       |
+| `403 Forbidden`         | Invalid API key                                                   | No       |
+| `404 Not Found`         | Nothing matched                                                   | No       |
+| `409 Conflict`          | Parcel number names more than one property, on owners and details | No       |
+| `429 Too Many Requests` | Rate limit exceeded                                               | No       |
+| `5xx`                   | Server error                                                      | No       |
+
+<Callout type="info" title="A search that finds nothing is free">
+  Every endpoint in `/v3/property` bills on `200` and nothing else. A search
+  that matches no property returns `404` and is not charged, so you can probe
+  speculatively without spending credits on misses. This differs from `GET
+  /v2/property/`, where a `404` is billed. See [Billing](/references/billing).
+</Callout>
+
+A `404` from `GET /v3/property/` carries the same envelope a match would, with an empty `results` array. One parser handles both outcomes.
+
+Search answers `400` rather than `409` when parameters conflict, such as a parcel number combined with address parts or with a `lat`/`lng` pair. Each names one property a different way, and the API does not choose between them.
+
+## Address standardization
+
+Property addresses, both physical and mailing, are **not** processed through CASS certification. Property address data comes from county assessor and recorder records and is stored as received, without USPS standardization.
+
+<Callout type="info">
+  For person address standardization, see [Search by
+  Address](/documentation/person-search/search-by-address#address-standardization-cass).
+</Callout>
+
+## What's next
+
+Moving from `/v2/property`? The [Property V2 → V3](/references/migration/property-v2-to-v3) guide maps every field and names the behavior changes.

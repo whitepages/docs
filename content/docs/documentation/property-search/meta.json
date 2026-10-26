@@ -1,0 +1,12 @@
+{
+  "title": "Property Search",
+  "icon": "House",
+  "pages": [
+    "find-the-owner",
+    "search-by-apn",
+    "find-sets-of-properties",
+    "property-details",
+    "match-confidence"
+  ],
+  "defaultOpen": true
+}

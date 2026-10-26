@@ -24,6 +24,8 @@ Account management endpoints for retrieving usage statistics.
 
 ## Events API
 
+Read property events, such as recorded deeds, by region or by identifier.
+
 <Cards>
   <Card
     title="Search all deed events"
@@ -37,7 +39,9 @@ Account management endpoints for retrieving usage statistics.
   />
 </Cards>
 
-## Person v2 API
+## Person V2 API
+
+Search for individuals by name, phone number, or address, and look one up by identifier.
 
 <Cards>
   <Card
@@ -52,7 +56,9 @@ Account management endpoints for retrieving usage statistics.
   />
 </Cards>
 
-## Phone v2 API
+## Phone V2 API
+
+Identify a phone number and the people associated with it.
 
 <Cards>
   <Card
@@ -62,22 +68,31 @@ Account management endpoints for retrieving usage statistics.
   />
 </Cards>
 
-## Property v2 API
+## Property V3 API
+
+Find properties by address, parcel number, or map radius, and get the owners of one.
 
 <Cards>
   <Card
-    title="Get property details by ID"
-    description="Retrieve detailed property information by Whitepages property ID."
-    href="/references/property-v2/get_property_by_id_v2"
+    title="Search properties by address or APN"
+    description="Search properties by address or by Assessor's Parcel Number."
+    href="/references/property-v3/search_properties_v3"
   />
   <Card
-    title="Search for property by address"
-    description="Search for property by address parameters."
-    href="/references/property-v2/search_property_v2"
+    title="Get the owners of a property"
+    description="Retrieve the entities that own a property."
+    href="/references/property-v3/get_property_owners_v3"
+  />
+  <Card
+    title="Get property details by ID or APN"
+    description="Retrieve a property by property ID, address ID, or APN."
+    href="/references/property-v3/get_property_by_id_v3"
   />
 </Cards>
 
 ## Regions API
+
+List states and the counties within them.
 
 <Cards>
   <Card
