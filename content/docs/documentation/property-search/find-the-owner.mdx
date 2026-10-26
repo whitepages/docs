@@ -1,0 +1,241 @@
+---
+related:
+  - /references/migration/property-v2-to-v3
+  - /documentation/property-search
+  - /documentation/property-search/search-by-apn
+  - /documentation/property-search/match-confidence
+  - /references/billing
+  - /references/property-v3/get_property_owners_v3
+title: Find the Owner
+description: Get the owners of a single property and see which parcel the answer came from
+lifecycle: current
+topic: property
+keywords:
+  - "who owns this property"
+  - "property owner"
+  - "find the owner"
+  - "owner of an address"
+---
+
+`GET /v3/property/owners` answers one question about one property. Give it an address, a parcel number, or a property ID, and it returns the people and businesses on record as owners.
+
+<Callout type="info" title="Owner details, not property details">
+  This endpoint returns the owners and only enough of the property to identify
+  it. For square footage, assessed value, or sale history, ask for the property
+  instead through [Property
+  Details](/documentation/property-search/property-details).
+</Callout>
+
+## Basic usage
+
+```bash title="Owners by address"
+curl 'https://api.whitepages.com/v3/property/owners?street=123%20Main%20Street&city=Seattle&state_code=WA' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```json title="Response"
+{
+  "result": {
+    "property": {
+      "property_id": "RSAMPLE0001",
+      "address_id": "ASAMPLE0001",
+      "apn": "197500-0015",
+      "property_address": {
+        "full_address": "123 Main Street, Seattle, WA 98101",
+        "line1": "123 Main Street",
+        "city": "Seattle",
+        "state": "WA",
+        "zip": "98101",
+        "house": "123",
+        "street": "Main",
+        "street_type": "Street",
+        "county": "King"
+      },
+      "property_purpose": "SingleFamily",
+      "owner_occupied": "OwnerOccupied",
+      "match_type": "exact",
+      "confidence_score": 100,
+      "result_metadata": { "details_url": "/v3/property/RSAMPLE0001" }
+    },
+    "owner_type": "Individual",
+    "person_owners": [
+      {
+        "id": "PSAMPLE0001",
+        "name": "John Smith",
+        "age": 54,
+        "current_addresses": [
+          {
+            "address_id": "ASAMPLE0001",
+            "full_address": "123 Main Street, Seattle, WA 98101",
+            "line1": "123 Main Street",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98101"
+          }
+        ],
+        "phones": [
+          { "number": "(206) 555-0142", "type": "mobile", "score": 99 }
+        ],
+        "emails": [{ "email": "j.smith@example.com", "score": 99 }],
+        "company_name": null,
+        "job_title": null,
+        "result_metadata": {
+          "details_url": "/v2/person/PSAMPLE0001",
+          "phones": { "displayed": 1, "additional": 3 },
+          "emails": { "displayed": 1, "additional": 2 }
+        }
+      }
+    ],
+    "business_owners": []
+  },
+  "result_metadata": {
+    "person_owners": { "displayed": 1, "complete": true },
+    "business_owners": { "displayed": 0, "complete": true },
+    "parcel_resolution": {
+      "matched": 1,
+      "resolved": "RSAMPLE0001",
+      "ambiguous": false,
+      "complete": true
+    }
+  }
+}
+```
+
+## Parameters
+
+Supply one of these three ways to name a property:
+
+| Parameter                                 | Names a property by    |
+| ----------------------------------------- | ---------------------- |
+| `property_id`                             | Property or address ID |
+| `street`, `city`, `state_code`, `zipcode` | Address                |
+| `apn`, optionally with `fips`             | Parcel number          |
+
+Address parts work as a group. At least one of `street`, `city`, or `zipcode` is needed; `state_code` and `fips` narrow a lookup rather than defining one, so neither names a property on its own.
+
+`fips` narrows either an address or a parcel number to one county. See [Search by Parcel Number](/documentation/property-search/search-by-apn).
+
+<Callout type="info" title="This endpoint does not paginate">
+  Owners describes one property, so there is no page to turn. Sending `page` or
+  `page_size` returns `400`. To work through many properties, search first with
+  [`GET /v3/property/`](/documentation/property-search/find-sets-of-properties)
+  and call owners for the ones you want.
+</Callout>
+
+## Owner lists
+
+Owners split by kind. `owner_type` summarizes which list is populated.
+
+| Field             | Contains                                   |
+| ----------------- | ------------------------------------------ |
+| `person_owners`   | Individuals, each a full person record     |
+| `business_owners` | Companies and trusts, each with a `name`   |
+| `owner_type`      | `Individual`, `Business`, or a mix of both |
+
+A person owner arrives as the same shape the person endpoints return: `name`,
+`age`, `current_addresses`, `phones`, `emails`, `company_name`, `job_title`,
+and a `result_metadata` block. You do not need a second call to read contact
+details. Every field is present on every owner, carrying `null` where the data
+holds nothing, so a parser can read a key without checking for it first.
+
+A business owner carries a `name` and nothing else, which is all the data holds
+for one today.
+
+Each owner's `result_metadata` reports `displayed` and `additional` for its
+phone and email lists, and `details_url` links to the full person record.
+
+`result_metadata.person_owners.complete` and its business counterpart report whether the list came back whole. When `complete` is `false`, more owners are on record than the response carries.
+
+## Which parcel answered
+
+One address can carry several parcels. A condominium building, a commercial tower, or a subdivided lot all share a street address across distinct parcels, each with its own owner. Because this endpoint answers for one property, it picks one, and `result_metadata.parcel_resolution` reports the choice.
+
+| Field       | Meaning                                                     |
+| ----------- | ----------------------------------------------------------- |
+| `matched`   | Parcels found sharing the resolved property's exact address |
+| `resolved`  | Property ID of the parcel the owners belong to              |
+| `ambiguous` | `true` when more than one parcel matched                    |
+| `complete`  | `true` when the count reached every competing parcel        |
+
+An unambiguous answer looks like the example above: one parcel matched, nothing competed, and the owners belong to the address you asked about.
+
+A shared address looks like this:
+
+```json title="Three parcels at one address"
+"parcel_resolution": {
+  "matched": 3,
+  "resolved": "RSAMPLE0001",
+  "ambiguous": true,
+  "complete": false
+}
+```
+
+Three parcels carry this address and the owners returned belong to one of them. Treat `ambiguous: true` as a signal to look at the other parcels before acting on the answer. Search the address with [`GET /v3/property/`](/documentation/property-search/find-sets-of-properties) to see all of them, then call owners with the `property_id` you want.
+
+### When the answer is `null`
+
+`matched` and `ambiguous` can both come back `null`. Null means the question is open, not that the answer is no.
+
+- A property carrying no standardized address gives the count nothing to compare against, so `matched` and `ambiguous` are both `null`.
+- The count runs over a bounded list of candidates. When that list fills up, `complete` is `false`, `matched` is a floor rather than a total, and `ambiguous` stays `null` where only one parcel matched — another parcel the count never reached might share the address.
+
+`ambiguous: false` is the only value that promises uniqueness, and it appears only when `complete` is `true`.
+
+<Callout type="warn" title="match_type does not answer this">
+  A parcel chosen from three still matches the address you supplied exactly, so
+  `match_type: "exact"` and `confidence_score: 100` say nothing about whether
+  the parcel was the only candidate. The two fields describe address matching
+  alone. See [Match Type and
+  Confidence](/documentation/property-search/match-confidence).
+</Callout>
+
+## A parcel number naming several properties
+
+A parcel number is unique within a county, not nationally. When the `apn` you supply is recorded in more than one county, the endpoint does not guess. It returns `409` with the candidates:
+
+```json title="409 Conflict"
+{
+  "error": {
+    "code": 409,
+    "message": "APN 0342-021 matches 3 properties",
+    "long_message": "An APN is unique within a county rather than nationally. Choose one of the candidates and look it up by its property_id.",
+    "meta": {
+      "apn": "0342-021",
+      "candidate_count": 3,
+      "candidates": [
+        {
+          "property_id": "RSAMPLE0001",
+          "address_id": "ASAMPLE0001",
+          "full_address": "1708 Eutaw Pl, Baltimore, MD 21217",
+          "details_url": "/v3/property/RSAMPLE0001"
+        },
+        {
+          "property_id": "RSAMPLE0002",
+          "address_id": "ASAMPLE0002",
+          "full_address": "990 Market St, San Francisco, CA 94102",
+          "details_url": "/v3/property/RSAMPLE0002"
+        },
+        {
+          "property_id": "RSAMPLE0003",
+          "address_id": "ASAMPLE0003",
+          "full_address": "695 Tanglewood Dr, La Fayette, GA 30728",
+          "details_url": "/v3/property/RSAMPLE0003"
+        }
+      ]
+    }
+  }
+}
+```
+
+Add `fips` to name the county up front, or retry with the `property_id` of the candidate you want.
+
+## Billing
+
+| Status | Billable |
+| ------ | -------- |
+| `200`  | Yes      |
+| `400`  | No       |
+| `404`  | No       |
+| `409`  | No       |
+
+Only an answer bills. A property you cannot find, and a parcel number that needs disambiguating, both cost nothing — so resolving a `409` takes two requests and bills one. See [Billing](/references/billing).

@@ -6,9 +6,18 @@ export const INTERNAL_TAGS = ["Internal Ledger"];
 
 export const EXCLUDED_TAGS = [...DEPRECATED_TAGS, ...INTERNAL_TAGS];
 
+// Superseded by a later version, so the References index stops offering it
+// while its pages keep being generated. A customer still on the version
+// reaches them by their published URL, and they track the spec rather than
+// freezing. Excluding a tag outright deletes its directory instead.
+export const UNLISTED_TAGS = ["Property V2"];
+
 const TAG_DISPLAY_NAMES: Record<string, string> = {
   "Person V2": "Person",
-  "Property V2": "Property",
+  // Property V3 is the current version, so it takes the plain name and V2
+  // carries its version in the label.
+  "Property V3": "Property",
+  "Property V2": "Property (V2)",
 };
 
 export function slugify(text: string): string {

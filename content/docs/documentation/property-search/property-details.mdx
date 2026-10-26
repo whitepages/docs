@@ -1,0 +1,193 @@
+---
+related:
+  - /references/migration/property-v2-to-v3
+  - /documentation/property-search
+  - /documentation/property-search/search-by-apn
+  - /references/billing
+  - /references/property-v3/get_property_by_id_v3
+title: Property Details
+description: Pull the full record for a property by property ID, address ID, or parcel number
+lifecycle: current
+topic: property
+keywords:
+  - "property details"
+  - "property by id"
+  - "address id lookup"
+  - "full property record"
+---
+
+`GET /v3/property/{identifier}` returns everything on record for one property: physical characteristics, tax assessment, ownership, mortgage history, and current residents.
+
+<Callout type="info" title="Property details, not owner details">
+  Ownership arrives in the `ownership_info` block, with no report on how
+  complete it is or on which parcel answered. When the owner is the question,
+  ask for the owners instead through [Find the
+  Owner](/documentation/property-search/find-the-owner).
+</Callout>
+
+This is the only call that populates `assessed_info` and
+`ownership_info.mortgages`. A search leaves both `null`.
+
+## Three ways to name a property
+
+The identifier's shape selects the lookup. Whitepages identifiers are 11 characters; anything else is read as a parcel number.
+
+| Identifier               | Example       | Resolves to                            |
+| ------------------------ | ------------- | -------------------------------------- |
+| Property ID (`R` prefix) | `RSAMPLE0001` | One property, or `404`                 |
+| Address ID (`A` prefix)  | `ASAMPLE0001` | One property, or `404`                 |
+| Parcel number            | `197500-0015` | One property, or `409` with candidates |
+
+```bash title="By property ID"
+curl 'https://api.whitepages.com/v3/property/RSAMPLE0001' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+```bash title="By parcel number"
+curl 'https://api.whitepages.com/v3/property/197500-0015' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+<Callout type="warn" title="Percent-encode a parcel number">
+  A parcel number sits in the URL path, so any character reserved in a path — a
+  slash above all — must be percent-encoded. `0342/021` becomes `0342%2F021`.
+</Callout>
+
+## Looking up address IDs you already have
+
+Person records, property search results, and event payloads all carry address IDs. Pass one straight to this endpoint to get the property behind it.
+
+Not every address has a property record, so some of these lookups return `404`. Because `404` is never billed here, you can try any address ID you encounter without risking a charge for the misses.
+
+## The response
+
+```json title="Response"
+{
+  "result": {
+    "property_id": "RSAMPLE0001",
+    "address_id": "ASAMPLE0001",
+    "apn": "197500-0015",
+    "property_address": {
+      "full_address": "123 Main Street, Seattle, WA 98101",
+      "line1": "123 Main Street",
+      "city": "Seattle",
+      "state": "WA",
+      "zip": "98101",
+      "house": "123",
+      "street": "Main",
+      "street_type": "Street",
+      "county": "King"
+    },
+    "mailing_address": null,
+    "geolocation": { "lat": 47.60621, "lng": -122.33207 },
+    "property_purpose": "SingleFamily",
+    "owner_occupied": "OwnerOccupied",
+    "is_vacant": false,
+    "year_built": 1947,
+    "effective_year_built": 1998,
+    "living_sqft": 2140,
+    "lot_sqft": 5000,
+    "stories": 2,
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "build_quality": "Average",
+    "ownership_info": {
+      "owner_type": "Individual",
+      "person_owners": [
+        {
+          "id": "PSAMPLE0001",
+          "name": "John Smith",
+          "age": 54,
+          "current_addresses": [
+            {
+              "address_id": "ASAMPLE0001",
+              "full_address": "123 Main Street, Seattle, WA 98101",
+              "line1": "123 Main Street",
+              "city": "Seattle",
+              "state": "WA",
+              "zip": "98101"
+            }
+          ],
+          "phones": [
+            { "number": "(206) 555-0142", "type": "mobile", "score": 99 }
+          ],
+          "emails": [{ "email": "j.smith@example.com", "score": 99 }],
+          "company_name": null,
+          "job_title": null,
+          "result_metadata": {
+            "details_url": "/v2/person/PSAMPLE0001",
+            "phones": { "displayed": 1, "additional": 3 },
+            "emails": { "displayed": 1, "additional": 2 }
+          }
+        }
+      ],
+      "business_owners": [],
+      "sale_date": "2016-04-22",
+      "last_sale_amount": 712000,
+      "mortgages": [
+        {
+          "amount": 560000,
+          "date": "2016-04-22",
+          "due_date": "2046-04-22",
+          "term": 30,
+          "rate": 0.0375,
+          "rate_type": "Fixed"
+        }
+      ]
+    },
+    "residents": [
+      {
+        "id": "PSAMPLE0001",
+        "name": "John Smith",
+        "age": 54,
+        "current_addresses": [
+          {
+            "address_id": "ASAMPLE0001",
+            "full_address": "123 Main Street, Seattle, WA 98101",
+            "line1": "123 Main Street",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": "98101"
+          }
+        ],
+        "phones": [
+          { "number": "(206) 555-0142", "type": "mobile", "score": 99 }
+        ],
+        "emails": [{ "email": "j.smith@example.com", "score": 99 }],
+        "company_name": null,
+        "job_title": null,
+        "result_metadata": {
+          "details_url": "/v2/person/PSAMPLE0001",
+          "phones": { "displayed": 1, "additional": 3 },
+          "emails": { "displayed": 1, "additional": 2 }
+        }
+      }
+    ],
+    "assessed_info": {
+      "market_value": 835000,
+      "assessed_value": 790000,
+      "property_tax_amount": 8420,
+      "property_tax_percent": 1.07
+    }
+  }
+}
+```
+
+A field with no value on record comes back `null`. County assessors record different things, so expect gaps that vary by county rather than a uniform record everywhere.
+
+<Callout type="info" title="No match fields here">
+  `match_type` and `confidence_score` do not appear on this response. Both
+  compare a returned property against an address you supplied, and naming a
+  property by its identifier supplies none. See [Match Type and
+  Confidence](/documentation/property-search/match-confidence).
+</Callout>
+
+## Billing
+
+| Status | Billable |
+| ------ | -------- |
+| `200`  | Yes      |
+| `404`  | No       |
+| `409`  | No       |
+
+Only a record bills. Misses and parcel-number conflicts are free. See [Billing](/references/billing).

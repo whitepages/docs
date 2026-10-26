@@ -13,6 +13,7 @@ const DIRECTORY_TOPICS: Record<string, Topic> = {
   // person topic rather than a facet value of its own.
   "phone-v2": "person",
   "property-v2": "property",
+  "property-v3": "property",
   events: "deed-events",
   webhooks: "webhooks",
   account: "account-billing",
@@ -51,6 +52,25 @@ const FILE_KEYWORDS: Record<string, string[]> = {
   "property-v2/get_property_by_id_v2.mdx": [
     "property by id",
     "property details",
+  ],
+  "property-v3/search_properties_v3.mdx": [
+    "property search",
+    "properties at an address",
+    "search by apn",
+    "parcel number",
+    "properties near a location",
+  ],
+  "property-v3/get_property_owners_v3.mdx": [
+    "who owns this property",
+    "property owner",
+    "find the owner",
+    "parcel resolution",
+  ],
+  "property-v3/get_property_by_id_v3.mdx": [
+    "property by id",
+    "property details",
+    "address id lookup",
+    "property by parcel number",
   ],
   "events/search_deed_events.mdx": [
     "deed events",
@@ -121,6 +141,26 @@ const FILE_RELATED: Record<string, string[]> = {
     "/documentation/agentic-guidance/entity-shapes",
     "/documentation/property-search",
     "/references/authentication",
+  ],
+  "property-v3/search_properties_v3.mdx": [
+    "/documentation/property-search",
+    "/documentation/property-search/find-sets-of-properties",
+    "/documentation/property-search/search-by-apn",
+    "/references/migration/property-v2-to-v3",
+    "/references/billing",
+  ],
+  "property-v3/get_property_owners_v3.mdx": [
+    "/documentation/property-search/find-the-owner",
+    "/documentation/property-search",
+    "/documentation/agentic-guidance/entity-shapes",
+    "/references/migration/property-v2-to-v3",
+    "/references/billing",
+  ],
+  "property-v3/get_property_by_id_v3.mdx": [
+    "/documentation/property-search/property-details",
+    "/documentation/property-search",
+    "/references/migration/property-v2-to-v3",
+    "/references/billing",
   ],
   "events/get_event.mdx": [
     "/documentation/events/get-event",

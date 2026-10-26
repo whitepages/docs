@@ -1,0 +1,56 @@
+---
+related:
+  - /references/migration/property-v2-to-v3
+  - /documentation/property-search
+  - /documentation/property-search/find-the-owner
+  - /documentation/person-search/confidence-scores
+  - /references/property-v3/search_properties_v3
+title: Match Type and Confidence
+description: What match_type and confidence_score describe, and the questions they do not answer
+lifecycle: current
+topic: property
+keywords:
+  - "match type"
+  - "confidence score"
+  - "exact match"
+  - "how good is this match"
+---
+
+A property search returns results ranked by how well each one answers your query. Three fields describe that ranking, and each measures something different.
+
+| Field              | Describes                                                     |
+| ------------------ | ------------------------------------------------------------- |
+| `match_score`      | How strongly the property ranked against the whole query      |
+| `match_type`       | How the returned address compares to the address you supplied |
+| `confidence_score` | Strength of that address comparison, 0–100                    |
+| `distance_miles`   | Distance from the center point of a radius search             |
+
+## What the match fields compare
+
+`match_type` and `confidence_score` compare the address you supplied against the address on the returned property. Nothing else.
+
+Both are `null` when there is no comparison to make — either side can be missing an address. A lookup by identifier supplies no input address, and a property can reach the dataset without a standardized one. **Null means not assessed.** It never means a poor match, and a missing address is never reported as a weak one.
+
+## What they do not tell you
+
+### Whether the parcel was the only candidate
+
+Several parcels can share one street address. A parcel chosen from among three still matches the address you supplied exactly, so `match_type: "exact"` with `confidence_score: 100` describes a perfect address match and says nothing about whether other parcels carry that address.
+
+`result_metadata.parcel_resolution` on the owners endpoint is what answers that. See [Find the Owner](/documentation/property-search/find-the-owner#which-parcel-answered).
+
+### Whether the ownership data is right
+
+An exact match says the response concerns the property you asked about. It makes no claim about whether the attached owners are accurate, complete, or current. Ownership is a separate claim resting on separate evidence — county recorder filings, which lag real transfers by weeks or months.
+
+## Strict matching
+
+`strict_match=true` drops any result the API cannot verify against your address. A property with no standardized address can never be verified, so it never survives strict matching, whatever else it has on record.
+
+This is the trade. Strict matching gives you results you can trust to be the address you asked for, at the cost of properties whose records are too thin to confirm. Leave it off when you would rather see a sparse record than nothing.
+
+<Callout type="info" title="Person confidence is a different scale">
+  Person records carry their own scores measuring confidence of association
+  between a person and a phone or email. See [Confidence
+  Scores](/documentation/person-search/confidence-scores).
+</Callout>
