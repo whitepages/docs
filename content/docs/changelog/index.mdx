@@ -9,6 +9,155 @@ description: Notable changes to the Whitepages Pro API, newest first.
 
 ---
 
+## October 29, 2026
+
+### New namespace: `/v3/property`
+
+Property has a third version. `GET /v3/property/` searches, `GET
+/v3/property/{id}` returns one record, and `GET /v3/property/owners`
+answers ownership on its own. V2 is unchanged and stays available; the
+[Property V2 → V3](/references/migration/property-v2-to-v3) guide maps
+every field, and the [Breaking Changes
+Policy](/references/versioning/breaking-changes-policy) says how long V2
+remains.
+
+**Search returns the property rather than a summary.** V2 returned one
+property in a `result` wrapper carrying enough to identify it. V3
+returns a `results` array where each entry carries the physical
+characteristics, the owners and the residents in full:
+
+```json title="GET /v3/property/?street=1301+5th+Ave&city=Seattle&state_code=WA"
+{
+  "results": [
+    {
+      "property_id": "RSAMPLE0001",
+      "property_address": { "...": "..." },
+      "property_purpose": "SingleFamily",
+      "owner_occupied": "OwnerOccupied",
+      "year_built": 1947,
+      "living_sqft": 2140,
+      "lot_sqft": 5000,
+      "stories": 2,
+      "assessed_info": null,
+      "ownership_info": { "...": "..." },
+      "residents": [],
+      "match_score": 94,
+      "match_type": "exact",
+      "confidence_score": 100,
+      "result_metadata": {
+        "details_url": "/v3/property/RSAMPLE0001",
+        "...": "..."
+      }
+    }
+  ],
+  "metadata": { "result_count": 1, "page": 1, "page_size": 10 }
+}
+```
+
+`year_built`, `effective_year_built`, `living_sqft`, `lot_sqft`,
+`ground_floor_sqft`, `basement_sqft`, `basement_type`, `stories`,
+`bedrooms`, `bathrooms`, `has_pool`, `garage_type`, `roof_covering`,
+`heating_fuel`, `condition` and `build_quality` all arrive with the
+search result, so reading them no longer costs a second call.
+
+Two blocks are the exception. `assessed_info` and
+`ownership_info.mortgages` come back `null` on every search result and
+are populated only by a details lookup. Follow `result_metadata.details_url`
+for assessed value, tax, or mortgage history.
+
+**A person owner is a whole person.** Owners and residents arrive in the
+shape the person endpoints return — name, age, current addresses,
+phones, emails, employment and a `result_metadata` block — so contact
+details need no second call either. Every field is present on every
+record, carrying `null` where the data holds nothing.
+
+### New endpoint: `GET /v3/property/owners`
+
+Ownership is its own question, and now its own endpoint. Name the
+property by Whitepages identifier, address or parcel number, and the
+answer is that property's owners without the rest of the record.
+
+```json title="Response"
+{
+  "result": {
+    "owner_type": "Individual",
+    "person_owners": [{ "name": "John Smith", "...": "..." }],
+    "business_owners": []
+  },
+  "result_metadata": {
+    "person_owners": { "displayed": 1, "complete": true },
+    "parcel_resolution": { "...": "..." }
+  }
+}
+```
+
+**Owners are split by entity class.** `person_owners` and
+`business_owners` never share a list, and `owner_type` names the classes
+present. A class a later data release adds appears as a new field rather
+than changing an existing one.
+
+**The lists report completeness rather than a count.** Check
+`result_metadata.person_owners.complete` before reading one as the whole
+ownership record.
+
+**One address can carry several parcels**, as a condominium or a
+commercial building does. Such an address resolves to a single parcel,
+and `result_metadata.parcel_resolution` reports which one answered and
+whether the choice was forced. See [Find the
+Owner](/documentation/property-search/find-the-owner).
+
+### Parcel numbers, radius search and paging
+
+**`apn` works as a search parameter and as a path identifier.** A parcel
+number is unique within a county rather than nationally, so one naming
+several properties comes back as ordinary results from search, and as a
+`409` listing the candidates on the details and owners endpoints. `fips`
+names the county and narrows an address as readily as a parcel number.
+See [Search by Parcel
+Number](/documentation/property-search/search-by-apn).
+
+**`lat`, `lng` and `radius` search around a point**, up to 50 miles and
+defaulting to 1, ordering results nearest first with `distance_miles` on
+each. See [Find Sets of
+Properties](/documentation/property-search/find-sets-of-properties).
+
+**`page` and `page_size` page the results**, up to 25 per page, with
+`result_count` beside them. `result_count` saturates at 10,000; results
+past it are not reachable by paging.
+
+### A response that carries no property is free
+
+In V2, a `404` from `GET /v2/property/` is billed. In V3, every endpoint
+bills on `200` and nothing else:
+
+| Response                       | V2                 | V3     |
+| ------------------------------ | ------------------ | ------ |
+| `200` with results             | Billed             | Billed |
+| `404`, nothing matched         | Billed on search   | Free   |
+| `409`, parcel number ambiguous | _(not applicable)_ | Free   |
+
+Speculative lookups become cheap. You can probe an address you are
+unsure about, or resolve a parcel number through a `409`, and pay only
+for the call that returns a property. A V3 search matching nothing
+returns `404` carrying `results: []` and a `metadata` block, the same
+shape a match uses, so one parser reads both. See
+[Billing](/references/billing).
+
+### Match fields moved to the top level
+
+`match_type` and `confidence_score` sit on each result rather than
+inside `property_metadata`, and each result adds `match_score`, a
+ranking of the result against the whole query. Both match fields are
+`null` when there is no address comparison to make, and absent from the
+details response, which supplies no input address. Null means not
+assessed, not a weak match. See [Match
+Confidence](/documentation/property-search/match-confidence).
+
+Start at [Property Search](/documentation/property-search) for the
+namespace as a whole.
+
+---
+
 ## October 1, 2026
 
 ### New endpoint: `GET /v2/phone/{phone}`

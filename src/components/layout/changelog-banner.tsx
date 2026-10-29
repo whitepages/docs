@@ -13,12 +13,13 @@ export function ChangelogBanner() {
 
   return (
     <Banner
-      id="changelog-oct-2026"
+      id="changelog-property-v3"
       variant="normal"
       className="!bg-fd-primary !text-fd-primary-foreground"
     >
       <Link href="/changelog">
-        New: look up a phone number on its own endpoint, businesses included.{" "}
+        New: property V3 returns the whole record, owners on their own endpoint,
+        and no charge for a miss.{" "}
         <span className="font-semibold underline underline-offset-2">
           See what&apos;s changed &rarr;
         </span>
