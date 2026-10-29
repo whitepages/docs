@@ -78,6 +78,7 @@ All notable changes to this project will be documented in this file.
 - Reorder the left rail by usage priority by @lhagenWP
 - Add a Phone Search guide, separate from Reverse Phone Lookup by @lhagenWP
 - Add missing email, radius, and pagination parameters by @lhagenWP in #68
+- Document the V3 property namespace by @lhagenWP in #70
 
 ## Features
 
@@ -209,6 +210,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
