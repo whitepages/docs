@@ -18,7 +18,9 @@
  * and bare `#anchor` fragments untouched.
  */
 
-export const SITE_BASE_URL = "https://api.whitepages.com/docs";
+import { DOCS_BASE_PATH } from "./docs-prefix.mjs";
+
+export const SITE_BASE_URL = `https://api.whitepages.com${DOCS_BASE_PATH}`;
 
 export function absoluteDocsUrl(path: string): string {
   return path === "/" ? SITE_BASE_URL : `${SITE_BASE_URL}${path}`;

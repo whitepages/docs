@@ -1,4 +1,5 @@
 import { parse as parseYaml } from "yaml";
+import { DOCS_BASE_PATH } from "../../../src/lib/docs-prefix.mjs";
 import type {
   Catalog,
   CatalogEntry,
@@ -11,7 +12,7 @@ import type {
   Topic,
 } from "./corpus.types";
 
-export const CATALOG_VERSION = 3;
+export const CATALOG_VERSION = 4;
 export const RESERVED_IDS: readonly string[] = ["everything", "openapi"];
 export const NAV_SHELL_SLUGS: readonly string[] = [
   "",
@@ -502,7 +503,10 @@ export function parseDoc(relativePath: string, raw: string): ParsedDoc {
   return {
     id,
     slug,
-    entry,
+    entry: {
+      ...entry,
+      page_url: `${DOCS_BASE_PATH}/${slug}`.replace(/\/$/, ""),
+    },
     body: toBody(entry.title, cleanedBody),
     related: parseRelated(data),
   };

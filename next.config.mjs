@@ -1,4 +1,5 @@
 import { createMDX } from "fumadocs-mdx/next";
+import { DOCS_BASE_PATH } from "./src/lib/docs-prefix.mjs";
 
 const withMDX = createMDX();
 
@@ -6,7 +7,7 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   productionBrowserSourceMaps: true,
-  basePath: "/docs",
+  basePath: DOCS_BASE_PATH,
   transpilePackages: [
     "shiki",
     "@shikijs/core",

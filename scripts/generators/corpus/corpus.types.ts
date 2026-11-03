@@ -21,6 +21,7 @@ export interface EndpointFacet {
 export interface CatalogEntry {
   readonly id: string;
   readonly title: string;
+  readonly page_url?: string;
   readonly description: string;
   readonly kind: DocKind;
   readonly lifecycle: Lifecycle;

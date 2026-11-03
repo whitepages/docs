@@ -54,6 +54,61 @@ bun run generate:openapi
 
 This fetches the latest spec from `https://api.whitepages.com/openapi.json` and generates the MDX files.
 
+## Documentation assistant preview
+
+The bubble is hidden by default. For controlled testing, set
+`NEXT_PUBLIC_DOCS_ASSISTANT_ENABLED=true` and `NEXT_PUBLIC_DOCS_ASSISTANT_URL` at
+build time, then add `?docChat=1` to a docs page URL (or `&docChat=1` if it already
+has a query string). The card starts minimized; click the bubble to open Doc.
+Missing or invalid preview configuration leaves the widget disabled. The gateway
+URL must use HTTPS, or loopback HTTP for local development.
+
+Only the exact value `1` enables the preview. Ordinary URLs mount no chat widget
+and make no assistant catalog or turn requests. Removing the parameter hides the
+widget and disconnects any active browser stream, but keeps the saved conversation
+pointer for the next preview-enabled visit.
+This is a preview visibility switch, not authentication. Setting the frontend flag
+false and rebuilding removes the widget even with the parameter present; the
+gateway has an independent disable switch.
+
+The panel sends a canonical page ID/path and literal question, with available
+Amplitude user/session IDs in separate metadata fields. It does not send the
+browser-held API key, cookies, or page inputs. Missing analytics do not block
+chat. Minimizing preserves the current conversation and lets an active response
+continue. Enter sends; Shift+Enter inserts a newline. Starter questions send their
+literal text when clicked.
+
+The browser remembers one conversation ID in localStorage, scoped to the configured
+gateway origin. It stores no transcript, API key, analytics or browser-flow ID.
+On reload or a later preview-enabled visit, the gateway recalls the visible history
+without generating another answer. Sending is disabled until restoration finishes;
+transient errors offer retry without forgetting the ID. Unknown or expired IDs
+reset to a fresh welcome. New conversation clears the local pointer, not server
+history. Blocked storage leaves chat usable for the current page and shows a notice.
+
+The ID is a bearer capability available to scripts on the docs origin; localStorage
+is not an account or authentication boundary. Read-only recall does not renew
+server retention. The initial conversation cannot be remembered until the gateway
+returns its ID on completion. Recovery of an interrupted first response, multiple
+conversations and browser-action restoration remain subsequent work.
+
+`just validate` checks generation, types, formatting, tests, and dependency pins.
+For a self-contained browser smoke against a local fixture of the assistant's
+public API:
+
+```sh
+just e2e
+```
+
+Install Playwright Chromium first, or supply an installed browser executable as
+the argument. The smoke checks the real documentation UI, streaming, recall,
+preview controls and mobile layout without an account, API key or live data call.
+It does not establish behavior of a deployed service or model quality.
+
+Corpus version 4 adds canonical, root-relative `page_url` fields. The browser
+identity catalog uses the same generator. Corpus consumers must support this
+version before loading the new output; older strict parsers reject the field.
+
 ## Project Structure
 
 ```
