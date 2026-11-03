@@ -4,6 +4,8 @@
 # generated content
 .source
 /corpus
+/public/assistant-catalog.json
+/*.profraw
 
 # nix
 /result

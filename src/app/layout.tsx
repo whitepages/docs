@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Amplitude } from "@/lib/amplitude";
 import { GoogleTagManager } from "@/lib/gtm";
 import { CookieConsentBanner } from "@/components/cookie-consent-banner";
+import { DocsAssistant } from "@/components/docs-assistant/panel";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -57,6 +58,7 @@ export default function Layout({ children }: LayoutProps<"/">) {
           }}
         >
           {children}
+          <DocsAssistant />
         </RootProvider>
         <CookieConsentBanner />
       </body>

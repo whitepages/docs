@@ -4,6 +4,7 @@ coverage
 .claude
 .next
 .source
+/.surface/retrieval-v1/
 node_modules
 
 # Generated files

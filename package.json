@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "fumadocs-mdx && next build",
+    "build": "bun run scripts/generators/corpus/browser-catalog.generator.ts && fumadocs-mdx && next build",
     "dev": "next dev",
     "start": "next start",
     "types:check": "fumadocs-mdx && tsc --noEmit",
@@ -38,8 +38,10 @@
     "next-themes": "^0.4.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
+    "react-markdown": "^10.1.0",
     "scroll-into-view-if-needed": "^3.1.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.3.6"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
@@ -59,6 +61,7 @@
     "eslint-config-next": "16.0.7",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "playwright": "^1.56.1",
     "postcss": "^8.5.6",
     "prettier": "3.7.4",
     "tailwindcss": "^4.3.3",
