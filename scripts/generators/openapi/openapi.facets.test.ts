@@ -18,6 +18,18 @@ describe("resolveFacets", () => {
     );
   });
 
+  test("marks the property-v2 pages deprecated and leaves property-v3 current", () => {
+    expect(resolveFacets("property-v2/search_property_v2.mdx").lifecycle).toBe(
+      "deprecated",
+    );
+    expect(
+      resolveFacets("property-v2/get_property_by_id_v2.mdx").lifecycle,
+    ).toBe("deprecated");
+    expect(
+      resolveFacets("property-v3/search_properties_v3.mdx").lifecycle,
+    ).toBe("current");
+  });
+
   test("maps the account directory to the account-billing topic", () => {
     expect(resolveFacets("account/get_account_usage_data.mdx").topic).toBe(
       "account-billing",
