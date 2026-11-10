@@ -19,6 +19,11 @@ const DIRECTORY_TOPICS: Record<string, Topic> = {
   account: "account-billing",
 };
 
+const DEPRECATED_FILES: ReadonlySet<string> = new Set([
+  "property-v2/search_property_v2.mdx",
+  "property-v2/get_property_by_id_v2.mdx",
+]);
+
 const FILE_KEYWORDS: Record<string, string[]> = {
   "phone-v2/get_phone_by_number_v2.mdx": [
     "reverse phone lookup",
@@ -130,6 +135,8 @@ const FILE_RELATED: Record<string, string[]> = {
     "/references/authentication",
   ],
   "property-v2/search_property_v2.mdx": [
+    "/references/property-v3/search_properties_v3",
+    "/references/migration/property-v2-to-v3",
     "/documentation/property-search",
     "/documentation/agentic-guidance/capability-map",
     "/references/property-v2/get_property_by_id_v2",
@@ -137,6 +144,8 @@ const FILE_RELATED: Record<string, string[]> = {
     "/references/rate-limits",
   ],
   "property-v2/get_property_by_id_v2.mdx": [
+    "/references/property-v3/get_property_by_id_v3",
+    "/references/migration/property-v2-to-v3",
     "/references/property-v2/search_property_v2",
     "/documentation/agentic-guidance/entity-shapes",
     "/documentation/property-search",
@@ -234,7 +243,7 @@ function topicForPath(filePath: string): Topic | undefined {
 
 export function resolveFacets(filePath: string): Facets {
   return {
-    lifecycle: "current",
+    lifecycle: DEPRECATED_FILES.has(filePath) ? "deprecated" : "current",
     topic: topicForPath(filePath),
     keywords: FILE_KEYWORDS[filePath] ?? [],
     related: FILE_RELATED[filePath] ?? [],

@@ -16,13 +16,13 @@ keywords:
   - "upgrade property api"
 ---
 
-V3 reorganizes the property namespace around three endpoints instead of two, returns the full property record from search, and stops charging for responses that carry no property.
+V3 reorganizes the property namespace around three endpoints instead of two, returns the property's characteristics, owners and residents from search, and stops charging for responses that carry no property.
 
 ## TL;DR
 
 - Swap `/v2/property/` for `/v3/property/`. Address parameters keep their names.
 - Read `results[]` instead of `result`. Search now returns a paginated list.
-- Drop the second call to `/v2/property/{id}`. A search result already carries characteristics, assessments, and sale history.
+- Drop the second call to `/v2/property/{id}` when you only need characteristics, owners or residents. A search result carries those. Assessments and mortgages still need `GET /v3/property/{id}`.
 - Move `property_metadata.match_type` and `property_metadata.confidence_score` to the top level of each result.
 - Use `GET /v3/property/owners` where you only need ownership.
 - Expect `404` and `409` to cost nothing.
@@ -212,7 +212,7 @@ curl 'https://api.whitepages.com/v3/property/owners?street=123+Main+St&city=Seat
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-### Drop the second call for full details
+### Drop the second call when you only need characteristics
 
 ```bash title="V2 — two requests, two charges"
 curl 'https://api.whitepages.com/v2/property/?street=123+Main+St&city=Seattle' \
@@ -221,8 +221,15 @@ curl 'https://api.whitepages.com/v2/property/RSAMPLE0001' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
-```bash title="V3 — one request"
+```bash title="V3 — one request for characteristics, owners and residents"
 curl 'https://api.whitepages.com/v3/property/?street=123+Main+St&city=Seattle' \
+  --header 'X-Api-Key: YOUR_API_KEY'
+```
+
+A search result leaves `assessed_info` and `ownership_info.mortgages` as `null`. For assessed value, tax or mortgage history, keep the second call and point it at V3:
+
+```bash title="V3 — details for assessments and mortgages"
+curl 'https://api.whitepages.com/v3/property/RSAMPLE0001' \
   --header 'X-Api-Key: YOUR_API_KEY'
 ```
 
