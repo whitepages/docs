@@ -6,9 +6,12 @@ import { parseCatalog } from "../../src/lib/docs-assistant";
 import { createGatewayFixture } from "./docs-assistant-gateway";
 import {
   verifyHistory,
+  verifySeparatedHistory,
   verifyRecallFailures,
   verifyBlockedStorage,
 } from "./docs-assistant-history";
+import { verifyVisibility } from "./docs-assistant-visibility";
+import { verifyConversationLocks } from "./docs-assistant-locks";
 
 const browserExecutable = process.argv[2] || undefined;
 const logPrefix = join(tmpdir(), `docs-assistant-e2e-${crypto.randomUUID()}`);
@@ -222,11 +225,21 @@ try {
   await page.getByTestId("docs-assistant-starter-getting-started").click();
   await until(async () => await question.isEnabled());
   assert.equal(turns.at(-1)?.message, "How do I get started with the API?");
+  assert.equal(turns.at(-1)?.conversation_id, null);
+  assert.notEqual(fixture.latestConversation(), fixture.conversation);
+  assert.notEqual(turns.at(-1)?.browser_flow_id, turns[0].browser_flow_id);
   assert.equal(await page.getByTestId("docs-assistant-customer").count(), 1);
   assert.equal(await page.getByTestId("docs-assistant-welcome").count(), 0);
+  const secondConversation = fixture.latestConversation();
+  await verifySeparatedHistory(page, until, {
+    storageKey,
+    firstConversation: fixture.conversation,
+    secondConversation,
+  });
+  await verifyVisibility(page, until, storageKey, secondConversation);
   await verifyRecallFailures(page, until, {
     storageKey,
-    conversation: fixture.latestConversation(),
+    conversation: secondConversation,
     setStatus: fixture.setRecallStatus,
     recalls: () => fixture.recalls.length,
   });
@@ -247,6 +260,12 @@ try {
     (await page.getByTestId("docs-assistant-failure").textContent())?.includes(
       "could not complete",
     ),
+  );
+  await verifyConversationLocks(
+    browser,
+    until,
+    siteOrigin,
+    fixture.server.url.origin,
   );
   site.kill();
   await site.exited;
