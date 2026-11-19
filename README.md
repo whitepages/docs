@@ -85,19 +85,33 @@ chat. Minimizing preserves the current conversation and lets an active response
 continue. Enter sends; Shift+Enter inserts a newline. Starter questions send their
 literal text when clicked.
 
-The browser remembers one conversation ID in localStorage, scoped to the configured
-gateway origin. It stores no transcript, API key, analytics or browser-flow ID.
-On reload or a later preview-enabled visit, the gateway recalls the visible history
+The browser remembers a versioned conversation index in localStorage, scoped to the
+configured gateway origin: conversation IDs, active selection, and nullable
+last-interaction epochs only. It stores no question/title text, transcript, API key,
+analytics or browser-flow ID. Existing v1 single-ID storage migrates without
+inventing activity time; a failed migration leaves its valid pointer intact.
+On reload or a later preview-enabled visit, the gateway recalls the active history
 without generating another answer. Sending is disabled until restoration finishes;
 transient errors offer retry without forgetting the ID. Unknown or expired IDs
-reset to a fresh welcome. New conversation clears the local pointer, not server
-history. Blocked storage leaves chat usable for the current page and shows a notice.
+remove only that reference and reset to a fresh welcome. New conversation clears
+the active selection, not older references or server history. There is no history
+picker yet. Blocked storage leaves chat usable for the current page and shows a
+notice; unsaved changes may revert on reload. Index mutations, including migration,
+use an exclusive, gateway-scoped Web Lock shared by tabs on the docs origin. Lock
+acquisition waits at most two seconds; unavailable/rejected locking disables writes,
+not reading existing IDs or page-local chat. Pending writes are canceled when the
+panel unmounts, and sending/New remain disabled until the current operation settles.
 
 The ID is a bearer capability available to scripts on the docs origin; localStorage
 is not an account or authentication boundary. Read-only recall does not renew
-server retention. The initial conversation cannot be remembered until the gateway
-returns its ID on completion. Recovery of an interrupted first response, multiple
-conversations and browser-action restoration remain subsequent work.
+server retention. The browser hides known inactive conversations and recalled
+content older than 30 days, using explicit submission times and server record
+timestamps, never the time of recall. Unknown migrated activity remains eligible
+for recall until server records supply a time. Client display filtering does not
+change server retention; server expiry can make history unavailable earlier.
+The initial conversation cannot be remembered until the gateway returns its ID on
+completion. History selection UI, grants, interrupted-request recovery and
+browser-action restoration remain subsequent work.
 
 `just validate` checks generation, types, formatting, tests, and dependency pins.
 For a self-contained browser smoke against a local fixture of the assistant's

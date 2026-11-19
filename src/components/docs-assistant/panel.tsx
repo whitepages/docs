@@ -16,8 +16,15 @@ import { docsAssistantConfig } from "@/lib/docs-assistant-config";
 import { useConversationRecall } from "./use-recall";
 import {
   browserConversationStorage,
+  readConversationIndex,
   saveConversation,
 } from "@/lib/docs-assistant-storage";
+import {
+  conversationVisible,
+  latestInteractionTime,
+  latestRecordTime,
+  visibleRecallRecords,
+} from "@/lib/docs-assistant-history";
 import amplitude from "@/lib/amplitude";
 import { DOCS_BASE_PATH } from "@/lib/docs-prefix.mjs";
 import {
@@ -80,33 +87,65 @@ function Panel({ gateway }: { gateway: string }): JSX.Element {
   const [contextUnavailable, setContextUnavailable] = useState(false);
   const [storageUnavailable, setStorageUnavailable] = useState(false);
   const remember = useCallback(
-    (id: string) => {
-      setConversation(id);
-      setStorageUnavailable(
-        !saveConversation(browserConversationStorage(), gateway, id),
+    async (
+      id: string,
+      interaction: number | null,
+      signal: AbortSignal,
+    ): Promise<boolean> => {
+      if (signal.aborted) return false;
+      const storage = browserConversationStorage();
+      const existing = readConversationIndex(
+        storage,
+        gateway,
+      ).conversations.find((entry) => entry.id === id);
+      const lastInteractionAt = latestInteractionTime(
+        existing?.lastInteractionAt ?? null,
+        interaction,
       );
+      const visible = conversationVisible(lastInteractionAt, Date.now());
+      setConversation(visible ? id : null);
+      const saved = await saveConversation(storage, gateway, id, interaction, {
+        signal,
+      });
+      if (!signal.aborted) setStorageUnavailable(!saved);
+      return visible;
     },
     [gateway],
   );
   const applyRecall = useCallback(
-    (recalled: ReturnType<typeof parseRecall>) => {
-      remember(recalled.conversation_id);
+    async (
+      recalled: ReturnType<typeof parseRecall>,
+      signal: AbortSignal,
+      interaction: number | null = null,
+    ): Promise<void> => {
+      const visible = await remember(
+        recalled.conversation_id,
+        latestInteractionTime(latestRecordTime(recalled.records), interaction),
+        signal,
+      );
+      if (signal.aborted) return;
       setBubbles(
-        recalled.records.map(({ id, role, content }) => ({
-          id,
-          role,
-          content,
-        })),
+        (visible ? visibleRecallRecords(recalled, Date.now()) : []).map(
+          ({ id, role, content }) => ({
+            id,
+            role,
+            content,
+          }),
+        ),
       );
       setFailure(
-        recalled.interrupted
+        visible && recalled.interrupted
           ? "The previous response was interrupted. Start a new conversation if it cannot continue."
           : null,
       );
     },
     [remember],
   );
-  const restoration = useConversationRecall(gateway, applyRecall);
+  const restoration = useConversationRecall(
+    gateway,
+    applyRecall,
+    setStorageUnavailable,
+  );
   const canSend = !busy && restoration.status === RecallStatus.Ready;
   const active = useRef<AbortController | null>(null);
   const transcript = useRef<HTMLDivElement | null>(null);
@@ -150,7 +189,8 @@ function Panel({ gateway }: { gateway: string }): JSX.Element {
   }, []);
 
   async function submit(literalMessage: string): Promise<void> {
-    if (!canSend || !literalMessage.trim()) return;
+    if (active.current || !canSend || !literalMessage.trim()) return;
+    const submittedAt = Date.now();
     const request = crypto.randomUUID();
     const browserFlow = flow ?? crypto.randomUUID();
     setFlow(browserFlow);
@@ -167,6 +207,9 @@ function Panel({ gateway }: { gateway: string }): JSX.Element {
       { id: request, role: "assistant", content: "" },
     ]);
     try {
+      if (conversation)
+        await remember(conversation, submittedAt, controller.signal);
+      if (controller.signal.aborted) return;
       const address = assistantDestination(gateway, "turns");
       const turn: BrowserTurn = {
         request_id: request,
@@ -193,51 +236,66 @@ function Panel({ gateway }: { gateway: string }): JSX.Element {
       if (response.headers.get("Content-Type")?.includes("application/json")) {
         const value: unknown = await response.json();
         const recalled = parseRecall(value);
-        applyRecall(recalled);
+        await applyRecall(recalled, controller.signal, submittedAt);
       } else {
-        await readEvents(response, (event) => {
-          switch (event.type) {
-            case AssistantEventType.AssistantText:
-              setBubbles((current) =>
-                current.map((bubble) =>
-                  bubble.id === request
-                    ? { ...bubble, content: bubble.content + event.content }
-                    : bubble,
-                ),
-              );
-              return;
-            case AssistantEventType.Activity:
-              setActivityLabel(assistantActivityLabel(event.activity));
-              return;
-            case AssistantEventType.Completed:
-              remember(event.conversation_id);
-              return;
-            case AssistantEventType.Failed:
-              setFailure(
-                "The assistant could not complete this response. Your previous messages may be retained; do not treat the partial answer as complete.",
-              );
-              return;
-            default:
-              return unexpectedAssistantState(event);
-          }
-        });
+        let completion: Promise<boolean> | null = null;
+        try {
+          await readEvents(response, (event) => {
+            if (controller.signal.aborted) return;
+            switch (event.type) {
+              case AssistantEventType.AssistantText:
+                setBubbles((current) =>
+                  current.map((bubble) =>
+                    bubble.id === request
+                      ? { ...bubble, content: bubble.content + event.content }
+                      : bubble,
+                  ),
+                );
+                return;
+              case AssistantEventType.Activity:
+                setActivityLabel(assistantActivityLabel(event.activity));
+                return;
+              case AssistantEventType.Completed:
+                completion = remember(
+                  event.conversation_id,
+                  submittedAt,
+                  controller.signal,
+                );
+                return;
+              case AssistantEventType.Failed:
+                setFailure(
+                  "The assistant could not complete this response. Your previous messages may be retained; do not treat the partial answer as complete.",
+                );
+                return;
+              default:
+                return unexpectedAssistantState(event);
+            }
+          });
+        } finally {
+          if (completion) await completion;
+        }
       }
     } catch {
-      setFailure(
-        "The assistant response was interrupted or unavailable. The documentation and manual examples still work.",
-      );
+      if (!controller.signal.aborted)
+        setFailure(
+          "The assistant response was interrupted or unavailable. The documentation and manual examples still work.",
+        );
     } finally {
-      setBusy(false);
-      setActivityLabel("");
-      active.current = null;
+      if (!controller.signal.aborted) {
+        setBusy(false);
+        setActivityLabel("");
+      }
+      if (active.current === controller) active.current = null;
     }
   }
 
-  function newConversation(): void {
-    if (busy || restoration.status === RecallStatus.Loading) return;
-    setStorageUnavailable(
-      !saveConversation(browserConversationStorage(), gateway, null),
-    );
+  async function newConversation(): Promise<void> {
+    if (active.current || busy || restoration.status === RecallStatus.Loading)
+      return;
+    const controller = new AbortController();
+    active.current = controller;
+    setBusy(true);
+    setActivityLabel("Starting a new conversation…");
     restoration.reset();
     setConversation(null);
     setFlow(crypto.randomUUID());
@@ -245,7 +303,22 @@ function Panel({ gateway }: { gateway: string }): JSX.Element {
     setFailure(null);
     setDraftMessage("");
     following.current = true;
-    composer.current?.focus();
+    const saved = await saveConversation(
+      browserConversationStorage(),
+      gateway,
+      null,
+      null,
+      { signal: controller.signal },
+    );
+    if (!controller.signal.aborted) {
+      setStorageUnavailable(!saved);
+      setBusy(false);
+      setActivityLabel("");
+      requestAnimationFrame(() => {
+        if (!controller.signal.aborted) composer.current?.focus();
+      });
+    }
+    if (active.current === controller) active.current = null;
   }
 
   return (

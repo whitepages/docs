@@ -10,23 +10,23 @@ import {
 import {
   browserConversationStorage,
   readConversation,
-  saveConversation,
+  forgetConversation,
+  migrateConversation,
 } from "@/lib/docs-assistant-storage";
 
 export function useConversationRecall(
   gateway: string,
-  onRecall: (recall: ReturnType<typeof parseRecall>) => void,
+  onRecall: (
+    recall: ReturnType<typeof parseRecall>,
+    signal: AbortSignal,
+  ) => Promise<void>,
+  onStorageChange: (unavailable: boolean) => void,
 ): { status: RecallStatus; retry: () => void; reset: () => void } {
   const [status, setStatus] = useState<RecallStatus>(RecallStatus.Loading);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     const storage = browserConversationStorage();
-    const conversation = readConversation(storage, gateway);
-    if (!conversation) {
-      setStatus(RecallStatus.Ready);
-      return;
-    }
     const controller = new AbortController();
     setStatus(RecallStatus.Loading);
     const timeout = setTimeout(() => {
@@ -34,8 +34,18 @@ export function useConversationRecall(
       controller.abort();
     }, 15_000);
 
-    async function restore(conversationId: string): Promise<void> {
+    async function restore(): Promise<void> {
       try {
+        const migrated = await migrateConversation(storage, gateway, {
+          signal: controller.signal,
+        });
+        if (controller.signal.aborted) return;
+        onStorageChange(!migrated);
+        const conversationId = readConversation(storage, gateway);
+        if (!conversationId) {
+          setStatus(RecallStatus.Ready);
+          return;
+        }
         const request: BrowserRecall = {
           conversation_id: conversationId,
           browser_flow_id: crypto.randomUUID(),
@@ -58,8 +68,14 @@ export function useConversationRecall(
         );
         if (controller.signal.aborted) return;
         if (response.status === 404) {
-          if (readConversation(storage, gateway) === conversationId)
-            saveConversation(storage, gateway, null);
+          const forgotten = await forgetConversation(
+            storage,
+            gateway,
+            conversationId,
+            { signal: controller.signal },
+          );
+          if (controller.signal.aborted) return;
+          onStorageChange(!forgotten);
         } else {
           if (!response.ok) throw new Error("Recall unavailable");
           const value: unknown = await response.json();
@@ -67,21 +83,21 @@ export function useConversationRecall(
           if (controller.signal.aborted) return;
           if (recalled.conversation_id !== conversationId)
             throw new Error("Recall identity mismatch");
-          onRecall(recalled);
+          await onRecall(recalled, controller.signal);
         }
-        setStatus(RecallStatus.Ready);
+        if (!controller.signal.aborted) setStatus(RecallStatus.Ready);
       } catch {
         if (!controller.signal.aborted) setStatus(RecallStatus.Failed);
       } finally {
         clearTimeout(timeout);
       }
     }
-    void restore(conversation);
+    void restore();
     return () => {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [gateway, onRecall, attempt]);
+  }, [gateway, onRecall, onStorageChange, attempt]);
 
   return {
     status,
