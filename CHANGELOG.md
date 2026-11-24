@@ -123,6 +123,7 @@ All notable changes to this project will be documented in this file.
 - Prefill API key in onboarding tester from ?token= URL param by @lhagenWP in #55
 - Refresh header logo and product name to Whitepages Pro API by @lhagenWP in #56
 - Add JSON-LD structured data to the docs layout by @lhagenWP
+- Add opt-in Doc chat with conversation recall by @trichardswp in #74
 
 ## Miscellaneous
 
@@ -212,6 +213,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
