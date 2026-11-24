@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - Patch fumadocs-openapi's invalid <div> nested in <p> by @lhagenWP
 - Bump fumadocs-core/ui/openapi to fix a hydration bug by @lhagenWP in #69
 - Accept generated operation keys in the docs corpus by @trichardswp in #75
+- Supply docs chat preview settings during builds by @trichardswp
 
 ## Documentation
 
@@ -125,6 +126,7 @@ All notable changes to this project will be documented in this file.
 - Refresh header logo and product name to Whitepages Pro API by @lhagenWP in #56
 - Add JSON-LD structured data to the docs layout by @lhagenWP
 - Add opt-in Doc chat with conversation recall by @trichardswp in #74
+- Retain isolated Doc conversation references by @trichardswp in #76
 
 ## Miscellaneous
 
@@ -214,6 +216,7 @@ All notable changes to this project will be documented in this file.
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - **references:** Regenerate from prod OpenAPI by @lhagenWP in #59
+- Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
 - Update changelog by @github-actions[bot]
