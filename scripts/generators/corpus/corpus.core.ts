@@ -48,7 +48,7 @@ const IMPORT_EXPORT_LINE =
 const MDX_COMMENT = /\{\/\*[\s\S]*?\*\/\}/g;
 const API_PAGE_BLOCK = /<APIPage[\s\S]*?\/>/g;
 const API_PAGE_OPERATION =
-  /path:\s*["']([^"']+)["']\s*,\s*method:\s*["']([^"']+)["']/;
+  /(?:"path"|'path'|path)\s*:\s*["']([^"']+)["']\s*,\s*(?:"method"|'method'|method)\s*:\s*["']([^"']+)["']/;
 const MARKDOWN_LINK = /\]\((\/[^)\s]+)\)/g;
 const JSX_HREF = /href=(\{?)["'](\/[^"'\s]+)["'](\}?)/g;
 
