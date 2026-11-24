@@ -63,6 +63,13 @@ has a query string). The card starts minimized; click the bubble to open Doc.
 Missing or invalid preview configuration leaves the widget disabled. The gateway
 URL must use HTTPS, or loopback HTTP for local development.
 
+Deployment and CI builds default these settings to `true` and
+`https://api.whitepages.com`. Repository variables with the same names override
+the defaults. Set `NEXT_PUBLIC_DOCS_ASSISTANT_ENABLED` to `false` and rebuild to
+disable the widget. The query parameter is still required, so ordinary page URLs
+show no bubble. These are public, build-time inputs: never put a secret or private
+service address in the gateway URL.
+
 Only the exact value `1` enables the preview. Ordinary URLs mount no chat widget
 and make no assistant catalog or turn requests. Removing the parameter hides the
 widget and disconnects any active browser stream, but keeps the saved conversation
