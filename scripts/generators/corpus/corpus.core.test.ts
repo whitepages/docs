@@ -237,6 +237,35 @@ describe("parseEndpoint", () => {
     });
   });
 
+  test("accepts JSON-style operation keys from generated MDX", () => {
+    const body =
+      '<APIPage operations={[{"path":"/v1/regions/states/{state_code}/counties","method":"get"}]} />';
+    expect(parseEndpoint("references/regions/list_counties", body)).toEqual({
+      operationId: "list_counties",
+      path: "/v1/regions/states/{state_code}/counties",
+      method: "get",
+    });
+  });
+
+  test("accepts quoted keys with single quotes and whitespace", () => {
+    const body =
+      "<APIPage operations={[{ 'path' : '/v2/person/{id}', 'method' : 'GET' }]} />";
+    expect(parseEndpoint("references/person/get_person", body)).toEqual({
+      operationId: "get_person",
+      path: "/v2/person/{id}",
+      method: "get",
+    });
+  });
+
+  test("rejects an operation with a missing method", () => {
+    expect(() =>
+      parseEndpoint(
+        "references/x",
+        '<APIPage operations={[{"path":"/v2/person/"}]} />',
+      ),
+    ).toThrow(/no parseable operation/);
+  });
+
   test("throws when the operation cannot be parsed", () => {
     expect(() => parseEndpoint("references/x", "<APIPage />")).toThrow(
       /no parseable operation/,
